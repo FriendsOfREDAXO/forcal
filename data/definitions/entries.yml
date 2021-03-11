@@ -1,0 +1,23 @@
+langfields:
+  - panel: 'images'
+    label_de: 'Sprachbezogene Bildelemente'
+    label_en: 'Language-related images elements'
+    fields:
+      - name: 'lang_image'
+        type: 'media'
+        label_de: 'Bild'
+        label_en: 'Image'
+      - name: 'lang_images'
+        type: 'medialist'
+        label_de: 'Bilder'
+        label_en: 'Images'
+
+fields:
+  - name: 'image'
+    type: 'media'
+    label_de: 'Bildelement'
+    label_en: 'Image element'
+  - name: 'file'
+    type: 'media'
+    label_de: 'Datei Anhang'
+    label_en: 'File attachment'

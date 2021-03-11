@@ -1,0 +1,130 @@
+### defaults
+forcal_title = Calendar
+forcal_help = Hilfe
+forcal_offline = offline
+forcal_online = online
+forcal_startdate = Datum
+forcal_starttime = Uhrzeit
+forcal_config = Einstellungen
+forcal_config_save = Einstellungen speichern
+forcal_config_saved = Die Einstellungen wurden gespeichert.
+forcal_colors = Kategorie-Farben Hexadezimal #ffffff, #000000
+forcal_datepicker = Datepicker
+forcal_customfield_check = Definitions-Fieldcheck
+forcal_additional_attributes = Individuelle Attribute
+forcal_additional_attributes_notice = Bitte als JSON schreiben. z.B. {"class":"my-class","placeholder":"My placeholder"}
+forcal_additional_field_for_category = Zusätzliches Feld für die Identifikation der Kategorie
+forcal_please_select = Auswahl optional
+forcal_only_multilanguage_fields_shown = Es werden nur mehrsprachige Felder angezeigt
+forcal_clone = duplizieren
+forcal_status_function = Status/Funktion
+forcal_shortcut_save = Shortcut zum speichern des Termins nutzen (Strg+S / Ctrl+S)
+forcal_full_time_preselection = "Ganztägiges Ereignis" vorausgewählt
+forcal_start_page = Startseite
+forcal_change_message = Es wurden die Daten von einem anderen Kalender-AddOn übernommen. Das Ursprungsaddon wurde deinstalliert. 
+
+perm_general_forcal[settings] = Einstellungen bearbeiten
+
+### navigation points
+forcal_calendar = Kalender
+forcal_entries = Termine
+forcal_categories = Kategorien
+forcal_venues = Orte
+forcal_settings = Einstellungen
+
+### cal view
+forcal_calendar_view = Übersicht
+
+### venue
+rex_forcal_venues_toggle_status_error = Der Status des Veranstaltungsortes konnte nicht geändert werden.
+rex_forcal_venues_toggle_status_success = Der Status des Veranstaltungsortes wurde geändert.
+rex_forcal_venues_deleted = Der Veranstaltungsort wurde gelöscht.
+rex_forcal_venues_cloned = Der Veranstaltungsort wurde dupliziert.
+
+### venue list
+forcal_venues_title = Orte
+forcal_venue_name = Ort
+forcal_add_venue = Ort anlegen
+forcal_venue_delete = Ort löschen
+
+### venue form
+forcal_venue_add = Ort hinzufügen
+forcal_venue_edit = Ort editieren
+
+### categories
+rex_forcal_categories_toggle_status_error = Der Status der Kategorie konnte nicht geändert werden.
+rex_forcal_categories_toggle_status_success = Der Status der Kategorie wurde geändert.
+rex_forcal_categories_deleted = Die Kategorie wurde gelöscht.
+rex_forcal_categories_cloned = Die Kategorie wurde dupliziert.
+
+### categories list
+forcal_categories_title = Kategorien
+forcal_add_category = Kategorie anlegen
+
+### categories form
+forcal_category = Kategorie
+forcal_category_delete = Kategorie löschen
+forcal_category_add = Kategorie hinzufügen
+forcal_category_edit = Kategorie editieren
+forcal_category_name = Name
+forcal_category_color = Farbe
+forcal_category_color_not_empty = Bitte eine Farbe auswählen
+
+### entry
+rex_forcal_entries_toggle_status_error = Der Status des Termins konnte nicht geändert werden.
+rex_forcal_entries_toggle_status_success = Der Status des Termins wurde geändert.
+rex_forcal_entries_deleted = Der Termin wurde gelöscht.
+rex_forcal_entries_cloned = Der Termin wurde dupliziert.
+
+### entry list
+forcal_entry_list_view = Termine
+forcal_add_entry = Termin anlegen
+
+### entry form
+forcal_entry_delete = löschen
+forcal_entry_add = Termin hinzufügen
+forcal_entry_edit = Termin editieren
+forcal_entry_date = Datum
+forcal_from = von
+forcal_to = bis
+forcal_entry_type = Wiederholung
+forcal_radio_one_time = einmaliges Ereignis
+forcal_radio_repeat = wiederkehrendes Ereignis
+forcal_repeat_every = Häufigkeit
+forcal_entry_repeats = Wiederholen
+forcal_entry_everyn = jeden
+forcal_entry_everye = jede
+forcal_entry_everys = jedes
+forcal_select_monthly = monatlich
+forcal_select_weekly = wöchentlich
+forcal_select_yearly = jährlich
+forcal_repeat_every_weekly = Woche
+forcal_repeat_every_monthly = Monat
+forcal_repeat_every_yearly = Jahr
+forcal_repeat_ending = Enddatum
+forcal_entry_name = Titel
+forcal_entry_teaser = Teaser / Kurzbeschreibung
+forcal_entry_text = Beschreibung
+forcal_entry_category = Kategorie
+forcal_entry_venue = Ort
+forcal_entry_status = Status
+forcal_entry_full_time = Ganztägig
+forcal_checkbox_full_time = Ganztägiges Ereignis
+forcal_redactor2 = Redactor 2
+
+forcal_sql_database_min_version = Die Datenbank {0} {1} ist veraltet, es wird mindestens Version {2} benötigt!
+forcal_select_monthly_day = monatlich [Wochentag]
+forcal_select_sun = Sonntag
+forcal_select_sat = Samstag
+forcal_select_mon = Montag
+forcal_select_tue = Dienstag
+forcal_select_wed = Mittwoch
+forcal_select_thu = Donnerstag
+forcal_select_fri = Freitag
+forcal_select_first_week = ersten
+forcal_select_second_week = zweiten
+forcal_select_third_week = dritten
+forcal_select_fourth_week = vierten
+forcal_select_last_week = letzten
+
+forcal_entry_name_validation = Bitte geben Sie einen Titel ein

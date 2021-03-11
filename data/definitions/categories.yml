@@ -1,0 +1,5 @@
+langfields:
+  - name: description
+    type: textarea
+    label_de: Beschreibung
+    label_en: Description

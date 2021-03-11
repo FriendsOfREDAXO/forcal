@@ -1,0 +1,129 @@
+### defaults
+forcal_title = Calendar
+forcal_help = Help
+forcal_offline = offline
+forcal_online = online
+forcal_startdate = Date
+forcal_starttime = Time
+forcal_config = Settings
+forcal_config_save = Save settings
+forcal_config_saved = The settings have been saved.
+forcal_colors = Category colors hexadecimals #ffffff, #000000
+forcal_datepicker = Datepicker
+forcal_customfield_check = Field check definition
+forcal_additional_attributes = Individual attributes
+forcal_additional_attributes_notice = Please enter in JSON format. Ex. {"class":"my-class","placeholder":"My placeholder"}
+forcal_additional_field_for_category = Additional db field for category identification
+forcal_please_select = optional selection
+forcal_only_multilanguage_fields_shown = Only multi language fields shown
+forcal_clone = duplicate
+forcal_status_function = Status/Function
+forcal_shortcut_save = Use shortcut to save the event (Strg+S / Ctrl+S)
+forcal_full_time_preselection = "All-day" preselected
+forcal_start_page = Starting page
+
+perm_general_forcal[settings] = Edit settings
+
+### navigation points
+forcal_calendar = Calendar
+forcal_entries = Events
+forcal_categories = Categories
+forcal_venues = Venues
+forcal_settings = Settings
+
+### cal view
+forcal_calendar_view = Calendar sheet
+
+### venue
+rex_forcal_venues_toggle_status_error = The venue status could not be changed.
+rex_forcal_venues_toggle_status_success = The venue status has been changed.
+rex_forcal_venues_deleted = The venue has been deleted.
+rex_forcal_venues_cloned = The venue has been duplicated
+
+### venue list
+forcal_venues_title = Venues
+forcal_venue_name = Venue
+forcal_add_venue = Create venue
+forcal_venue_delete = Delete venue
+
+### venue form
+forcal_venue_add = Add venue
+forcal_venue_edit = Edit venue
+
+### categories
+rex_forcal_categories_toggle_status_error = The category status could not be changed.
+rex_forcal_categories_toggle_status_success = The category status has been changed.
+rex_forcal_categories_deleted = The category has been deleted.
+rex_forcal_categories_cloned = The category has been duplicated
+
+### categories list
+forcal_categories_title = Category
+forcal_add_category = Create category
+
+### categories form
+forcal_category = Category
+forcal_category_delete = Delete category
+forcal_category_add = Add category
+forcal_category_edit = Edit category
+forcal_category_name = Name
+forcal_category_color = Color
+forcal_category_color_not_empty = Please choose a color
+
+### entry
+rex_forcal_entries_toggle_status_error = The event status could not be changed.
+rex_forcal_entries_toggle_status_success = The event status has been changed.
+rex_forcal_entries_deleted = The event has been deleted.
+rex_forcal_entries_cloned = The event has been duplicated
+
+### entry list
+forcal_entry_list_view = Events
+forcal_add_entry = Add event
+
+### entry form
+forcal_entry_delete = delete
+forcal_entry_add = Add event
+forcal_entry_edit = Edit event
+forcal_entry_date = Date
+forcal_from = from
+forcal_to = to
+forcal_entry_type = Repeat
+forcal_radio_one_time = Single event
+forcal_radio_repeat = Recurring event
+forcal_repeat_every = Frequency
+forcal_entry_repeats = Repeat
+forcal_entry_everyn = each
+forcal_entry_everye = each
+forcal_entry_everys = each
+forcal_select_monthly = monthly
+forcal_select_weekly = weekly
+forcal_select_yearly = yearly
+forcal_repeat_every_weekly = Week
+forcal_repeat_every_monthly = Month
+forcal_repeat_every_yearly = Year
+forcal_repeat_ending = End date
+forcal_entry_name = Title
+forcal_entry_teaser = Teaser / short description
+forcal_entry_text = Description
+forcal_entry_category = Category
+forcal_entry_venue = Place
+forcal_entry_status = Status
+forcal_entry_full_time = All-day
+forcal_checkbox_full_time = All-day event
+forcal_redactor2 = Redactor 2
+
+forcal_sql_database_min_version = The Database {0} {1} is outdated, at least version {2} required!
+forcal_select_monthly_day = monthly [weekday]
+forcal_select_sun = Sunday
+forcal_select_sat = Saturday
+forcal_select_mon = Monday
+forcal_select_tue = Tuesday
+forcal_select_wed = Wednesday
+forcal_select_thu = Thursday
+forcal_select_fri = Friday
+forcal_select_first_week = first
+forcal_select_second_week = second
+forcal_select_third_week = third
+forcal_select_fourth_week = fourth
+forcal_select_last_week = last
+
+forcal_entry_name_validation = Please enter a name

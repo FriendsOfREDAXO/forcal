@@ -1,0 +1,106 @@
+### defaults
+forcal_title = Calendar
+forcal_help = Hjælp
+forcal_offline = offline
+forcal_online = online
+forcal_startdate = Dato
+forcal_starttime = Tid
+forcal_config = Indstillinger
+forcal_config_save = Gem indstillinger
+forcal_config_saved = Indstillinger blev gemt.
+forcal_colors = Kategori farver Hexadezimal #ffffff, #000000
+forcal_datepicker = Datepicker
+forcal_customfield_check = Definitioner-Fieldcheck
+forcal_additional_attributes = Individuelle egenskaber
+forcal_additional_attributes_notice = Skriv venligst som JSON. f.eks. {"class":"my-class","placeholder":"My placeholder"}
+forcal_additional_field_for_category = Yderligere felt til identifikation af kategorien
+forcal_only_multilanguage_fields_shown = Kun flersprogede felter vises
+forcal_clone = duplikere
+forcal_status_function = Status/funktion
+
+### navigation points
+forcal_calendar = Kalender
+forcal_entries = Begivenheder
+forcal_categories = Kategorier
+forcal_venues = Lokaler
+forcal_settings = Indstillinger
+
+### cal view
+forcal_calendar_view = Oversigt
+
+### venue
+rex_forcal_venues_toggle_status_error = Status for lokalet kunne ikke ændres.
+rex_forcal_venues_toggle_status_success = Status for lokalet er blevet ændret.
+rex_forcal_venues_deleted = Lokalet er blevet slettet.
+rex_forcal_venues_cloned = Lokalet blev dupliceret.
+
+### venue list
+forcal_venues_title = Lokaler
+forcal_venue_name = Lokale
+forcal_add_venue = Opret lokale
+forcal_venue_delete = Slet lokale
+
+### venue form
+forcal_venue_add = Opret Lokale
+forcal_venue_edit = Rediger lokale
+
+### categories
+rex_forcal_categories_toggle_status_error = Status for kategorien kunne ikke ændres.
+rex_forcal_categories_toggle_status_success = Status for kategorien er blevet ændret.
+rex_forcal_categories_deleted = Kategorien er blevet slettet.
+rex_forcal_categories_cloned = Kategorien er blevet dupliceret.
+
+### categories list
+forcal_categories_title = Kategorier
+forcal_add_category = Opret kategorie
+
+### categories form
+forcal_category = Kategorie
+forcal_category_delete = Slet kategorie
+forcal_category_add = Opret kategorie
+forcal_category_edit = Rediger kategorie
+forcal_category_name = Navn
+forcal_category_color = Farve
+forcal_category_color_not_empty = Vælg venligst en farve
+
+### entry
+rex_forcal_entries_toggle_status_error = Status for begivenheden kunne ikke ændres.
+rex_forcal_entries_toggle_status_success = Status for begivenheden er blevet ændret.
+rex_forcal_entries_deleted = Begivenheden blevet slettet.
+rex_forcal_entries_cloned = Begivenheden blev dupliceret.
+
+### entry list
+forcal_entry_list_view = Begivenheder
+forcal_add_entry = Opret begivenhed
+
+### entry form
+forcal_entry_delete = slet
+forcal_entry_add = Opret begivenhed
+forcal_entry_edit = Rediger begivenhed
+forcal_entry_date = Dato
+forcal_from = fra
+forcal_to = til
+forcal_entry_type = Gentagelser
+forcal_radio_one_time = Unik begivenhed
+forcal_radio_repeat = Gentagende begivenhed
+forcal_repeat_every = Frekvens
+forcal_entry_repeats = Gentagelser
+forcal_entry_everyn = hver
+forcal_entry_everye = hver
+forcal_entry_everys = hver
+forcal_select_monthly = månedlige
+forcal_select_weekly = ugentlig
+forcal_select_yearly = årligt
+forcal_repeat_every_weekly = uge
+forcal_repeat_every_monthly = måned
+forcal_repeat_every_yearly = år
+forcal_repeat_ending = slutdato
+forcal_entry_name = Titel
+forcal_entry_teaser = Teaser / kort beskrivelse
+forcal_entry_text = Beskrivelse
+forcal_entry_category = Kategori
+forcal_entry_venue = Lokale
+forcal_entry_status = Status
+forcal_entry_full_time = Hele dagen
+forcal_checkbox_full_time = Hele dagen begivenhed
+forcal_redactor2 = Redaktor 2

@@ -1,0 +1,108 @@
+### defaults
+forcal_title = Calendar
+forcal_help = Ayuda
+forcal_offline = Desconectado
+forcal_online = En línea
+forcal_startdate = Fecha
+forcal_starttime = Hora del día
+forcal_config = Ajustes
+forcal_config_save = Guardar configuraciones
+forcal_config_saved = La configuración ha sido guardada.
+forcal_colors = Categoría colores Hexadecimal #ffffff, # 000000
+forcal_datepicker = Selector de fechas
+forcal_customfield_check = Definir-Verificación de campo
+forcal_additional_attributes = Atributos individuales
+forcal_additional_attributes_notice = Por favor escribe como JSON. por ejemplo {"class":"my-class","placeholder":"My placeholder"}
+forcal_additional_field_for_category = Campo adicional para la identificación de la categoría
+forcal_please_select = Por favor selecciona
+forcal_only_multilanguage_fields_shown = Solo se muestran campos de varios idiomas
+forcal_clone = duplicar
+forcal_status_function = Estado/Función
+
+
+### navigation points
+forcal_calendar = Calendario
+forcal_entries = Cventos
+forcal_categories = Categorías
+forcal_venues = Lugares
+forcal_settings = Ajustes
+
+### cal view
+forcal_calendar_view = Vista general
+
+### venue
+rex_forcal_venues_toggle_status_error = El estado del lugar no se pudo cambiar.
+rex_forcal_venues_toggle_status_success = El estado del lugar ha sido cambiado.
+rex_forcal_venues_deleted = El lugar ha sido eliminado.
+rex_forcal_venues_cloned = El lugar fue duplicado.
+
+### venue list
+forcal_venues_title = Lugares
+forcal_venue_name = Lugar
+forcal_add_venue = Crea un lugar
+forcal_venue_delete = Eliminar ubicación
+
+### venue form
+forcal_venue_add = Añadir lugar
+forcal_venue_edit = Editar ubicación
+
+### categories
+rex_forcal_categories_toggle_status_error = El estado de la categoría no se pudo cambiar.
+rex_forcal_categories_toggle_status_success = El estado de la categoría ha sido cambiado.
+rex_forcal_categories_deleted = La categoría ha sido eliminada.
+rex_forcal_categories_cloned = La categoría ha sido duplicada.
+
+### categories list
+forcal_categories_title = Categorías
+forcal_add_category = Crear categoría
+
+### categories form
+forcal_category = Categoría
+forcal_category_delete = Eliminar categoría
+forcal_category_add = Añadir una categoría
+forcal_category_edit = Editar categoría
+forcal_category_name = Nombre
+forcal_category_color = Color
+forcal_category_color_not_empty = Por favor seleccione un color
+
+### entry
+rex_forcal_entries_toggle_status_error = El estado de la cita no se pudo cambiar.
+rex_forcal_entries_toggle_status_success = El estado de la cita ha sido cambiado.
+rex_forcal_entries_deleted = La cita ha sido eliminada.
+rex_forcal_entries_cloned = La cita fue duplicada.
+
+### entry list
+forcal_entry_list_view = Eventos
+forcal_add_entry = Crear cita
+
+### entry form
+forcal_entry_delete = Eliminar cita
+forcal_entry_add = Agregar cita
+forcal_entry_edit = Editar cita
+forcal_entry_date = Fecha
+forcal_from = De
+forcal_to = Para
+forcal_entry_type = Repetición
+forcal_radio_one_time = Evento único
+forcal_radio_repeat = Evento recurrente
+forcal_repeat_every = Frecuencia
+forcal_entry_repeats = Repetición
+forcal_entry_everyn = Cada
+forcal_entry_everye = Cada
+forcal_entry_everys = Cada
+forcal_select_monthly = Mensual
+forcal_select_weekly = Semanal
+forcal_select_yearly = Anualmente
+forcal_repeat_every_weekly = Semana
+forcal_repeat_every_monthly = Mes
+forcal_repeat_every_yearly = Año
+forcal_repeat_ending = Fecha de finalización
+forcal_entry_name = Título
+forcal_entry_teaser = Teaser / breve descripción
+forcal_entry_text = Descripción
+forcal_entry_category = Categoría
+forcal_entry_venue = Lugar
+forcal_entry_status = Estatus
+forcal_entry_full_time = Todo el día
+forcal_checkbox_full_time = Evento de todo el día
+forcal_redactor2 = Redactor 2

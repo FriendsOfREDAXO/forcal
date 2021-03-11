@@ -1,0 +1,126 @@
+### defaults
+forcal_title = Calendar
+forcal_help = Hjälp
+forcal_offline = offline
+forcal_online = online
+forcal_startdate = Datum
+forcal_starttime = Tid
+forcal_config = Inställningar
+forcal_config_save = Spara inställningar
+forcal_config_saved = Inställningar sparades
+forcal_colors = Kategorifärger hexadezimal #ffffff, #000000
+forcal_datepicker = Datepicker
+forcal_customfield_check = Definitions-Fieldcheck
+forcal_additional_attributes = Individuella attribut
+forcal_additional_attributes_notice = Var god skriv i JSON format. T.ex. {"class":"my-class","placeholder":"My placeholder"}
+forcal_additional_field_for_category = Ytterligare fält för identifiering av kategorin
+forcal_please_select = Optional utval
+forcal_only_multilanguage_fields_shown = Endast flerspråkiga fält visas
+forcal_clone = duplicera
+forcal_status_function = Status/funktion
+
+perm_general_forcal[settings] = Ändra Inställningarna
+
+### navigation points
+forcal_calendar = Kalender
+forcal_entries = Bidrag
+forcal_categories = Kategorier
+forcal_venues = Locations
+forcal_settings = Inställningar
+
+### cal view
+forcal_calendar_view = Kalenderblad
+
+### venue
+rex_forcal_venues_toggle_status_error = Evenemangsortens status kunde inte ändras.
+rex_forcal_venues_toggle_status_success = Evenemangsortens status ändrades
+rex_forcal_venues_deleted = Evenemangsorten raderades
+rex_forcal_venues_cloned = Platsen duplicerades.
+
+### venue list
+forcal_venues_title = Locations
+forcal_venue_name = Location
+forcal_add_venue = Skapa location
+forcal_venue_delete = Radera location
+
+### venue form
+forcal_venue_add = Tillfoga location
+forcal_venue_edit = Ändra location
+
+### categories
+rex_forcal_categories_toggle_status_error = Kategoriens status kunde inte ändras
+rex_forcal_categories_toggle_status_success = Kategoriens status ändrades
+rex_forcal_categories_deleted = Kategorien raderades.
+rex_forcal_categories_cloned = Kategorin har duplicerats.
+
+### categories list
+forcal_categories_title = Kategorier
+forcal_add_category = Skapa kategori
+
+### categories form
+forcal_category = Kategori
+forcal_category_delete = Radera kategori
+forcal_category_add = Tillfoga kategori
+forcal_category_edit = Ändra kategori
+forcal_category_name = Namn
+forcal_category_color = Färg
+forcal_category_color_not_empty = Vänligen välj en färg
+
+### entry
+rex_forcal_entries_toggle_status_error = Statusen kunde inte ändras
+rex_forcal_entries_toggle_status_success = Statusen ändrades.
+rex_forcal_entries_deleted = Bidraget raderades.
+rex_forcal_entries_cloned = Datumet duplicerades.
+
+### entry list
+forcal_entry_list_view = Bidrag
+forcal_add_entry = Skapa nytt bidrag
+
+### entry form
+forcal_entry_delete = Radera bidrag
+forcal_entry_add = Skapa nytt bidrag
+forcal_entry_edit = Ändra bidrag
+forcal_entry_date = Datum
+forcal_from = från
+forcal_to = till
+forcal_entry_type = Typ
+forcal_radio_one_time = unik händelse
+forcal_radio_repeat = återkommande händelse
+forcal_repeat_every = frekvens
+forcal_entry_repeats = Upprepa
+forcal_entry_everyn = varje
+forcal_entry_everye = varje
+forcal_entry_everys = varje
+forcal_select_monthly = månadsvis
+forcal_select_weekly = veckovis
+forcal_select_yearly = årsvis
+forcal_repeat_every_weekly = Vecka
+forcal_repeat_every_monthly = Månad
+forcal_repeat_every_yearly = År
+forcal_repeat_ending = Slutdatum
+forcal_entry_name = Titel
+forcal_entry_teaser = Teaser / Kort beskrivning
+forcal_entry_text = Teaser / Längre breskrivning
+forcal_entry_category = Kategori
+forcal_entry_venue = Plats
+forcal_entry_status = Status
+forcal_entry_full_time = heltid
+forcal_checkbox_full_time = Hela dagen händelse
+forcal_redactor2 = Redactor 2
+
+forcal_sql_database_min_version = Databasen {0} {1} är inaktuell, åtminstone version {2} krävs!
+forcal_select_monthly_day = månadsvis [veckodag]
+forcal_select_sun = Söndag
+forcal_select_sat = Lördag
+forcal_select_mon = Måndag
+forcal_select_tue = Tisdag
+forcal_select_wed = Onsdag
+forcal_select_thu = Torsdag
+forcal_select_fri = Fredag
+forcal_select_first_week = första
+forcal_select_second_week = andra
+forcal_select_third_week = tredje
+forcal_select_fourth_week = fjärde
+forcal_select_last_week = sista
+
+forcal_entry_name_validation = Vänligen ange en titel
