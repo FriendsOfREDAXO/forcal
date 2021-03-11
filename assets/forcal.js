@@ -490,8 +490,6 @@ function forcal_fullcalendar(forcal) {
             if (info.view.viewSpec.type === 'timeGridDay') {
                 addAddIconDay(forcal);
             }
-
-            set_access_key(forcal, calendar);
         },
         viewSkeletonRender: function(info) {
         },
@@ -547,24 +545,6 @@ function addEntryHandler(item) {
     window.location.replace('index.php?page=forcal/entries&func=add&itemdate=' + item.data('date'));
 }
 
-function set_access_key(forcal, calendar) {
-  var $addEntry;
-
-  switch (calendar.view.type) {
-    case 'timeGridDay':
-      $addEntry = forcal.find('.fc-day-header .add');
-      break;
-    case 'timeGridWeek':
-      $addEntry = forcal.find('.fc-day-header.fc-today .add');
-      break;
-    default:
-      $addEntry = forcal.find('.fc-day-top.fc-today');
-      break;
-  }
-
-  $addEntry.attr('accesskey', 'a');
-  $addEntry.attr('title', $addEntry[0].accessKeyLabel || $addEntry[0].accessKey);
-}
 
 function forcal_save_init (forcal_form) {
   if(rex.forcal_shortcut_save) {
