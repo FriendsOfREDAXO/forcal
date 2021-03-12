@@ -329,7 +329,7 @@ foreach ($entries as $data) {
 ```
 
 
-## Calendars als FullCalendar im Frontend
+## FOR calendar als FullCalendar im Frontend
 
 inkl. Anzeige einer Detailseite 
 
