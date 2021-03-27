@@ -77,7 +77,7 @@ class forCalFormFieldsetHandler
      */
     private static function openPanel(rex_form $form, $field, rex_clang $clang, $langField = false)
     {
-        forCalFormHelper::addCollapsePanel($form, 'wrapper', '',$clang, $langField);
+        forCalFormHelper::addCollapsePanel($form, 'wrapper', '', $clang, $langField);
         forCalFormHelper::addCollapsePanel($form, 'inner_wrapper', self::getLabel($field), $clang, $langField);
     }
 
@@ -102,7 +102,7 @@ class forCalFormFieldsetHandler
             return $field['label_all'];
         }
 
-        $lang = explode('_',rex_i18n::getLocale());
+        $lang = explode('_', rex_i18n::getLocale());
 
         foreach ($lang as $value) {
             $property = 'label_' . $value;
@@ -125,7 +125,7 @@ class forCalFormFieldsetHandler
             return $field['prefix_all'];
         }
 
-        $lang = explode('_',rex_i18n::getLocale());
+        $lang = explode('_', rex_i18n::getLocale());
 
         foreach ($lang as $value) {
             $property = 'prefix_' . $value;
@@ -148,7 +148,7 @@ class forCalFormFieldsetHandler
             return $field['suffix_all'];
         }
 
-        $lang = explode('_',rex_i18n::getLocale());
+        $lang = explode('_', rex_i18n::getLocale());
 
         foreach ($lang as $value) {
             $property = 'suffix_' . $value;
@@ -210,8 +210,8 @@ class forCalFormFieldsetHandler
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
                     $formField->setSuffix(self::getSuffix($field));
-                    if (array_key_exists('options',$field)) {
-                        foreach ($field['options'] as $k=>$v) {
+                    if (array_key_exists('options', $field)) {
+                        foreach ($field['options'] as $k => $v) {
                             $formField->addOption($v, $k);
                         }
                     }
@@ -227,52 +227,52 @@ class forCalFormFieldsetHandler
                     }
                     break;
                 case 'radio':
-                case 'radiosql':    
+                case 'radiosql':
                     $formField = $form->addRadioField($field['name']);
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
                     $formField->setSuffix(self::getSuffix($field));
-                    if (array_key_exists('options',$field)) {
-                        foreach ($field['options'] as $k=>$v) {
+                    if (array_key_exists('options', $field)) {
+                        foreach ($field['options'] as $k => $v) {
                             $formField->addOption($v, $k);
+                        }
                     }
-                }
-                    if (array_key_exists('cry',$field)) {    
-                    $options = \rex_sql::factory()->getArray($field['qry']);
-                    foreach ($options as $v) {
-                        $formField->addOption($v['name'], $v['id']);
+                    if (array_key_exists('cry', $field)) {
+                        $options = \rex_sql::factory()->getArray($field['qry']);
+                        foreach ($options as $v) {
+                            $formField->addOption($v['name'], $v['id']);
+                        }
                     }
-                        } 
                     break;
 
 
-                case 'select':    
+                case 'select':
                 case 'selectsql':
                     $formField = $form->addSelectField($field['name']);
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
                     $formField->setSuffix(self::getSuffix($field));
                     $formField->setAttribute('class', 'selectpicker form-control');
-                    if (array_key_exists('options',$field)) {
+                    if (array_key_exists('options', $field)) {
                         $select = $formField->getSelect();
-                        foreach ($field['options'] as $key=>$val) {
+                        foreach ($field['options'] as $key => $val) {
                             $select->addOption($val, $key);
                         }
                     }
-                    if (array_key_exists('cry',$field)) {
-                    $options = \rex_sql::factory()->getArray($field['qry']);
-                    $select = $formField->getSelect();
-                    foreach ($options as $v) {
-                        $select->addOption($v['name'], $v['id']);
+                    if (array_key_exists('cry', $field)) {
+                        $options = \rex_sql::factory()->getArray($field['qry']);
+                        $select = $formField->getSelect();
+                        foreach ($options as $v) {
+                            $select->addOption($v['name'], $v['id']);
                         }
                     }
                     break;
             }
 
             if (is_object($formField)) {
-                if (array_key_exists('attribute',$field)) {
-                       foreach ($field['attribute'] as $at_key=>$at_value) {
-                           $formField->setAttribute($at_key, $at_value);
+                if (array_key_exists('attribute', $field)) {
+                    foreach ($field['attribute'] as $at_key => $at_value) {
+                        $formField->setAttribute($at_key, $at_value);
                     }
                 }
             }
