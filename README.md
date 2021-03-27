@@ -33,13 +33,11 @@ Beispiele für mögliche Felder findet man auch in den mitgelieferten yml.
 - **textarea** stellt eine mehrzeilige Texteingabe zur Veffügung
 - **Link** stellt einen Auswahldialog zur Auswahl eines internen Links zur Verfügung
 - **Linklist** stellt einen Auswahldialog zur Mehrfach-Auswahl eines internen Links zur Verfügung
-- **select** fügt dem Formular eine Selectbox mit definierbaren Werten hinzu
-- **selectsql** fügt dem Formular eine Selectbox mit Werten aus einer Tabelle hinzu
+- **select** fügt dem Formular eine Selectbox mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
+- **radio** fügt dem Formular eine Radiobutton Group mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
+
 - **checkbox** fügt dem Formular eine Checkbox mit definierbaren Werten hinzu
 - **checkboxsql** fügt dem Formular eine Checkbox mit Werten aus einer Tabelle hinzu
-- **radio** fügt dem Formular eine Radiobutton Group mit definierbaren Werten hinzu
-- **radiosql** fügt dem Formular eine Radiobutton Group mit Werten aus einer Tabelle hinzu
-
 
 ### Beispiele
 
@@ -88,7 +86,7 @@ langfields:
 
 ```yml
   - name: favfood
-    type: selectsql
+    type: select
     label_de: 'Lieblingsspeise'
     label_en: 'Favorite Food'
     qry: 'SELECT id, name FROM rex_yourfoodtable'
@@ -107,11 +105,11 @@ langfields:
       rt: 'Rot'
 ```
 
-#### Radiobutton aus SQL
+#### Radiobutton
 
 ```yml
   - name: haircolor
-    type: checkbox
+    type: radio
     label_de: 'Haarfarbe'
     label_en: 'Hair Color'
     options:
