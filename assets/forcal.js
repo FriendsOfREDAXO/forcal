@@ -480,7 +480,7 @@ function forcal_fullcalendar(forcal) {
         },
         eventRender: function (info) {
         },
-        datesRender: function(info) {
+        datesRender: function (info) {
             if (info.view.viewSpec.type === 'dayGridMonth') {
                 addAddIconMonth(forcal);
             }
@@ -491,7 +491,7 @@ function forcal_fullcalendar(forcal) {
                 addAddIconDay(forcal);
             }
         },
-        viewSkeletonRender: function(info) {
+        viewSkeletonRender: function (info) {
         },
         events: {
             url: '../?rex-api-call=forcal_exchange&_csrf_token=' + csrf_token,
@@ -546,20 +546,19 @@ function addEntryHandler(item) {
 }
 
 
-function forcal_save_init (forcal_form) {
-  if(rex.forcal_shortcut_save) {
-    $(window).bind('keydown', function(event) {
-      if ((event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === 's') {
-        event.preventDefault();
-        event.stopImmediatePropagation();
+function forcal_save_init(forcal_form) {
+    if (rex.forcal_shortcut_save) {
+        $(window).bind('keydown', function (event) {
+            if ((event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === 's') {
+                event.preventDefault();
+                event.stopImmediatePropagation();
 
-        if(forcal_form[0].checkValidity()) {
-          forcal_form.find('button[type=submit]').trigger('click');
-        }
-        else {
-          forcal_form[0].reportValidity();
-        }
-      }
-    });
-  }
+                if (forcal_form[0].checkValidity()) {
+                    forcal_form.find('button[type=submit]').trigger('click');
+                } else {
+                    forcal_form[0].reportValidity();
+                }
+            }
+        });
+    }
 }
