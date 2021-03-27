@@ -227,6 +227,7 @@ class forCalFormFieldsetHandler
                     }
                     break;
                 case 'radio':
+                case 'radiosql':    
                     $formField = $form->addRadioField($field['name']);
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
@@ -234,20 +235,19 @@ class forCalFormFieldsetHandler
                     if (array_key_exists('options',$field)) {
                         foreach ($field['options'] as $k=>$v) {
                             $formField->addOption($v, $k);
-                        }
                     }
-                    break;
-                case 'radiosql':
-                    $formField = $form->addRadioField($field['name']);
-                    $formField->setLabel(self::getLabel($field));
-                    $formField->setPrefix(self::getPrefix($field));
-                    $formField->setSuffix(self::getSuffix($field));
+                }
+                    if (array_key_exists('cry',$field)) {    
                     $options = \rex_sql::factory()->getArray($field['qry']);
                     foreach ($options as $v) {
                         $formField->addOption($v['name'], $v['id']);
                     }
+                        } 
                     break;
-                case 'select':
+
+
+                case 'select':    
+                case 'selectsql':
                     $formField = $form->addSelectField($field['name']);
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
@@ -255,24 +255,17 @@ class forCalFormFieldsetHandler
                     $formField->setAttribute('class', 'selectpicker form-control');
                     if (array_key_exists('options',$field)) {
                         $select = $formField->getSelect();
-                        foreach ($field['options'] as $k=>$v) {
-                            $select->addOption($v, $k);
+                        foreach ($field['options'] as $key=>$val) {
+                            $select->addOption($val, $key);
                         }
                     }
-
-                    break;
-                case 'selectsql':
-                    $formField = $form->addSelectField($field['name']);
-                    $formField->setLabel(self::getLabel($field));
-                    $formField->setPrefix(self::getPrefix($field));
-                    $formField->setSuffix(self::getSuffix($field));
-                    $formField->setAttribute('class', 'selectpicker form-control');
+                    if (array_key_exists('cry',$field)) {
                     $options = \rex_sql::factory()->getArray($field['qry']);
                     $select = $formField->getSelect();
                     foreach ($options as $v) {
                         $select->addOption($v['name'], $v['id']);
+                        }
                     }
-
                     break;
             }
 
@@ -287,4 +280,3 @@ class forCalFormFieldsetHandler
         }
     }
 }
-
