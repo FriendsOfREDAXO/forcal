@@ -12,15 +12,17 @@ use forCal\Manager\forCalDatabaseManager;
 if (rex::isBackend() && rex::getUser()) {
     $config = $this->getConfig();
 
-	if (rex_addon::get('watson')->isAvailable()) {
+    if (rex_addon::get('watson')->isAvailable()) {
 
-        function forcal_search(rex_extension_point $ep){
-          $subject = $ep->getSubject();
-          $subject[] = 'Watson\Workflows\forCal\forCalProvider';
-          return $subject;
+        function forcal_search(rex_extension_point $ep)
+        {
+            $subject = $ep->getSubject();
+            $subject[] = 'Watson\Workflows\forCal\forCalProvider';
+            return $subject;
         }
-         rex_extension::register('WATSON_PROVIDER', 'forcal_search', rex_extension::LATE);
-	}
+
+        rex_extension::register('WATSON_PROVIDER', 'forcal_search', rex_extension::LATE);
+    }
 
     // create custom fields
     forCalDatabaseManager::executeCustomFieldHandle();
@@ -48,7 +50,7 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addCssFile($this->getAssetsUrl('vendor/clockpicker/bootstrap-clockpicker.min.css'));
     rex_view::addCssFile($this->getAssetsUrl('forcal.css'));
 
-    rex_extension::register('CLANG_ADDED', function() {
+    rex_extension::register('CLANG_ADDED', function () {
         // duplicate lang columns
         forCalDatabaseManager::executeAddLangFields();
     });
@@ -59,13 +61,12 @@ if (rex::isBackend() && rex::getUser()) {
     if ($page && $config['forcal_start_page']) {
         $entry = $page['subpages'][$config['forcal_start_page']];
         unset($page['subpages'][$config['forcal_start_page']]);
-        $page['subpages'] =  [$config['forcal_start_page'] => $entry] + $page['subpages'];
+        $page['subpages'] = [$config['forcal_start_page'] => $entry] + $page['subpages'];
         $this->setProperty('page', $page);
     }
 }
-if (rex_plugin::get('forcal', 'documentation')->isInstalled())
-{
- $plugin = rex_plugin::get('forcal', 'documentation');
- $manager = rex_package_manager::factory($plugin);
- $success = $manager->delete();
+if (rex_plugin::get('forcal', 'documentation')->isInstalled()) {
+    $plugin = rex_plugin::get('forcal', 'documentation');
+    $manager = rex_package_manager::factory($plugin);
+    $success = $manager->delete();
 }
