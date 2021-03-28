@@ -35,7 +35,6 @@ Beispiele für mögliche Felder findet man auch in den mitgelieferten yml.
 - **Linklist** stellt einen Auswahldialog zur Mehrfach-Auswahl eines internen Links zur Verfügung
 - **select** fügt dem Formular eine Selectbox mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
 - **radio** fügt dem Formular eine Radiobutton Group mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
-
 - **checkbox** fügt dem Formular eine Checkbox mit definierbaren Werten hinzu
 - **checkboxsql** fügt dem Formular eine Checkbox mit Werten aus einer Tabelle hinzu
 
