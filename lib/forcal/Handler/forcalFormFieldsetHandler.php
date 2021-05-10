@@ -259,7 +259,7 @@ class forCalFormFieldsetHandler
                             $select->addOption($val, $key);
                         }
                     }
-                    if (array_key_exists('cry', $field)) {
+                    if (array_key_exists('qry', $field)) {
                         $options = \rex_sql::factory()->getArray($field['qry']);
                         $select = $formField->getSelect();
                         foreach ($options as $v) {
