@@ -75,6 +75,7 @@ rex_forcal_entries_toggle_status_error = Der Status des Termins konnte nicht ge�
 rex_forcal_entries_toggle_status_success = Der Status des Termins wurde geändert.
 rex_forcal_entries_deleted = Der Termin wurde gelöscht.
 rex_forcal_entries_cloned = Der Termin wurde dupliziert.
+rex_forcal_entries_copy = Kopie
 
 ### entry list
 forcal_entry_list_view = Termine
