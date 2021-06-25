@@ -1,5 +1,8 @@
 # FOR Calendars
 
+### 3.1.0
+- neu:Termin kopieren - "Kopie" anhängen und deaktivieren  @danspringer
+
 ### 3.0.0 
 - a new name
 - Vendoren aktualisiert
