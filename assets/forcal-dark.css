@@ -1,0 +1,472 @@
+body.rex-theme-dark #forcal .fc-toolbar {
+    background-color: #1b232c;
+}
+
+body.rex-theme-dark #forcal td {
+    border-color: #151c22;
+}
+body.rex-theme-dark #forcal th,
+body.rex-theme-dark #forcal td,
+body.rex-theme-dark #forcal .fc-row {
+    border-color: #2e3b4a;
+}
+
+body.rex-theme-dark #forcal .fc-divider {
+    background: #2e3b4a;
+    border-color: #2e3b4a;
+}
+
+body.rex-theme-dark #forcal .fc-day-header .fa-plus-circle.add,
+body.rex-theme-dark #forcal .fc-day-top .fa-plus-circle.add {
+    color: #c5c5c5;
+}
+
+body.rex-theme-dark #forcal .fc-day-top:hover .fa-plus-circle.add,
+body.rex-theme-dark #forcal .fc-day-top .fa-plus-circle.add:hover {
+    color: #1867a6;
+}
+
+body.rex-theme-dark #forcal .fc-day-header i.add {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+body.rex-theme-dark #forcal .fc-day-header i.add:hover {
+    color: #1867a6;
+}
+
+body.rex-theme-dark #forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
+body.rex-theme-dark #forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover {
+    color: #1867a6;
+}
+
+body.rex-theme-dark #forcal .fc-day-header {
+    background-color: #324050;
+    color: #eee;
+}
+
+body.rex-theme-dark #forcal .fc-day-header.fc-sat,
+body.rex-theme-dark #forcal td.fc-sat {
+    background-color: #1a232a;
+}
+
+body.rex-theme-dark #forcal .fc-day-header.fc-sun,
+body.rex-theme-dark #forcal td.fc-sun {
+    background-color: #151c22;
+}
+
+body.rex-theme-dark #forcal td.fc-today {
+    background-color: #324050;
+}
+
+body.rex-theme-dark #forcal .fc-week-number {
+    background-color: #151c22;
+}
+
+body.rex-theme-dark #forcal .fc-day-top.fc-sat .fc-day-number {
+    color: #727272;
+}
+
+body.rex-theme-dark #forcal .fc-day-top.fc-sun .fc-day-number {
+    color: #727272;
+}
+
+body.rex-theme-dark #forcal .fc-event {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark .forcal_clangtabs .nav {
+    border-bottom: 1px solid #1a3332;
+}
+
+body.rex-theme-dark .forcal-tabform {
+    background-color: transparent;
+    border-bottom: 1px solid #1b232c;
+}
+
+body.rex-theme-dark .forcal_clangtabs .nav-tabs > li.active > a,
+body.rex-theme-dark .forcal_clangtabs .nav-tabs > li.active > a:hover,
+body.rex-theme-dark .forcal_clangtabs .nav-tabs > li.active > a:focus {
+    background-color: #1f3d3c;
+    border: 1px solid #1a3332;
+    border-bottom: 1px solid #1f3d3c;
+    border-top: 2px solid #3bb594;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark .forcal_clangtabs .nav-tabs > li > a {
+    color: #8d8d8d;
+    background-color: #1a3332;
+    border-color: transparent;
+}
+
+body.rex-theme-dark .forcal_clangtabs .nav-tabs > li > a:hover {
+    color: rgba(255, 255, 255, 0.75);
+    border-color: transparent;
+}
+
+body.rex-theme-dark .forcal_clangtabs .nav.nav-tabs {
+    background-color: #1b232c;
+}
+
+body.rex-theme-dark .forcal-first-group {
+    background-color: #1f3037;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark .forcal-panel .panel-collapse.collapsing .panel-body,
+body.rex-theme-dark .forcal-panel .panel-collapse.collapse .panel-body,
+body.rex-theme-dark .forcal-tabform .forcal-panel .panel-collapse.collapse .panel-body {
+    border-color: transparent;
+}
+
+body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default {
+    border-color: #1b232c;
+}
+
+body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default .panel-body {
+    background-color: #1f3037;
+}
+
+body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default > .panel-heading {
+    background-color: #1a3332;
+}
+
+body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default > .panel-heading a {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark .forcal-panel .panel-heading a:after {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark .daterangepicker.forcal {
+    background-color: #1b232c;
+    border-color: #485360;
+}
+
+body.rex-theme-dark .daterangepicker.forcal .calendar-table {
+    background-color: transparent;
+    border: 0;
+}
+
+body.rex-theme-dark .daterangepicker.forcal .calendar-table table {
+    background-color: transparent;
+}
+
+body.rex-theme-dark .daterangepicker.forcal .drp-buttons {
+    border-top: 1px solid #485360;
+}
+
+body.rex-theme-dark .daterangepicker.forcal .calendar-table .prev span,
+body.rex-theme-dark .daterangepicker.forcal .calendar-table .next span {
+    border-color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark .daterangepicker.forcal td,
+body.rex-theme-dark .daterangepicker.forcal th {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark .daterangepicker.forcal td:hover,
+body.rex-theme-dark .daterangepicker.forcal th:hover {
+    background-color: #2e3b4a;
+}
+
+body.rex-theme-dark .daterangepicker.forcal td.in-range {
+    background-color: #202b35;
+}
+
+body.rex-theme-dark .daterangepicker.forcal td.off {
+    color: rgba(255, 255, 255, 0.35);
+    background-color: transparent;
+}
+
+body.rex-theme-dark .daterangepicker.forcal td.active {
+    background-color: #1867a6;
+}
+
+body.rex-theme-dark .daterangepicker.forcal.opensright:before,
+body.rex-theme-dark .daterangepicker.forcal.opensright:after {
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+}
+
+body.rex-theme-dark .daterangepicker.forcal.opensright:before {
+    border-bottom: 11px solid #485360;
+}
+
+body.rex-theme-dark .daterangepicker.forcal.opensright:after {
+    border-bottom: 10px solid #1b232c;
+}
+
+body.rex-theme-dark div.popover.clockpicker-popover {
+    border: 1px solid #485360;
+}
+
+body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover {
+    background-color: #1b232c;
+    border-color: #485360;
+}
+
+body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover .arrow {
+    border-bottom-color: #485360;
+}
+
+body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover .arrow::after {
+    border-bottom-color: #202b35;
+    top: 2px;
+}
+
+body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover .popover-content {
+    padding-top: 15px;
+}
+
+body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover .popover-content .clockpicker-plate {
+    background-color: #2a3946;
+    border: 1px solid #485360;
+}
+
+body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover .popover-content .clockpicker-plate .clockpicker-tick {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover .popover-content .clockpicker-plate .clockpicker-canvas-bg {
+    fill: #1867a6;
+}
+
+@media (prefers-color-scheme: dark) {
+    body:not(.rex-theme-light) #forcal .fc-toolbar {
+        background-color: #1b232c;
+    }
+
+    body:not(.rex-theme-light) #forcal th,
+    body:not(.rex-theme-light) #forcal td,
+    body:not(.rex-theme-light) #forcal .fc-row {
+        border-color: #2e3b4a;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-divider {
+        background: #2e3b4a;
+        border-color: #2e3b4a;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-header .fa-plus-circle.add,
+    body:not(.rex-theme-light) #forcal .fc-day-top .fa-plus-circle.add {
+        color: #c5c5c5;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-top:hover .fa-plus-circle.add,
+    body:not(.rex-theme-light) #forcal .fc-day-top .fa-plus-circle.add:hover {
+        color: #1867a6;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-header i.add {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-header i.add:hover {
+        color: #1867a6;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
+    body:not(.rex-theme-light) #forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover {
+        color: #1867a6;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-header {
+        background-color: #324050;
+        color: #eee;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-header.fc-sat,
+    body:not(.rex-theme-light) #forcal td.fc-sat {
+        background-color: #1a232a;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-header.fc-sun,
+    body:not(.rex-theme-light) #forcal td.fc-sun {
+        background-color: #151c22;
+    }
+
+    body:not(.rex-theme-light) #forcal td.fc-today {
+        background-color: #324050;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-week-number {
+        background-color: #151c22;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-top.fc-sat .fc-day-number {
+        color: #727272;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-day-top.fc-sun .fc-day-number {
+        color: #727272;
+    }
+
+    body:not(.rex-theme-light) #forcal .fc-event {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    body:not(.rex-theme-light) .forcal_clangtabs .nav {
+        border-bottom: 1px solid #1a3332;
+    }
+
+    body:not(.rex-theme-light) .forcal-tabform {
+        background-color: transparent;
+        border-bottom: 1px solid #1b232c;
+    }
+
+    body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a,
+    body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a:hover,
+    body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a:focus {
+        background-color: #1f3d3c;
+        border: 1px solid #1a3332;
+        border-bottom: 1px solid #1f3d3c;
+        border-top: 2px solid #3bb594;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li > a {
+        color: #8d8d8d;
+        background-color: #1a3332;
+        border-color: transparent;
+    }
+
+    body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li > a:hover {
+        color: rgba(255, 255, 255, 0.75);
+        border-color: transparent;
+    }
+
+    body:not(.rex-theme-light) .forcal_clangtabs .nav.nav-tabs {
+        background-color: #1b232c;
+    }
+
+    body:not(.rex-theme-light) .forcal-first-group {
+        background-color: #1f3037;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    body:not(.rex-theme-light) .forcal-panel .panel-collapse.collapsing .panel-body,
+    body:not(.rex-theme-light) .forcal-panel .panel-collapse.collapse .panel-body,
+    body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-collapse.collapse .panel-body {
+        border-color: transparent;
+    }
+
+    body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default {
+        border-color: #1b232c;
+    }
+
+    body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default .panel-body {
+        background-color: #1f3037;
+    }
+
+    body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default > .panel-heading {
+        background-color: #1a3332;
+    }
+
+    body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default > .panel-heading a {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    body:not(.rex-theme-light) .forcal-panel .panel-heading a:after {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal {
+        background-color: #1b232c;
+        border-color: #485360;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table {
+        background-color: transparent;
+        border: 0;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table table {
+        background-color: transparent;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal .drp-buttons {
+        border-top: 1px solid #485360;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table .prev span,
+    body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table .next span {
+        border-color: rgba(255, 255, 255, 0.75);
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal td,
+    body:not(.rex-theme-light) .daterangepicker.forcal th {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal td:hover,
+    body:not(.rex-theme-light) .daterangepicker.forcal th:hover {
+        background-color: #2e3b4a;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal td.in-range {
+        background-color: #202b35;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal td.off {
+        color: rgba(255, 255, 255, 0.35);
+        background-color: transparent;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal td.active {
+        background-color: #1867a6;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal.opensright:before,
+    body:not(.rex-theme-light) .daterangepicker.forcal.opensright:after {
+        border-bottom-color: rgba(0, 0, 0, 0.2);
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal.opensright:before {
+        border-bottom: 11px solid #485360;
+    }
+
+    body:not(.rex-theme-light) .daterangepicker.forcal.opensright:after {
+        border-bottom: 10px solid #1b232c;
+    }
+
+    body:not(.rex-theme-light) div.popover.clockpicker-popover {
+        border: 1px solid #485360;
+    }
+
+    body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover {
+        background-color: #1b232c;
+        border-color: #485360;
+    }
+
+    body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .arrow {
+        border-bottom-color: #485360;
+    }
+
+    body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .arrow::after {
+        border-bottom-color: #202b35;
+        top: 2px;
+    }
+
+    body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .popover-content {
+        padding-top: 15px;
+    }
+
+    body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .popover-content .clockpicker-plate {
+        background-color: #2a3946;
+        border: 1px solid #485360;
+    }
+
+    body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .popover-content .clockpicker-plate .clockpicker-tick {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .popover-content .clockpicker-plate .clockpicker-canvas-bg {
+        fill: #1867a6;
+    }
+}
