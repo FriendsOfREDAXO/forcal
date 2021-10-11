@@ -132,6 +132,7 @@ body.modal-open {
 .forcal_clangtabs .nav-tabs > li.active > a,
 .forcal_clangtabs .nav-tabs > li.active > a:hover,
 .forcal_clangtabs .nav-tabs > li.active > a:focus {
+    color: #333;
     background-color: #f1fcfa;
     border-color: #bfe0d8;
     border-top: 2px solid #3bb594;
