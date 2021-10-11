@@ -273,7 +273,8 @@ function forcal_datepicker_init(element) {
                 cancelLabel: $cancelLabel,
                 fromLabel: $fromLabel,
                 toLabel: $toLabel,
-                firstDay: 1
+                firstDay: 1,
+                direction: 'forcal',
             }
         });
     }
@@ -288,7 +289,8 @@ function forcal_datepicker_init(element) {
                 cancelLabel: $cancelLabel,
                 fromLabel: $fromLabel,
                 toLabel: $toLabel,
-                firstDay: 1
+                firstDay: 1,
+                direction: 'forcal',
             }
         });
         if (element.data('only-checkin-range') != 1) {
@@ -300,7 +302,8 @@ function forcal_datepicker_init(element) {
                     cancelLabel: $cancelLabel,
                     fromLabel: $fromLabel,
                     toLabel: $toLabel,
-                    firstDay: 1
+                    firstDay: 1,
+                    direction: 'forcal',
                 }
             });
         }

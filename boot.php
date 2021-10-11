@@ -49,6 +49,7 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addCssFile($this->getAssetsUrl('vendor/daterangepicker/daterangepicker.css'));
     rex_view::addCssFile($this->getAssetsUrl('vendor/clockpicker/bootstrap-clockpicker.min.css'));
     rex_view::addCssFile($this->getAssetsUrl('forcal.css'));
+    rex_view::addCssFile($this->getAssetsUrl('forcal-dark.css'));
 
     rex_extension::register('CLANG_ADDED', function () {
         // duplicate lang columns
