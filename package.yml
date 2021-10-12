@@ -9,10 +9,10 @@ page:
   perm: forcal[]
   icon: rex-icon fa-calendar
   subpages:
-    calendar: { title: 'translate:forcal_calendar',perm: forcal[ ], icon: rex-icon fa-calendar, itemclass: item_calendar }
-    entries: { title: 'translate:forcal_entries',perm: forcal[ ], icon: rex-icon fa-calendar-plus-o, itemclass: item_entries }
-    categories: { title: 'translate:forcal_categories',perm: forcal[ ], icon: rex-icon fa-folder, itemclass: item_categories }
-    venues: { title: 'translate:forcal_venues',perm: forcal[ ], icon: rex-icon fa-map-marker, itemclass: item_venues }
+    calendar: { title: 'translate:forcal_calendar',perm: 'forcal[]', icon: rex-icon fa-calendar, itemclass: item_calendar }
+    entries: { title: 'translate:forcal_entries',perm: 'forcal[]', icon: rex-icon fa-calendar-plus-o, itemclass: item_entries }
+    categories: { title: 'translate:forcal_categories',perm: 'forcal[]', icon: rex-icon fa-folder, itemclass: item_categories }
+    venues: { title: 'translate:forcal_venues',perm: 'forcal[]', icon: rex-icon fa-map-marker, itemclass: item_venues }
     settings:
       title: 'translate:forcal_settings'
       perm: forcal[settings]
