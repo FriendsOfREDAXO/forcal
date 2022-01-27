@@ -353,38 +353,32 @@ function forcal_init() {
 }
 
 function forcal_fullcalendar(forcal) {
-    var noTime = $.fullCalendar.moment(forcal.data('date')),
+    var base_link = forcal.data('link'),
         csrf_token = forcal.data('csrf'),
-        base_link = forcal.data('link');
+        calendarEl = document.getElementById(forcal.attr('id'));
 
-    forcal = forcal.fullCalendar({
+    let calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['interaction', 'dayGrid', 'timeGrid'],
+        
         header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'month,agendaWeek,listFourMonth'
-        },
-        views: {
-            listFourMonth: {
-                type: 'list',
-                duration: { month: 1 },
-                buttonText: 'Terminübersicht'
-            }
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         locale: 'de',
         weekNumbers: true,
         weekNumbersWithinDays:true,
-        defaultDate: noTime,
         dragScroll: true,
         eventLimit: true, // allow "more" link when too many events
         eventDrop: function(event, delta, revertFunc) {
         },
         eventResize: function(event, delta, revertFunc) {
         },
-        eventClick: function(calEvent, jsEvent, view) {
-            window.location.replace(base_link + '?event_id=' + calEvent.id);
+        eventClick: function(info) {
+            window.location.replace(base_link + '?event_id=' + info.event.id);
         },
         events: {
-            url: '/?rex-api-call=forcal_exchange&_csrf_token=' + csrf_token,
+            url: '../?rex-api-call=forcal_exchange&_csrf_token=' + csrf_token,
             cache: true,
             error: function(xhr, type, exception) {
                  console.log("Error: " + exception);
@@ -394,11 +388,13 @@ function forcal_fullcalendar(forcal) {
             }
         }
     });
+    
+     calendar.render();
 }
 
 ```
 
-> wird kein Rewriter verwendet muss `window.location.replace(base_link + '?event_id=' + calEvent.id);` in `window.location.replace(base_link + '&event_id=' + calEvent.id);`
+> wird kein Rewriter verwendet muss `window.location.replace(base_link + '?event_id=' + info.event.id);` in `window.location.replace(base_link + '&event_id=' + info.event.id);`
 geändert werden. 
 
 Anschließend bindet man die erforderlichen JS und CSS für die Frontendausgabe im Template ein. 
@@ -406,7 +402,10 @@ Anschließend bindet man die erforderlichen JS und CSS für die Frontendausgabe 
 #### CSS
 
 ```html
-<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/fullcalendar.min.css') ?>"> 
+<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/core/main.min.css') ?>">
+<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/daygrid/main.min.css') ?>"> 
+<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/list/main.min.css') ?>">
+<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/timegrid/main.min.css') ?>">
 ```
 
 
@@ -415,9 +414,12 @@ Anschließend bindet man die erforderlichen JS und CSS für die Frontendausgabe 
 ***JQuery*** muss vor allen anderen Skripten eingebunden sein. Die Skripte sollten im Header oder vor dem schließenden body Tag eingebunden werden.  
 
 ```html
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/lib/moment.min.js') ?>"></script>
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/fullcalendar.min.js') ?>"></script>
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/locale-all.js') ?>"></script>
+<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/core/main.js') ?>"></script>
+<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/daygrid/main.js') ?>"></script>   
+<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/interaction/main.js') ?>"></script>   
+<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/timegrid/main.js') ?>"></script>    
+<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/list/main.js') ?>"></script> 
+<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/core/locales-all.min.js') ?>"></script>
 <script type="text/javascript" src="<?= rex_url::base('assets/js/forcal.js') ?>"></script>
 ```
 
