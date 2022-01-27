@@ -1,5 +1,9 @@
 # FOR Calendars
 
+## 3.3.0
+- Bei Click auf + in der Terminliste wird das aktuelle Datum übernommen
+- Neue Frontend-Anleitung, danke @godsdog
+
 ### 3.1.0
 - neu:Termin kopieren - "Kopie" anhängen und deaktivieren  @danspringer
 
