@@ -444,7 +444,8 @@ if(!is_null(rex_request::get('event_id', 'integer', null))) {
     </div>';
     // Bild
     if (!empty($data['entries_image'])) {
-        $header .= '<img class="forcal-img" src="/media/'.$data['entries_image'].'">';
+        $media = rex_media::get($data['entries_image']);
+        $header .= '<img class="forcal-img" src="'.$media->getUrl().'">';
     }
     $header .= '</div>';
     $teaser = '<div class="forcal-teaser">'.$data['teaser'].'</div>';
