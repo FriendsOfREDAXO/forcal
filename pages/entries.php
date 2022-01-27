@@ -92,7 +92,7 @@ if ($func == '' || $func == 'filter') {
 //    $list->setColumnSortable('venue');
 
     // Column 1: Action (add/edit button)
-    $thIcon = '<a href="' . $list->getUrl(['func' => 'add']) . '" title="' . rex_i18n::msg('forcal_add_entry') . '" accesskey="a"><i class="rex-icon rex-icon-add-action"></i></a>';
+    $thIcon = '<a href="' . $list->getUrl(['func' => 'add', 'itemdate' => date('Y-m-d')]) . '" title="' . rex_i18n::msg('forcal_add_entry') . '" accesskey="a"><i class="rex-icon rex-icon-add-action"></i></a>';
     $tdIcon = '<i class="rex-icon fa-file-o"></i>';
 
     // thanks to Oliver Kreischer for the cool color idea !
