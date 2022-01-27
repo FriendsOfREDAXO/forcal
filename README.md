@@ -354,7 +354,6 @@ function forcal_init() {
 
 function forcal_fullcalendar(forcal) {
     var base_link = forcal.data('link'),
-        csrf_token = forcal.data('csrf'),
         calendarEl = document.getElementById(forcal.attr('id'));
 
     let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -378,7 +377,7 @@ function forcal_fullcalendar(forcal) {
             window.location.replace(base_link + '?event_id=' + info.event.id);
         },
         events: {
-            url: '/?rex-api-call=forcal_exchange&_csrf_token=' + csrf_token,
+            url: '/?rex-api-call=forcal_exchange',
             cache: true,
             error: function(xhr, type, exception) {
                  console.log("Error: " + exception);
