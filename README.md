@@ -378,7 +378,7 @@ function forcal_fullcalendar(forcal) {
             window.location.replace(base_link + '?event_id=' + info.event.id);
         },
         events: {
-            url: '../?rex-api-call=forcal_exchange&_csrf_token=' + csrf_token,
+            url: '/?rex-api-call=forcal_exchange&_csrf_token=' + csrf_token,
             cache: true,
             error: function(xhr, type, exception) {
                  console.log("Error: " + exception);
