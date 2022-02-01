@@ -3,6 +3,8 @@
 ## 3.3.0
 - Bei Click auf + in der Terminliste wird das aktuelle Datum übernommen
 - Neue Frontend-Anleitung, danke @godsdog
+- CSRF aus Frontend entfernt, danke @godsdog
+- Kalender wird im Systemblock gelistet
 
 ### 3.1.0
 - neu:Termin kopieren - "Kopie" anhängen und deaktivieren  @danspringer
