@@ -8,6 +8,7 @@ page:
   title: 'translate:forcal_title'
   perm: forcal[]
   icon: rex-icon fa-calendar
+  block: system
   subpages:
     calendar: { title: 'translate:forcal_calendar',perm: 'forcal[]', icon: rex-icon fa-calendar, itemclass: item_calendar }
     entries: { title: 'translate:forcal_entries',perm: 'forcal[]', icon: rex-icon fa-calendar-plus-o, itemclass: item_entries }
