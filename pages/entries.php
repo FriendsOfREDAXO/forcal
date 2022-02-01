@@ -67,7 +67,7 @@ if ($func == '' || $func == 'filter') {
             FROM ' . $tableEvent . ' AS en
             LEFT JOIN ' . $tableCategories . ' AS ca ON en.category = ca.id
             '.$where.'
-            ORDER BY en.start_date DESC', 30, null, false);
+            ORDER BY en.start_date, en.start_time DESC', 30, null, false);
     $list->addTableAttribute('class', 'table-striped');
 
     // merge group with default
