@@ -24,6 +24,7 @@ forcal_start_page = Starting page
 
 perm_general_forcal[settings] = FORCal Edit settings
 perm_general_forcal[catspage] = FORCal Edit categories
+perm_general_forcal[venuespage] = FORCal Edit venues
 
 ### navigation points
 forcal_calendar = Calendar
