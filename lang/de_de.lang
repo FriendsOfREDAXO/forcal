@@ -25,6 +25,7 @@ forcal_change_message = Es wurden die Daten von einem anderen Kalender-AddOn üb
 
 perm_general_forcal[settings] = FORCal Einstellungen bearbeiten
 perm_general_forcal[catspage] = FORCal Kategorien verwalten
+perm_general_forcal[venuespage] = FORCal Orte verwalten
 
 ### navigation points
 forcal_calendar = Kalender
