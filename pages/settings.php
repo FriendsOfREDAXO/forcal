@@ -139,7 +139,7 @@ $fields = rex_sql::factory()
 
 $elements = [];
 $elements['label'] = '<label for="rex-mblock-config-template">' . rex_i18n::msg('forcal_additional_field_for_category') . '</label>';
-$elements['field'] = '<select id="forcal-additional-title" class="form-control" name="config[forcal_additional_for_title]">';
+$elements['field'] = '<select id="forcal-additional-title" class="form-control selectpicker" name="config[forcal_additional_for_title]">';
 $elements['field'] .= '<option value="">'. rex_i18n::msg('forcal_please_select') . '</option>';
 foreach ($fields as $field) {
     if (substr($field,-2) == '_1') {
@@ -160,7 +160,7 @@ $pages = ['calendar' => rex_i18n::msg('forcal_calendar'), 'entries' => rex_i18n:
 $formElements = array();
 $elements = array();
 $elements['label'] = '<label for="forcal_start_page">' . rex_i18n::msg('forcal_start_page') . '</label>';
-$elements['field'] = '<select id="forcal_start_page" class="form-control" name="config[forcal_start_page]">';
+$elements['field'] = '<select id="forcal_start_page" class="form-control selectpicker" name="config[forcal_start_page]">';
 foreach ($pages as $page => $pageName) {
     $elements['field'] .= '<option value="'.$page.'" '. ($this->getConfig('forcal_start_page') == $page ? ' selected="selected" ' : '') . '>'.$pageName.'</option>';
 }
