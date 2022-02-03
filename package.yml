@@ -1,5 +1,5 @@
 package: forcal
-version: '3.4.0'
+version: '3.5.0'
 name: forcal
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/forcal
@@ -13,7 +13,7 @@ page:
     calendar: { title: 'translate:forcal_calendar',perm: 'forcal[]', icon: rex-icon fa-calendar, itemclass: item_calendar }
     entries: { title: 'translate:forcal_entries',perm: 'forcal[]', icon: rex-icon fa-calendar-plus-o, itemclass: item_entries }
     categories: { title: 'translate:forcal_categories',perm: 'forcal[catspage]', icon: rex-icon fa-folder, itemclass: item_categories }
-    venues: { title: 'translate:forcal_venues',perm: 'forcal[]', icon: rex-icon fa-map-marker, itemclass: item_venues }
+    venues: { title: 'translate:forcal_venues',perm: 'forcal[venuespage]', icon: rex-icon fa-map-marker, itemclass: item_venues }
     settings:
       title: 'translate:forcal_settings'
       perm: forcal[settings]
