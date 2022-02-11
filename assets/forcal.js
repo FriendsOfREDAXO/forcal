@@ -497,7 +497,7 @@ function forcal_fullcalendar(forcal) {
         viewSkeletonRender: function (info) {
         },
         events: {
-            url: '../?rex-api-call=forcal_exchange&_csrf_token=' + csrf_token,
+           url:  rex.forcal_events_api_url,
             cache: true,
             error: function (xhr, type, exception) {
                 // todo later show warning field
