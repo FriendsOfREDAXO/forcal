@@ -27,6 +27,8 @@ if (rex::isBackend() && rex::getUser()) {
     // create custom fields
     forCalDatabaseManager::executeCustomFieldHandle();
 
+    rex_view::setJsProperty('forcal_events_api_url', rex_url::backendController(['rex-api-call' => 'forcal_exchange', '_csrf_token' => \forCal\Handler\forCalApi::getToken()]));
+
     // add js
     rex_view::addJSFile($this->getAssetsUrl('vendor/palettecolorpicker/palette-color-picker.js'));
     rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/main.js'));
@@ -58,7 +60,6 @@ if (rex::isBackend() && rex::getUser()) {
         // duplicate lang columns
         forCalDatabaseManager::executeAddLangFields();
     });
-
     rex_view::setJsProperty('forcal_shortcut_save', isset($config['forcal_shortcut_save']) && $config['forcal_shortcut_save'] ? $config['forcal_shortcut_save'] : false);
 
     $page = $this->getProperty('page');
