@@ -567,7 +567,7 @@ class forCalHandler
      * @throws \rex_sql_exception
      * @author Joachim Doerr
      */
-    public static function getEntries($start, $end, $ignoreStatus = false, $sort = SORT_ASC, $categoryId = null, $venueId = null, $pageSize = null, $pageNumber = null)
+    public static function getEntries($start = date("Y-m-d H:i:s"), $end, $ignoreStatus = false, $sort = SORT_ASC, $categoryId = null, $venueId = null, $pageSize = null, $pageNumber = null)
     {
         $today = new \DateTime();
         $monthEnd = clone $today;
