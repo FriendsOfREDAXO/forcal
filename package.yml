@@ -24,8 +24,6 @@ page:
       perm: admin[]
       subPath: README.md
       itemclass: pull-right
-default_config:
-    forcal_full_time_preselection: 1
 requires:
   redaxo: '^5.11'
   php:
