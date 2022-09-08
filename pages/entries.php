@@ -177,13 +177,22 @@ if ($func == '' || $func == 'filter') {
         $field->setValue($itemDate);
         $startDate = $itemDate;
     }
+    $default_time = '00:00:00';
+    if ($func == 'add' && $this->getConfig('forcal_full_time_preselection') == 1)
+        {
+        $default_time = $default_time;
+    }
+    else {
+        $default_time = date("h:i:s");
+    }
+
 
     $field = $form->addHiddenField('start_time');
     $field->setAttribute('id', 'tpd1');
     $startTime = $field->getValue();
     if ($func == 'add' && !is_null($itemDate)) {
-        $field->setValue("00:00:00");
-        $startTime = "00:00:00";
+        $field->setValue($default_time);
+        $startTime = $default_time;
     }
 
     // Column: End
@@ -200,8 +209,8 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('id', 'tpd2');
     $endTime = $field->getValue();
     if ($func == 'add' && !is_null($itemDate)) {
-        $field->setValue("00:00:00");
-        $endTime = "00:00:00";
+        $field->setValue($default_time);
+        $endTime = $default_time;
     }
 
     // Column: End
@@ -241,7 +250,7 @@ if ($func == '' || $func == 'filter') {
     $field = $form->addCheckboxField('full_time');
     $field->addOption(rex_i18n::msg('forcal_checkbox_full_time'), 1);
     $field->setAttribute('class', 'check-btn forcal_fulltime_master_check');
-    if($this->getConfig('forcal_full_time_preselection') == 1 && $func=='add') {
+    if($this->getConfig('forcal_full_time_preselection') && $func=='add') {
         $field->setAttribute('checked', 'checked');
     }
 
