@@ -241,7 +241,7 @@ if ($func == '' || $func == 'filter') {
     $field = $form->addCheckboxField('full_time');
     $field->addOption(rex_i18n::msg('forcal_checkbox_full_time'), 1);
     $field->setAttribute('class', 'check-btn forcal_fulltime_master_check');
-    if($this->getConfig('forcal_full_time_preselection') && $func=='add') {
+    if($this->getConfig('forcal_full_time_preselection') == 1 && $func=='add') {
         $field->setAttribute('checked', 'checked');
     }
 
