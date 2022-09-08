@@ -7,7 +7,7 @@
 
 $func = rex_request::request('func', 'string');
 $itemDate = rex_request::request('itemdate', 'string', null);
-$id = rex_request::request('id', 'int');x
+$id = rex_request::request('id', 'int');
 $start = rex_request::request('start', 'int', NULL);
 $categoryFilter = rex_request::request('category_filter', 'int', NULL);
 
