@@ -7,7 +7,7 @@
 
 $func = rex_request::request('func', 'string');
 $itemDate = rex_request::request('itemdate', 'string', null);
-$id = rex_request::request('id', 'int');
+$id = rex_request::request('id', 'int');x
 $start = rex_request::request('start', 'int', NULL);
 $categoryFilter = rex_request::request('category_filter', 'int', NULL);
 
@@ -238,7 +238,7 @@ if ($func == '' || $func == 'filter') {
         <dt><label class="control-label">'.rex_i18n::msg('forcal_entry_full_time').'</label></dt>
         <dd><div class="forcal-form-checkboxes-inline forcal-check-checkstyle">');
 
-    $field = $form->addCheckboxField('full_time',0);
+    $field = $form->addCheckboxField('full_time');
     $field->addOption(rex_i18n::msg('forcal_checkbox_full_time'), 1);
     $field->setAttribute('class', 'check-btn forcal_fulltime_master_check');
     if($this->getConfig('forcal_full_time_preselection') == 1 && $func=='add') {
