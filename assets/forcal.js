@@ -100,7 +100,7 @@ function forcal_clockEmptyNull() {
         }
     });
 
-    if (count >= 2) {
+    if (count >= 2 && func != 'add') {
         forcal_check.attr('checked', 'checked');
         forcal_fulltime_trigger(1);
     }
@@ -565,3 +565,4 @@ function forcal_save_init(forcal_form) {
         });
     }
 }
+
