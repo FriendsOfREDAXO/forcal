@@ -1,8 +1,9 @@
 <?php
 class forcalQn
 {
-    public static function getCalHistory(): ?string
+    public static function getCalHistory($ep): ?string
     {
+        $subject = $ep->getSubject();
         $forcals = $categoryId = $filter_date = $forcalID = $start = $addLink = $filter_date = $today = $halfayear = '';
 
         $filter_date = ("Y-m-d");
@@ -58,6 +59,7 @@ class forcalQn
             $fragment->setVar('items', $link, false);
         }
         $fragment->setVar('icon', 'fa fa-calendar');
-        return $fragment->parse('quick_button.php');
+        $subject .= $fragment->parse('quick_button.php');        
+        return $subject;
     }
 }
