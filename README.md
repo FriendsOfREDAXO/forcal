@@ -511,10 +511,7 @@ siehe [LICENSE](https://github.com/FriendsOfREDAXO/forcal/blob/master/LICENCE)
 * [Thomas Skerbis](https://github.com/skerbis)
 * [Christian Gehrke](https://github.com/chrison94)
 
-**Credits**
-
-Concept,Development & Release bis Version: 1.6.2
-
+**Chief Developer**
 [Joachim Dörr](https://github.com/joachimdoerr) 
 
 
