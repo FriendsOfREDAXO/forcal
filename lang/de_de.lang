@@ -22,6 +22,7 @@ forcal_shortcut_save = Shortcut zum speichern des Termins nutzen (Strg+S / Ctrl+
 forcal_full_time_preselection = "Ganztägiges Ereignis" vorausgewählt
 forcal_start_page = Startseite
 forcal_change_message = Es wurden die Daten von einem anderen Kalender-AddOn übernommen. Das Ursprungsaddon wurde deinstalliert. 
+forcal_add_new_entry = Neuer Termin
 
 perm_general_forcal[settings] = FORCal Einstellungen bearbeiten
 perm_general_forcal[catspage] = FORCal Kategorien verwalten
