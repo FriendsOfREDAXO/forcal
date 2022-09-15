@@ -23,6 +23,10 @@ if (rex::isBackend() && rex::getUser()) {
 
         rex_extension::register('WATSON_PROVIDER', 'forcal_search', rex_extension::LATE);
     }
+    
+    if (rex_addon::get('quick_navigation')->isAvailable()) {
+    rex_extension::register('QUICK_NAVI_CUSTOM', ['forCalQn','getCalHistory'], rex_extension::LATE);
+    }
 
     // create custom fields
     forCalDatabaseManager::executeCustomFieldHandle();
