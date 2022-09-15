@@ -42,7 +42,7 @@ class forcalQn
                         'id' => $forcalId
                     ]
                 );
-              $link[] = '<li class="forcal_border" style="border-color:' . $forcal_color . '"><a href="' . $href . '" title="' . $forcal_name  . '">' . $forcal_name . '<small>' . $forcal_start_date . ' bis ' . $forcal_end_date . ' - ' . $forcal_start_time . ' bis ' . $forcal_end_time . '</small></a></li>';
+              $link[] = '<li class="quick_navi_forcal_border" style="border-color:' . $forcal_color . '"><a href="' . $href . '" title="' . $forcal_name  . '">' . $forcal_name . '<small>' . $forcal_start_date . ' bis ' . $forcal_end_date . ' - ' . $forcal_start_time . ' bis ' . $forcal_end_time . '</small></a></li>';
             }
         }
         $href = rex_url::backendPage(
