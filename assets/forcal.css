@@ -530,3 +530,6 @@ div.forcal-form-checkboxes-inline dl + dl {
 .palette-color-picker-button {
     z-index: 10000;
 }
+.quick_navi_forcal_border {
+	border-left: 5px solid;
+}
