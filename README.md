@@ -509,6 +509,7 @@ siehe [LICENSE](https://github.com/FriendsOfREDAXO/forcal/blob/master/LICENCE)
 * [Joachim Dörr](https://github.com/joachimdoerr) 
 * [Wolfgang Bund](https://github.com/dtpop) 
 * [Thomas Skerbis](https://github.com/skerbis)
+* [Christian Gehrke](https://github.com/chrison94)
 
 **Credits**
 
