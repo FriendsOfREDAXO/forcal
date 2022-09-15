@@ -1,7 +1,7 @@
 <?php
-class forcal_qn
+class forcalQn
 {
-    public static function get_cal_history(): ?string
+    public static function getCalHistory(): ?string
     {
         $forcals = $categoryId = $filter_date = $forcalID = $start = $addLink = $filter_date = $today = $halfayear = '';
 
