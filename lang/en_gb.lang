@@ -21,6 +21,7 @@ forcal_status_function = Status/Function
 forcal_shortcut_save = Use shortcut to save the event (Strg+S / Ctrl+S)
 forcal_full_time_preselection = "All-day" preselected
 forcal_start_page = Starting page
+forcal_add_new_entry = New event
 
 perm_general_forcal[settings] = FORCal Edit settings
 perm_general_forcal[catspage] = FORCal Edit categories
