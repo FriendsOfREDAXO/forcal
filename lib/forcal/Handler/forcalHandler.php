@@ -415,7 +415,7 @@ class forCalHandler
         $statusHaving = '';
         $venue = '';
         $category = '';
-        $endDate->modify("+1 days");
+        
 
         if (!$ignoreStatus) {
             $statusIgnore = ' AND en.status = 1 ';
