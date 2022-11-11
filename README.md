@@ -261,7 +261,7 @@ $today       = date("Y-m-d H:i:s");
 $today       = strtotime($today);
 
 //init start date and get end date
-$start = date("Y-m-d H:i:s");
+$start = date("Y-m-d");
  $end = REX_VALUE[2];
 
 //react to period filter
