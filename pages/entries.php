@@ -522,7 +522,7 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('class', 'forcal_status_select selectpicker form-control');
 
 
-    $tempform = preg_replace('/&(?!amp;|quot;|nbsp;|gt;|lt;|laquo;|raquo;|copy;|reg;|bul;|rsquo;)/', '&amp;', $form->get());
+    $tempform = $form->get();
     $doc = new DOMDocument();
     $doc->loadHTML(mb_convert_encoding($tempform, 'HTML-ENTITIES', 'UTF-8'));
 
