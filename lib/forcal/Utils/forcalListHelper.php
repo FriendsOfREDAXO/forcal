@@ -112,8 +112,7 @@ class forCalListHelper
         $sql->setQuery('INSERT INTO ' . $table . ' (`' . implode('`, `', $queryFields) . '`) SELECT `' . implode('`, `', $queryFields) . '` FROM ' . $table . ' WHERE id =' . $id);
         $lastId = $sql->getLastId();
         $sql->setQuery('SELECT name_1 FROM ' . $table . ' WHERE id = '. $lastId);
-        $newName = $sql->getValue('name_1').' - '.rex_i18n::msg('rex_forcal_entries_copy');
-        $sql->setQuery('UPDATE ' . $table . ' SET name_1 = "'.$sql->escape($newName).'", status = 0 WHERE id = '.$lastId);
+        $sql->setQuery('UPDATE ' . $table . ' SET name_1 =  CONCAT(name_1, " '.rex_i18n::msg('rex_forcal_entries_copy').'"), status = 0 WHERE id = '.$lastId);
         return rex_view::info(rex_i18n::msg($table . '_cloned'));
     }
 
