@@ -323,7 +323,7 @@ class forCalHandler
         $additional_for_title = \rex_config::get('forcal','forcal_additional_for_title');
 
         $name = 'en.name_' . rex_clang::getCurrentId() . ' AS entry_name';
-        if ($additional_for_title) {
+        if ($additional_for_title && rex::isBackend() && rex_be_controller::getCurrentPage() == 'forcal' ) {
             $name = 'CONCAT(en.name_'.rex_clang::getCurrentId().'," - ",ca.'.$additional_for_title.'_'.rex_clang::getCurrentId().') entry_name';
         }
 
