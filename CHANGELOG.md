@@ -1,5 +1,24 @@
 # FOR Calendars
 
+## 3.7.x
+Quick Navigation button now delivered by FORCal
+
+## 3.6.0
+- Fix: Die Checkbox "Ganztägiges Ereignis" scheint nicht zu greifen  @chrisrex
+
+## 3.4.0 - 3.5.2 
+- Neu: Rechte für Kategorie-Verwaltung
+- Neu: Rechte für Orte-Verwaltung
+- Kleine optische Anpassungen hier und da
+
+**Hinweis zum Update**
+Die Rechte für die Orte- und Kategorieverwaltung müssen nach dem Update festgelegt werden. 
+
+Danke: @eaCe , @isospin
+
+**Hinweis zum Update**
+Die Rechte für die Orte- und Kategorieverwaltung müssen nach dem Update festgelegt werden. 
+
 ## 3.3.0
 - Bei Click auf + in der Terminliste wird das aktuelle Datum übernommen
 - Neue Frontend-Anleitung, danke @godsdog
