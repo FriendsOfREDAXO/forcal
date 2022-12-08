@@ -183,7 +183,7 @@ if ($func == '' || $func == 'filter') {
         $default_time = $default_time;
     }
     else {
-        $default_time = date("h:i:s");
+        $default_time = date("H:i:s");
     }
 
 
