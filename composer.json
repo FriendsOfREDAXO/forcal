@@ -1,7 +1,7 @@
 {
     "require": {
         "doctrine/cache": "~1.3",
-        "spatie/calendar-links":"^1.2.4"
+        "spatie/calendar-links":"^1.8.0"
     },
     "autoload": {
         "classmap": ["vendor/lib/"]
