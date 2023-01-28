@@ -65,7 +65,7 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::setJsProperty('forcal_shortcut_save', isset($config['forcal_shortcut_save']) && $config['forcal_shortcut_save'] ? $config['forcal_shortcut_save'] : false);
 
     $page = $this->getProperty('page');
-    if ($page && $config['forcal_start_page']) {
+    if ($page && isset($config['forcal_start_page'])) {
         $entry = $page['subpages'][$config['forcal_start_page']];
         unset($page['subpages'][$config['forcal_start_page']]);
         $page['subpages'] = [$config['forcal_start_page'] => $entry] + $page['subpages'];
