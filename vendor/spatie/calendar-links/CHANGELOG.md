@@ -2,11 +2,57 @@
 
 All notable changes to `calendar-links` will be documented in this file
 
-## Unreleased
+## 1.8.2 - 2022-12-11
+### Changed
+ - ICS: Use `DESCRIPTION` instead of `X-ALT-DESC` (as it has better support) by @cdubz in #158
+ - Chore: fix tests, fix and improve CI
+
+## 1.8.1 - 2022-12-01
+### Changed
+ - Remove PHP 7.4 support
+ - Update dependencies
+
+## 1.8.0 - 2022-08-20
+### Changed
+ - ICS: Add `PRODID` and `DTSTAMP` required parameters to make ICS valid by @makbeta
+ - ICS: Fix HTML description for Outlook 2016 by @karthikbodu
+ - Outlook: extract common logic for `WebOffice` and `WebOutlook` into a parent class by @lptn
+
+### Fixed
+- Simplify format of test snapshots: do not use base64 by @lptn
+- Fix typo in README by @fabpot
+
+## 1.7.2 - 2022-06-09
+### Fixed
+ - Outlook: Fixed #148 Support HTML-formatted description by @dravenk in #150
+
+## 1.7.1 - 2022-02-14
+### Changed
+ - Outlook: Fixed location field characters (by @dravenk in #144)
+ - Add missing dependency of php-cs-fixer and update it
+
+## 1.7.0 - 2022-02-13
+### Changed
+ - New: Add support for outlook.office.com $link->webOffice(); (@dravenk and @gulios)
+ - Google: Add timezone name if it is specified in both `from` and `to` dates and is the same for both (@bradyemerson)
+
+## 1.6.0 - 2021-04-22
+### Changed
+- Drop support for PHP 7.2 and PHP 7.3
+
+## 1.5.0 - 2021-04-22
+### Changed
+ - ICS: support URLs as option (@gulios)
+ - ICS: support all day events spanning multiple days (@mrshowerman)
+
+## 1.4.4 - 2021-04-13
+### Fixed
+ - Yahoo link doesn’t work (yahoo changed param names) (@mukeshsah08).
+ - Exception message on invalid dates range (idea by @jason-nabooki)
 
 ## 1.4.3 - 2021-03-05
 ### Changed
- - Google: use UTC timezone to bypass problems with some timzone names unsupported by Google calendar (⚠️ backwards-incompatible if you extended Google Generator)
+ - Google: use UTC timezone to bypass problems with some timezone names unsupported by Google calendar (⚠️ backwards-incompatible if you extended Google Generator)
 
 ### Fixed
  - Spaces replaced by "+" on Outlook.com #109
@@ -19,7 +65,7 @@ All notable changes to `calendar-links` will be documented in this file
 ### Changed
  - Simplify extending of WebOutlook (e.g. for Office365)
  - Yahoo: use `allday` parameter only for a single-day events
- - Improve exception hierarchy: `InvalidLink` now extends `\InvalidArgumentException` 
+ - Improve exception hierarchy: `InvalidLink` now extends `\InvalidArgumentException`
 
 ### Added
  - Add more tests, reorganize existing
@@ -76,5 +122,4 @@ All notable changes to `calendar-links` will be documented in this file
 - Use `\n` instead of `%0A` when generating an ics file
 
 ## 1.0.0 - 2017-09-29
-
 - initial release
