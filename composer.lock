@@ -4,30 +4,111 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8809186f28999c353caad998068a7583",
+    "content-hash": "e034fbfb8bb5a86ce64bb949b885792c",
     "packages": [
         {
-            "name": "spatie/calendar-links",
-            "version": "1.8.5",
+            "name": "doctrine/cache",
+            "version": "1.10.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/spatie/calendar-links.git",
-                "reference": "d6f6c5e7ff916e2a55e2160d4db4f15875cb6e07"
+                "url": "https://github.com/doctrine/cache.git",
+                "reference": "13e3381b25847283a91948d04640543941309727"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/d6f6c5e7ff916e2a55e2160d4db4f15875cb6e07",
-                "reference": "d6f6c5e7ff916e2a55e2160d4db4f15875cb6e07",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/13e3381b25847283a91948d04640543941309727",
+                "reference": "13e3381b25847283a91948d04640543941309727",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.0"
+                "php": "~7.1 || ^8.0"
+            },
+            "conflict": {
+                "doctrine/common": ">2.2,<2.4"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.14",
-                "phpunit/phpunit": "^9.6 || ^10.0",
-                "spatie/phpunit-snapshot-assertions": "^4.2 || ^5.0",
-                "vimeo/psalm": "^5.6"
+                "alcaeus/mongo-php-adapter": "^1.1",
+                "doctrine/coding-standard": "^6.0",
+                "mongodb/mongodb": "^1.1",
+                "phpunit/phpunit": "^7.0",
+                "predis/predis": "~1.0"
+            },
+            "suggest": {
+                "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Roman Borschel",
+                    "email": "roman@code-factory.org"
+                },
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
+                    "name": "Johannes Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "PHP Doctrine Cache library is a popular cache implementation that supports many different drivers such as redis, memcache, apc, mongodb and others.",
+            "homepage": "https://www.doctrine-project.org/projects/cache.html",
+            "keywords": [
+                "abstraction",
+                "apcu",
+                "cache",
+                "caching",
+                "couchdb",
+                "memcached",
+                "php",
+                "redis",
+                "xcache"
+            ],
+            "time": "2020-07-07T18:54:01+00:00"
+        },
+        {
+            "name": "spatie/calendar-links",
+            "version": "1.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/calendar-links.git",
+                "reference": "f2ebf9b376e0f473a36ec20e7ce12b8e6805e5ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/f2ebf9b376e0f473a36ec20e7ce12b8e6805e5ec",
+                "reference": "f2ebf9b376e0f473a36ec20e7ce12b8e6805e5ec",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5 || ^9.0",
+                "spatie/phpunit-snapshot-assertions": "^3.0|^4.0",
+                "vimeo/psalm": "^4.1"
             },
             "type": "library",
             "autoload": {
@@ -53,17 +134,7 @@
                 "calendar-links",
                 "spatie"
             ],
-            "support": {
-                "issues": "https://github.com/spatie/calendar-links/issues",
-                "source": "https://github.com/spatie/calendar-links/tree/1.8.5"
-            },
-            "funding": [
-                {
-                    "url": "https://spatie.be/open-source/support-us",
-                    "type": "custom"
-                }
-            ],
-            "time": "2023-03-02T16:05:13+00:00"
+            "time": "2021-03-05T09:07:44+00:00"
         }
     ],
     "packages-dev": [],
@@ -73,6 +144,5 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": []
 }
