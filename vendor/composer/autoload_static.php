@@ -29,6 +29,7 @@ class ComposerStaticInit20ad14021163bfacb3f9280be1ddc67c
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Definition\\DefinitionMergeInterface' => __DIR__ . '/..' . '/lib/Definition/DefinitionMergeInterface.php',
         'Definition\\DefinitionProvider' => __DIR__ . '/..' . '/lib/Definition/DefinitionProvider.php',
     );
