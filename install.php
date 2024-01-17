@@ -99,9 +99,5 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
 
     // create for all tables the lang fields
     forCalDatabaseManager::executeAddLangFields();
-
-    // add forcal editor sets
-    forCalEditorHelper::addEditorSets();
-
 }
 
