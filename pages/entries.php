@@ -522,20 +522,23 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('class', 'forcal_status_select selectpicker form-control');
 
 
-    $tempform = $form->get();
-    $doc = new DOMDocument();
-    $doc->loadHTML(mb_convert_encoding($tempform, 'HTML-ENTITIES', 'UTF-8'));
+$tempform = $form->get();
 
-    // replace datein
-    foreach (array('dpd1'=>'dpd1_wrapper', 'dpd2'=>'dpd2_wrapper', 'dpd2b'=>'dpd2b_wrapper') as $key => $value) {
-        $source = $doc->getElementById($key);
+$doc = new DOMDocument();
+@$doc->loadHTML($tempform, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+foreach (array('dpd1'=>'dpd1_wrapper', 'dpd2'=>'dpd2_wrapper', 'dpd2b'=>'dpd2b_wrapper') as $key => $value) {
+    $source = $doc->getElementById($key);
+    if ($source) { // Stelle sicher, dass das Element existiert
         $source->setAttribute('type', 'text');
         $source->setAttribute('class', 'form-control');
         $source->setAttribute('size', '10');
-
+        
         $target = $doc->getElementById($value);
-        $target->appendChild($source);
+        if ($target) { // Stelle sicher, dass das Ziel-Element existiert
+            $target->appendChild($source);
+        }
     }
+}
 
     // replace datein
     foreach (array('tpd1'=>'tpd1_wrapper', 'tpd2'=>'tpd2_wrapper') as $key => $value) {
