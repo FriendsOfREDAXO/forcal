@@ -40,7 +40,7 @@ if ($func == '' || $func == 'filter') {
 
     foreach (rex_clang::getAll() as $clang) {
         if ($additional_for_title) {
-            $select[] = 'CONCAT(en.name_'.$clang->getId().'," - ",ca.'.$additional_for_title.'_'.$clang->getId().') name_'.$clang->getId();
+            $select[] = 'CONCAT(en.name_' . $clang->getId() . '," - ",ca.' . $additional_for_title . '_' . $clang->getId() . ') name_' . $clang->getId();
         } else {
             $select[] = 'en.name_' . $clang->getId();
         }
@@ -56,22 +56,22 @@ if ($func == '' || $func == 'filter') {
     if (!is_null($categoryFilter)) {
         $where[] = 'en.category = ' . $categoryFilter;
     }
-    if (count($where)>0) {
+    if (count($where) > 0) {
         $where = 'WHERE ' . implode(' ', $where);
     } else {
         $where = '';
     }
 
     // init list
-    $list = rex_list::factory('SELECT ' . implode(', ',$select) . '
+    $list = rex_list::factory('SELECT ' . implode(', ', $select) . '
             FROM ' . $tableEvent . ' AS en
             LEFT JOIN ' . $tableCategories . ' AS ca ON en.category = ca.id
-            '.$where.'
+            ' . $where . '
             ORDER BY en.start_date DESC, en.start_time DESC', 30, null, false);
     $list->addTableAttribute('class', 'table-striped');
 
     // merge group with default
-    $group = array_merge($group, array('*','*','*',80,100,90,120));
+    $group = array_merge($group, array('*', '*', '*', 80, 100, 90, 120));
 
     $list->addTableColumnGroup($group);
 
@@ -89,7 +89,7 @@ if ($func == '' || $func == 'filter') {
 
     $list->setColumnSortable('start_date');
     $list->setColumnSortable('category');
-//    $list->setColumnSortable('venue');
+    //    $list->setColumnSortable('venue');
 
     // Column 1: Action (add/edit button)
     $thIcon = '<a href="' . $list->getUrl(['func' => 'add', 'itemdate' => date('Y-m-d')]) . '" title="' . rex_i18n::msg('forcal_add_entry') . '" accesskey="a"><i class="rex-icon rex-icon-add-action"></i></a>';
@@ -100,29 +100,29 @@ if ($func == '' || $func == 'filter') {
     $list->setColumnParams($thIcon, ['func' => 'edit', 'id' => '###id###']);
 
     // Column 2: Name
-    foreach(rex_clang::getAll() as $clang) {
+    foreach (rex_clang::getAll() as $clang) {
         $list->setColumnLabel('name_' . $clang->getId(), rex_i18n::msg('forcal_entry_name') . ' ' . strtoupper($clang->getCode()));
         $list->setColumnParams('name_' . $clang->getId(), ['func' => 'edit', 'id' => '###id###', 'start' => $start]);
     }
 
     // Column 3: StartDate
     $list->setColumnLabel('start_date', rex_i18n::msg('forcal_startdate'));
-    $list->setColumnFormat('start_date', 'custom', array('\forCal\Utils\forCalListHelper','formatStartDate'));
+    $list->setColumnFormat('start_date', 'custom', array('\forCal\Utils\forCalListHelper', 'formatStartDate'));
 
     // Column 4: StartTime
     $list->setColumnLabel('start_time', rex_i18n::msg('forcal_starttime'));
-    $list->setColumnFormat('start_time', 'custom', array('\forCal\Utils\forCalListHelper','formatStartTime'));
+    $list->setColumnFormat('start_time', 'custom', array('\forCal\Utils\forCalListHelper', 'formatStartTime'));
 
     // Column 5: Category
     $list->setColumnLabel('category', rex_i18n::msg('forcal_category'));
     $list->setColumnParams('category', ['category_filter' => '###category_id###']);
-    $list->setColumnFormat('category', 'custom', array('\forCal\Utils\forCalListHelper','formatCategory'));
+    $list->setColumnFormat('category', 'custom', array('\forCal\Utils\forCalListHelper', 'formatCategory'));
 
     // Column 6: Status
     $list->setColumnLabel('status', rex_i18n::msg('forcal_status_function'));
     $list->setColumnLayout('status', array('<th colspan="4">###VALUE###</th>', '<td>###VALUE###</td>'));
     $list->setColumnParams('status', ['id' => '###id###', 'func' => 'status', 'start' => $start]);
-    $list->setColumnFormat('status', 'custom', array('\forCal\Utils\forCalListHelper','formatStatus'));
+    $list->setColumnFormat('status', 'custom', array('\forCal\Utils\forCalListHelper', 'formatStatus'));
 
     // Column 7: edit
     $list->addColumn('edit', '<i class="rex-icon fa-pencil-square-o"></i> ' . rex_i18n::msg('edit'), -1, ['', '<td>###VALUE###</td>']);
@@ -135,8 +135,7 @@ if ($func == '' || $func == 'filter') {
     $list->setColumnFormat('delete', 'custom', function ($params) {
         $list = $params['list'];
         return $list->getColumnLink($params['params']['name'], "<span class=\"{$params['params']['icon_type']}\"><i class=\"rex-icon {$params['params']['icon']}\"></i> {$params['params']['msg']}</span>");
-
-    }, array('list'=> $list, 'name' => 'delete', 'icon' => 'rex-icon-delete', 'icon_type' => 'rex-offline', 'msg' => rex_i18n::msg('delete')));
+    }, array('list' => $list, 'name' => 'delete', 'icon' => 'rex-icon-delete', 'icon_type' => 'rex-offline', 'msg' => rex_i18n::msg('delete')));
 
     $list->addLinkAttribute('delete', 'data-confirm', rex_i18n::msg('delete') . ' ?');
 
@@ -151,10 +150,9 @@ if ($func == '' || $func == 'filter') {
     $fragment->setVar('title', rex_i18n::msg('forcal_entry_list_view'));
     $fragment->setVar('content', $message . $content, false);
     echo $fragment->parse('core/page/section.php');
-
 } elseif ($func == 'edit' || $func == 'add') {
 
-    if(rex_request('entry_form_load') == true) {
+    if (rex_request('entry_form_load') == true) {
         ob_end_clean();
     }
 
@@ -178,11 +176,9 @@ if ($func == '' || $func == 'filter') {
         $startDate = $itemDate;
     }
     $default_time = '00:00:00';
-    if ($func == 'add' && $this->getConfig('forcal_full_time_preselection') == 1)
-        {
+    if ($func == 'add' && $this->getConfig('forcal_full_time_preselection') == 1) {
         $default_time = $default_time;
-    }
-    else {
+    } else {
         $default_time = date("H:i:s");
     }
 
@@ -244,27 +240,27 @@ if ($func == '' || $func == 'filter') {
 
 
     $form->addRawField('<div class="forcal-first-group"><dl class="rex-form-group form-group">
-        <dt><label class="control-label">'.rex_i18n::msg('forcal_entry_full_time').'</label></dt>
+        <dt><label class="control-label">' . rex_i18n::msg('forcal_entry_full_time') . '</label></dt>
         <dd><div class="forcal-form-checkboxes-inline forcal-check-checkstyle">');
 
     $field = $form->addCheckboxField('full_time');
     $field->addOption(rex_i18n::msg('forcal_checkbox_full_time'), 1);
     $field->setAttribute('class', 'check-btn forcal_fulltime_master_check');
-    if($this->getConfig('forcal_full_time_preselection') && $func=='add') {
+    if ($this->getConfig('forcal_full_time_preselection') && $func == 'add') {
         $field->setAttribute('checked', 'checked');
     }
 
     $form->addRawField('</div></dd></dl>
     <dl class="rex-form-group form-group form-group-np">
-    <dt><label class="control-label">'.rex_i18n::msg('forcal_entry_date').'</label></dt>
+    <dt><label class="control-label">' . rex_i18n::msg('forcal_entry_date') . '</label></dt>
     <dd>
 
     <div class="row"><div class="col-md-6">
 
-      <table class="table forcaldatepicker lang_'.strtolower(rex_clang::getCurrent()->getCode()).'" data-today="'.$today->format("Y-m-d").'" data-only-checkin-range="'.$this->getConfig('forcal_datepicker').'">
+      <table class="table forcaldatepicker lang_' . strtolower(rex_clang::getCurrent()->getCode()) . '" data-today="' . $today->format("Y-m-d") . '" data-only-checkin-range="' . $this->getConfig('forcal_datepicker') . '">
         <thead>
           <tr>
-            <td class="date-label"><label>'.rex_i18n::msg('forcal_from').'</label></td>
+            <td class="date-label"><label>' . rex_i18n::msg('forcal_from') . '</label></td>
           </tr>
           <tr>
             <td class="date-input forcaldate">
@@ -286,7 +282,7 @@ if ($func == '' || $func == 'filter') {
       <table class="table forcaldatepicker">
         <thead>
           <tr>
-            <td class="date-label"><label>'.rex_i18n::msg('forcal_to').'</label></td>
+            <td class="date-label"><label>' . rex_i18n::msg('forcal_to') . '</label></td>
           </tr>
           <tr>
             <td class="date-input forcaldate">
@@ -314,12 +310,12 @@ if ($func == '' || $func == 'filter') {
     ## MASTER SELECT
     ## REPEAT or ONE TIME
     $form->addRawField('<dl class="rex-form-group form-group forcal_repeat_fields">
-        <dt><label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">'.rex_i18n::msg('forcal_entry_type').'</label></dt>
+        <dt><label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">' . rex_i18n::msg('forcal_entry_type') . '</label></dt>
         <dd><div class="forcal-form-radioboxes-inline forcal-check-radiostyle">');
 
     $field = $form->addRadioField('type');
-    $field->addOption(rex_i18n::msg('forcal_radio_one_time'),'one_time');
-    $field->addOption(rex_i18n::msg('forcal_radio_repeat'),'repeat');
+    $field->addOption(rex_i18n::msg('forcal_radio_one_time'), 'one_time');
+    $field->addOption(rex_i18n::msg('forcal_radio_repeat'), 'repeat');
     $field->setAttribute('class', 'radio-btn forcal_repeat_master_radio');
     if ($func == 'add') $field->setValue('one_time');
 
@@ -330,85 +326,85 @@ if ($func == '' || $func == 'filter') {
     ## REPEAT TYPE
     $form->addRawField('<div class="forcal_repeats_show panel-collapse collapse">');
 
-        $form->addRawField('<dl class="rex-form-group form-group">
-            <dt><label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">'.rex_i18n::msg('forcal_entry_repeats').'</label></dt>
+    $form->addRawField('<dl class="rex-form-group form-group">
+            <dt><label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">' . rex_i18n::msg('forcal_entry_repeats') . '</label></dt>
             <dd><div class="forcal-form-select-inline forcal-repeat-type">');
 
-            $field = $form->addSelectField('repeat');
-            $select = $field->getSelect();
-            $select->addOption(rex_i18n::msg('forcal_select_weekly'), 'weekly');
-            $select->addOption(rex_i18n::msg('forcal_select_monthly'), 'monthly');
-            $select->addOption(rex_i18n::msg('forcal_select_monthly_day'), 'monthly-week');
-            $select->addOption(rex_i18n::msg('forcal_select_yearly'), 'yearly');
-            if ($func == 'add') $field->setValue('weekly');
-            $field->setAttribute('class', 'selectpicker forcal_repeat_select');
+    $field = $form->addSelectField('repeat');
+    $select = $field->getSelect();
+    $select->addOption(rex_i18n::msg('forcal_select_weekly'), 'weekly');
+    $select->addOption(rex_i18n::msg('forcal_select_monthly'), 'monthly');
+    $select->addOption(rex_i18n::msg('forcal_select_monthly_day'), 'monthly-week');
+    $select->addOption(rex_i18n::msg('forcal_select_yearly'), 'yearly');
+    if ($func == 'add') $field->setValue('weekly');
+    $field->setAttribute('class', 'selectpicker forcal_repeat_select');
 
-            ## REPEAT SETTINGS
-                $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-monthly">');
+    ## REPEAT SETTINGS
+    $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-monthly">');
 
-                    ## MONTHLY
-                    $field = $form->addSelectField('repeat_month');
-                    $select = $field->getSelect();
-                    for ($i=1;$i<13;$i++) {
-                        $select->addOption($i, $i);
-                    }
-                    $field->setLabel(rex_i18n::msg('forcal_entry_everyn'));
-                    $field->setAttribute('class', 'selectpicker');
+    ## MONTHLY
+    $field = $form->addSelectField('repeat_month');
+    $select = $field->getSelect();
+    for ($i = 1; $i < 13; $i++) {
+        $select->addOption($i, $i);
+    }
+    $field->setLabel(rex_i18n::msg('forcal_entry_everyn'));
+    $field->setAttribute('class', 'selectpicker');
 
-                $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-monthly-week">');
+    $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-monthly-week">');
 
-                    ## MONTHLY
-                    $field = $form->addSelectField('repeat_month_week');
-                    $select = $field->getSelect();
-                    $select->addOption(rex_i18n::msg('forcal_select_first_week'), 'first');
-                    $select->addOption(rex_i18n::msg('forcal_select_second_week'), 'second');
-                    $select->addOption(rex_i18n::msg('forcal_select_third_week'), 'third');
-                    $select->addOption(rex_i18n::msg('forcal_select_fourth_week'), 'fourth');
-                    $select->addOption(rex_i18n::msg('forcal_select_last_week'), 'last');
-                    $field->setLabel(rex_i18n::msg('forcal_entry_everyn'));
-                    $field->setAttribute('class', 'selectpicker');
+    ## MONTHLY
+    $field = $form->addSelectField('repeat_month_week');
+    $select = $field->getSelect();
+    $select->addOption(rex_i18n::msg('forcal_select_first_week'), 'first');
+    $select->addOption(rex_i18n::msg('forcal_select_second_week'), 'second');
+    $select->addOption(rex_i18n::msg('forcal_select_third_week'), 'third');
+    $select->addOption(rex_i18n::msg('forcal_select_fourth_week'), 'fourth');
+    $select->addOption(rex_i18n::msg('forcal_select_last_week'), 'last');
+    $field->setLabel(rex_i18n::msg('forcal_entry_everyn'));
+    $field->setAttribute('class', 'selectpicker');
 
-                    $field = $form->addSelectField('repeat_day');
-                    $select = $field->getSelect();
-                    $select->addOption(rex_i18n::msg('forcal_select_sun'), 'sun');
-                    $select->addOption(rex_i18n::msg('forcal_select_mon'), 'mon');
-                    $select->addOption(rex_i18n::msg('forcal_select_tue'), 'tue');
-                    $select->addOption(rex_i18n::msg('forcal_select_wed'), 'wed');
-                    $select->addOption(rex_i18n::msg('forcal_select_thu'), 'thu');
-                    $select->addOption(rex_i18n::msg('forcal_select_fri'), 'fri');
-                    $select->addOption(rex_i18n::msg('forcal_select_sat'), 'sat');
-                    $field->setAttribute('class', 'selectpicker');
+    $field = $form->addSelectField('repeat_day');
+    $select = $field->getSelect();
+    $select->addOption(rex_i18n::msg('forcal_select_sun'), 'sun');
+    $select->addOption(rex_i18n::msg('forcal_select_mon'), 'mon');
+    $select->addOption(rex_i18n::msg('forcal_select_tue'), 'tue');
+    $select->addOption(rex_i18n::msg('forcal_select_wed'), 'wed');
+    $select->addOption(rex_i18n::msg('forcal_select_thu'), 'thu');
+    $select->addOption(rex_i18n::msg('forcal_select_fri'), 'fri');
+    $select->addOption(rex_i18n::msg('forcal_select_sat'), 'sat');
+    $field->setAttribute('class', 'selectpicker');
 
-                $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-weekly">');
+    $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-weekly">');
 
-                    ## WEEKLY
-                    $field = $form->addSelectField('repeat_week');
-                    $select = $field->getSelect();
-                    for ($i=1;$i<53;$i++) {
-                        $select->addOption($i, $i);
-                    }
-                    $field->setLabel(rex_i18n::msg('forcal_entry_everye'));
-                    $field->setAttribute('class', 'selectpicker');
+    ## WEEKLY
+    $field = $form->addSelectField('repeat_week');
+    $select = $field->getSelect();
+    for ($i = 1; $i < 53; $i++) {
+        $select->addOption($i, $i);
+    }
+    $field->setLabel(rex_i18n::msg('forcal_entry_everye'));
+    $field->setAttribute('class', 'selectpicker');
 
-                $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-yearly">');
+    $form->addRawField('</div><div class="forcal-form-select-inline forcal_repeat_view_element view-yearly">');
 
-                    ## YEARLY
-                    $field = $form->addSelectField('repeat_year');
-                    $select = $field->getSelect();
-                    for ($i=1;$i<11;$i++) {
-                        $select->addOption($i, $i);
-                    }
-                    $field->setLabel(rex_i18n::msg('forcal_entry_everys'));
-                    $field->setAttribute('class', 'selectpicker');
+    ## YEARLY
+    $field = $form->addSelectField('repeat_year');
+    $select = $field->getSelect();
+    for ($i = 1; $i < 11; $i++) {
+        $select->addOption($i, $i);
+    }
+    $field->setLabel(rex_i18n::msg('forcal_entry_everys'));
+    $field->setAttribute('class', 'selectpicker');
 
-                ## DESCRIPTION
-                $form->addRawField('</div>
-                        <div class="forcal-form-inline-description forcal_repeat_view_element view-weekly">'.rex_i18n::msg('forcal_repeat_every_weekly').'</div>
-                        <div class="forcal-form-inline-description forcal_repeat_view_element view-monthly">'.rex_i18n::msg('forcal_repeat_every_monthly').'</div>
-                        <div class="forcal-form-inline-description forcal_repeat_view_element view-yearly">'.rex_i18n::msg('forcal_repeat_every_yearly').'</div>');
+    ## DESCRIPTION
+    $form->addRawField('</div>
+                        <div class="forcal-form-inline-description forcal_repeat_view_element view-weekly">' . rex_i18n::msg('forcal_repeat_every_weekly') . '</div>
+                        <div class="forcal-form-inline-description forcal_repeat_view_element view-monthly">' . rex_i18n::msg('forcal_repeat_every_monthly') . '</div>
+                        <div class="forcal-form-inline-description forcal_repeat_view_element view-yearly">' . rex_i18n::msg('forcal_repeat_every_yearly') . '</div>');
 
-                $form->addRawField('
-                    <div class="forcal-form-inline-description forcal-repeat-ending"><strong>'.rex_i18n::msg('forcal_repeat_ending').'</strong></div>
+    $form->addRawField('
+                    <div class="forcal-form-inline-description forcal-repeat-ending"><strong>' . rex_i18n::msg('forcal_repeat_ending') . '</strong></div>
                     <div class="forcal-form-input-inline">
                       <div class="input-group" id="dpd2b_wrapper">
                         <div class="input-group-addon forcal-date-input"><i class="rex-icon fa-calendar"></i></div>
@@ -416,7 +412,7 @@ if ($func == '' || $func == 'filter') {
                     </div>
                 ');
 
-        $form->addRawField('</dd></dl></div>');
+    $form->addRawField('</dd></dl></div>');
 
     ## TODO bring it to live
     ## DAYS for WEEKLY
@@ -459,7 +455,7 @@ if ($func == '' || $func == 'filter') {
         // Column: Name
         $field = $form->addTextField('name_' . $clang->getId());
         $field->setLabel(rex_i18n::msg('forcal_entry_name'));
-        $field->setAttribute('class','forcal_entry_name form-control');
+        $field->setAttribute('class', 'forcal_entry_name form-control');
 
         if ($key == 1) {
             $field->getValidator()->add('notEmpty', rex_i18n::msg('forcal_entry_name_validation'));
@@ -496,7 +492,7 @@ if ($func == '' || $func == 'filter') {
     $field = $form->addSelectField('category');
     $select = $field->getSelect();
     if ($additional_for_title) {
-        $select->addSqlOptions('SELECT CONCAT(name_' . rex_clang::getCurrentId() . '," - ",'.$additional_for_title.'_'. rex_clang::getCurrentId() . ') name_'.rex_clang::getCurrentId().', id FROM ' . $tableCategories . ' ORDER BY name_' . rex_clang::getCurrentId());
+        $select->addSqlOptions('SELECT CONCAT(name_' . rex_clang::getCurrentId() . '," - ",' . $additional_for_title . '_' . rex_clang::getCurrentId() . ') name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableCategories . ' ORDER BY name_' . rex_clang::getCurrentId());
     } else {
         $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableCategories . ' ORDER BY name_' . rex_clang::getCurrentId());
     }
@@ -516,18 +512,25 @@ if ($func == '' || $func == 'filter') {
     // Column: Status
     $field = $form->addSelectField('status');
     $select = $field->getSelect();
-    $select->addOptions(array(1=>'online', 0=>'offline'));
+    $select->addOptions(array(1 => 'online', 0 => 'offline'));
     $field->setLabel(rex_i18n::msg('forcal_entry_status'));
     $field->setAttribute('style', 'width:200px');
     $field->setAttribute('class', 'forcal_status_select selectpicker form-control');
 
 
+
+
     $tempform = $form->get();
+    // Verwenden von libxml um temporär Fehler zu unterdrücken
+    libxml_use_internal_errors(true);
+
     $doc = new DOMDocument();
-    $doc->loadHTML(mb_convert_encoding($tempform, 'HTML-ENTITIES', 'UTF-8'));
+    // Verwende die UTF-8 Deklaration direkt im HTML-String, um das Encoding anzugeben
+    $htmlWithMeta = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>' . $tempform . '</body></html>';
+    $doc->loadHTML($htmlWithMeta, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
     // replace datein
-    foreach (array('dpd1'=>'dpd1_wrapper', 'dpd2'=>'dpd2_wrapper', 'dpd2b'=>'dpd2b_wrapper') as $key => $value) {
+    foreach (array('dpd1' => 'dpd1_wrapper', 'dpd2' => 'dpd2_wrapper', 'dpd2b' => 'dpd2b_wrapper') as $key => $value) {
         $source = $doc->getElementById($key);
         $source->setAttribute('type', 'text');
         $source->setAttribute('class', 'form-control');
@@ -538,7 +541,7 @@ if ($func == '' || $func == 'filter') {
     }
 
     // replace datein
-    foreach (array('tpd1'=>'tpd1_wrapper', 'tpd2'=>'tpd2_wrapper') as $key => $value) {
+    foreach (array('tpd1' => 'tpd1_wrapper', 'tpd2' => 'tpd2_wrapper') as $key => $value) {
         $source = $doc->getElementById($key);
         $source->setAttribute('type', 'text');
         $source->setAttribute('class', 'form-control');
@@ -548,6 +551,10 @@ if ($func == '' || $func == 'filter') {
         $button = $target->firstChild;
         $target->insertBefore($source, $button);
     }
+
+    // Zurücksetzen der Fehlerbehandlung von libxml
+    libxml_clear_errors();
+    libxml_use_internal_errors(false);
 
     // show
     $content = $doc->saveHTML();
@@ -559,7 +566,7 @@ if ($func == '' || $func == 'filter') {
 
     echo $fragment->parse('core/page/section.php');
 
-    if(rex_request('entry_form_load') == true) {
+    if (rex_request('entry_form_load') == true) {
         die;
     }
 }
