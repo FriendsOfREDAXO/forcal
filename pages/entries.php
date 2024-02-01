@@ -524,8 +524,8 @@ if ($func == '' || $func == 'filter') {
 
     $tempform = $form->get();
     $doc = new DOMDocument();
-    $doc->loadHTML(mb_convert_encoding($tempform, 'HTML-ENTITIES', 'UTF-8'));
-
+    $doc->loadHTML(htmlentities($tempform, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    
     // replace datein
     foreach (array('dpd1'=>'dpd1_wrapper', 'dpd2'=>'dpd2_wrapper', 'dpd2b'=>'dpd2b_wrapper') as $key => $value) {
         $source = $doc->getElementById($key);
