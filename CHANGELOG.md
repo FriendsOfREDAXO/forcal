@@ -1,5 +1,17 @@
 # FOR Calendars
 
+## 3.9.x
+- Removed old Texteditors
+- Small deprecation fixes
+
+
+## 3.8
+
+* uses: actions/checkout@v3 by @aeberhard in https://github.com/FriendsOfREDAXO/forcal/pull/37
+* Bump spatie/calendar-links from 1.4.3 to 1.8.0 by @dependabot in https://github.com/FriendsOfREDAXO/forcal/pull/38
+* 3.8.0 by @skerbis in https://github.com/FriendsOfREDAXO/forcal/pull/40
+
+
 ## 3.7.x
 Quick Navigation button now delivered by FORCal
 
