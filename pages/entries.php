@@ -524,6 +524,7 @@ if ($func == '' || $func == 'filter') {
 
     $tempform = $form->get();
     $doc = new DOMDocument();
+    $tempform = htmlspecialchars($tempform, ENT_HTML5 | ENT_QUOTES, 'UTF-8');
     $doc->loadHTML($tempform);
     
     // replace datein
