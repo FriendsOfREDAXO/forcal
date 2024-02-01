@@ -522,36 +522,40 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('class', 'forcal_status_select selectpicker form-control');
 
 
+
+
 $tempform = $form->get();
+// Verwenden von libxml um temporär Fehler zu unterdrücken
+libxml_use_internal_errors(true);
 
 $doc = new DOMDocument();
-@$doc->loadHTML($tempform, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-foreach (array('dpd1'=>'dpd1_wrapper', 'dpd2'=>'dpd2_wrapper', 'dpd2b'=>'dpd2b_wrapper') as $key => $value) {
+// Verwende die UTF-8 Deklaration direkt im HTML-String, um das Encoding anzugeben
+$htmlWithMeta = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>' . $tempform . '</body></html>';
+$doc->loadHTML($htmlWithMeta, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+// Fortfahren mit der Bearbeitung des Dokuments wie zuvor
+foreach (array('dpd1' => 'dpd1_wrapper', 'dpd2' => 'dpd2_wrapper', 'dpd2b' => 'dpd2b_wrapper') as $key => $value) {
     $source = $doc->getElementById($key);
-    if ($source) { // Stelle sicher, dass das Element existiert
+    if ($source) {
         $source->setAttribute('type', 'text');
         $source->setAttribute('class', 'form-control');
         $source->setAttribute('size', '10');
         
         $target = $doc->getElementById($value);
-        if ($target) { // Stelle sicher, dass das Ziel-Element existiert
+        if ($target) {
             $target->appendChild($source);
         }
     }
 }
 
-    // replace datein
-    foreach (array('tpd1'=>'tpd1_wrapper', 'tpd2'=>'tpd2_wrapper') as $key => $value) {
-        $source = $doc->getElementById($key);
-        $source->setAttribute('type', 'text');
-        $source->setAttribute('class', 'form-control');
-        $source->setAttribute('size', '8');
+// Zurücksetzen der Fehlerbehandlung von libxml
+libxml_clear_errors();
+libxml_use_internal_errors(false);
 
-        $target = $doc->getElementById($value);
-        $button = $target->firstChild;
-        $target->insertBefore($source, $button);
-    }
+// Konvertiere das modifizierte Dokument zurück in einen String
+$html = $doc->saveHTML();
 
+ 
     // show
     $content = $doc->saveHTML();
 
