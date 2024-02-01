@@ -27,7 +27,7 @@ page:
 requires:
   redaxo: '^5.11'
   php:
-    version: '>=8.1'
+    version: '>=7.4'
 conflicts:
     packages:
         quick_navigation: '<6.0.0'    
