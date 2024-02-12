@@ -532,7 +532,7 @@ if ($func == '' || $func == 'filter') {
     // replace datein
     foreach (array('dpd1' => 'dpd1_wrapper', 'dpd2' => 'dpd2_wrapper', 'dpd2b' => 'dpd2b_wrapper') as $key => $value) {
         $source = $doc->getElementById($key);
-        $source->setAttribute('type', 'text');
+        $source->setAttribute('type', 'date');
         $source->setAttribute('class', 'form-control');
         $source->setAttribute('size', '10');
 
@@ -543,7 +543,7 @@ if ($func == '' || $func == 'filter') {
     // replace datein
     foreach (array('tpd1' => 'tpd1_wrapper', 'tpd2' => 'tpd2_wrapper') as $key => $value) {
         $source = $doc->getElementById($key);
-        $source->setAttribute('type', 'text');
+        $source->setAttribute('type', 'date');
         $source->setAttribute('class', 'form-control');
         $source->setAttribute('size', '8');
 
