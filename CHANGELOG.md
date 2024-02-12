@@ -1,9 +1,9 @@
 # FOR Calendars
 
-## 3.9.x
-- Removed old Texteditors
+## 4.0.x
+- Removed old Texteditor profile generation
 - Small deprecation fixes
-
+- Removed conversion from sked-calendars
 
 ## 3.8
 
