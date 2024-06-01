@@ -1,4 +1,5 @@
 <?php
+
 class forcalQn
 {
     public static function getCalHistory($ep): ?string
@@ -13,11 +14,27 @@ class forcalQn
         $halfayear = strtotime('+ 2 month', $today);
         $filter_date = date("Y-m-d", $halfayear);
 
-
         $forcals = \forCal\Handler\forCalHandler::getEntries($start, $filter_date, false, 'SORT_ASC', $categoryId);
-        $link = [];
-        if (count($forcals)) {
+        $listItems = [];
 
+        $attributesAdd = [
+            'href' => rex_url::backendPage('forcal/entries', ['func' => 'add']),
+            'title' => rex_i18n::msg("forcal_add_new_entry"),
+            'class' => 'btn btn-default',
+            'accesskey' => 'e',
+        ];
+
+        $listItemAdd = '
+            <div class="quick-navigation-item-row">
+                <a' . rex_string::buildAttributes($attributesAdd) . '>
+                    <i class="fa fa-plus" aria-hidden="true"></i>&nbsp' . rex_i18n::msg("forcal_add_new_entry") . '
+                </a>
+            </div>
+        ';
+
+        $listItems[] = $listItemAdd;
+
+        if (count($forcals)) {
             foreach ($forcals as $forcal) {
                 $forcalId = rex_escape($forcal['id']);
                 $forcal_entry = rex_escape($forcal['entry']);
@@ -34,34 +51,36 @@ class forcalQn
 
                 $forcal_color = rex_escape($forcal_entry->category_color);
 
+                $attributes = [
+                    'href' => rex_url::backendPage('forcal/entries', ['func' => 'edit', 'id' => $forcalId]),
+                    'title' => $forcal_name,
+                    'style' => 'border-color:' . $forcal_color,
+                ];
 
-                $href = rex_url::backendPage(
-                    'forcal/entries',
-                    [
-                        'func' => 'edit',
-                        'id' => $forcalId
-                    ]
-                );
-              $link[] = '<li class="quick_navi_forcal_border" style="border-color:' . $forcal_color . '"><a href="' . $href . '" title="' . $forcal_name  . '">' . $forcal_name . '<br><small>' . $forcal_start_date . ' bis ' . $forcal_end_date . ' - ' . $forcal_start_time . ' bis ' . $forcal_end_time . '</small></a></li>';
+                $listItem = '
+                    <div class="quick-navigation-item-row">
+                        <a' . rex_string::buildAttributes($attributes) . '>
+                            ' . $forcal_name . '<br><small>' . $forcal_start_date . ' bis ' . $forcal_end_date . ' - ' . $forcal_start_time . ' bis ' . $forcal_end_time . '</small>
+                        </a>
+                    </div>
+                ';
+
+                $listItems[] = $listItem;
             }
         }
-        $href = rex_url::backendPage(
-            'forcal/entries',
-            [
-                'func' => 'add'
-            ]
-        );
 
-        $addLink = '<li class=""><a class="btn btn-default" accesskey="e" href="' . $href . '" title="' . rex_i18n::msg(" forcal_add_new_entry") . '"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp' . rex_i18n::msg("forcal_add_new_entry") . '</a></li>';
-        $fragment = new rex_fragment();
-        $fragment->setVar('link', $addLink, false);
-        if (count($link)) {
-            $fragment->setVar('items', $link, false);
+        if (count($listItems) < 1) {
+            $fragment = new rex_fragment();
+            $listItems[] = $fragment->parse('QuickNavigation/NoResult.php');
         }
-        $fragment->setVar('icon', 'fa fa-calendar');
-        $subject .= $fragment->parse('quick_button.php');        
-        return $subject;
 
-        
+        $fragment = new rex_fragment([
+            'label' => rex_i18n::msg('forcal_quick_navigation_label'),
+            'icon' => 'fa fa-calendar',
+            'listItems' => $listItems,
+        ]);
+
+        $subject .= $fragment->parse('QuickNavigation/Dropdown.php');
+        return $subject;
     }
 }
