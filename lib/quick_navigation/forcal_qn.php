@@ -42,7 +42,7 @@ class forcalQn
                         'id' => $forcalId
                     ]
                 );
-              $link[] = '<li class="quick_navi_forcal_border" style="border-color:' . $forcal_color . '"><a href="' . $href . '" title="' . $forcal_name  . '">' . $forcal_name . '<small>' . $forcal_start_date . ' bis ' . $forcal_end_date . ' - ' . $forcal_start_time . ' bis ' . $forcal_end_time . '</small></a></li>';
+              $link[] = '<li class="quick_navi_forcal_border" style="border-color:' . $forcal_color . '"><a href="' . $href . '" title="' . $forcal_name  . '">' . $forcal_name . '<br><small>' . $forcal_start_date . ' bis ' . $forcal_end_date . ' - ' . $forcal_start_time . ' bis ' . $forcal_end_time . '</small></a></li>';
             }
         }
         $href = rex_url::backendPage(
@@ -61,5 +61,16 @@ class forcalQn
         $fragment->setVar('icon', 'fa fa-calendar');
         $subject .= $fragment->parse('quick_button.php');        
         return $subject;
+
+         $fragment = new rex_fragment([
+            'header' => $searchbar,
+            'label' => rex_i18n::msg('quick_navigation_structure'),
+            'icon' => 'fa-regular fa-folder-tree',
+            'listItems' => $listItems,
+            'listType' => 'tree',
+        ]);
+        return $fragment->parse('QuickNavigation/Dropdown.php');
+
+        
     }
 }
