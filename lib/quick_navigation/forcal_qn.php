@@ -62,15 +62,6 @@ class forcalQn
         $subject .= $fragment->parse('quick_button.php');        
         return $subject;
 
-         $fragment = new rex_fragment([
-            'header' => $searchbar,
-            'label' => rex_i18n::msg('quick_navigation_structure'),
-            'icon' => 'fa-regular fa-folder-tree',
-            'listItems' => $listItems,
-            'listType' => 'tree',
-        ]);
-        return $fragment->parse('QuickNavigation/Dropdown.php');
-
         
     }
 }
