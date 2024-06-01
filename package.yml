@@ -30,4 +30,4 @@ requires:
     version: '>=7.4'
 conflicts:
     packages:
-        quick_navigation: '<6.0.0'    
+        quick_navigation: '<8.1.0'    
