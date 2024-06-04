@@ -132,3 +132,5 @@ forcal_select_fourth_week = vierten
 forcal_select_last_week = letzten
 
 forcal_entry_name_validation = Bitte geben Sie einen Titel ein
+
+forcal_quick_navigation_label = Aktuelle ForCal-Termine
