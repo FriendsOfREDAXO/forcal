@@ -89,6 +89,9 @@ langfields:
     label_de: 'Lieblingsspeise'
     label_en: 'Favorite Food'
     qry: 'SELECT id, name FROM rex_yourfoodtable'
+    attribute:
+      multiple: multiple
+      size: 5
 ```
 
 #### Checkbox
