@@ -10,6 +10,7 @@ $itemDate = rex_request::request('itemdate', 'string', null);
 $id = rex_request::request('id', 'int');
 $start = rex_request::request('start', 'int', NULL);
 $categoryFilter = rex_request::request('category_filter', 'int', NULL);
+$sorttype = rex_request::request('sorttype', 'string', NULL);
 
 $tableEvent = rex::getTablePrefix() . "forcal_entries";
 $tableCategories = rex::getTablePrefix() . "forcal_categories";
@@ -62,12 +63,18 @@ if ($func == '' || $func == 'filter') {
         $where = '';
     }
 
+    $sort = "DESC";
+
+    if(strtoupper($sorttype)==="DESC"||strtoupper($sorttype)==="ASC"){
+        $sort = $sorttype;
+    }
+
     // init list
     $list = rex_list::factory('SELECT ' . implode(', ', $select) . '
             FROM ' . $tableEvent . ' AS en
             LEFT JOIN ' . $tableCategories . ' AS ca ON en.category = ca.id
             ' . $where . '
-            ORDER BY en.start_date DESC, en.start_time DESC', 30, null, false);
+            ORDER BY en.start_date '. $sort .', en.start_time DESC', 30, null, false);
     $list->addTableAttribute('class', 'table-striped');
 
     // merge group with default
