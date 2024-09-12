@@ -508,7 +508,7 @@ siehe [LICENSE](https://github.com/FriendsOfREDAXO/forcal/blob/master/LICENCE)
 * https://github.com/FriendsOfREDAXO
 
 
-**Development-Team / Autoren**
+**Development-Team**
 * [Joachim Dörr](https://github.com/joachimdoerr) 
 * [Wolfgang Bund](https://github.com/dtpop) 
 * [Thomas Skerbis](https://github.com/skerbis)
