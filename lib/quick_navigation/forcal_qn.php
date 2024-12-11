@@ -27,7 +27,7 @@ class forcalQn
         $listItemAdd = '
             <div class="quick-navigation-item-row">
                 <a' . rex_string::buildAttributes($attributesAdd) . '>
-                    <i class="rex-minibar-icon--fa rex-minibar-icon--fa-plus" aria-hidden="true"></i>&nbsp' . rex_i18n::msg("forcal_add_new_entry") . '
+                    <i class="fa-regular fa-plus" aria-hidden="true"></i>&nbsp' . rex_i18n::msg("forcal_add_new_entry") . '
                 </a>
             </div>
         ';
@@ -76,7 +76,7 @@ class forcalQn
 
         $fragment = new rex_fragment([
             'label' => rex_i18n::msg('forcal_quick_navigation_label'),
-            'icon' => 'rex-minibar-icon--fa rex-minibar-icon--fa-calendar',
+            'icon' => 'fa-regular fa-calendar',
             'listItems' => $listItems,
         ]);
 
