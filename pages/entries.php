@@ -146,7 +146,7 @@ if ($func == 'add' || $func == 'edit') {
     $form->setEditMode($func == 'edit');
     
     // START TAB 1
-    forCalFormManager::addCollapsePanel($form, 'wrapper', $addon->i18n('forcal_entry_date'));
+    forCalFormHelper::addCollapsePanel($form, 'wrapper', $addon->i18n('forcal_entry_date'));
     
     // Datepicker laut Redaxo config
     $date = new rex_form_container_element();
@@ -308,10 +308,10 @@ if ($func == 'add' || $func == 'edit') {
         $dpd2->setValue($itemdate);
     }
   
-    forCalFormManager::addCollapsePanel($form, 'close_wrapper');
+    forCalFormHelper::addCollapsePanel($form, 'close_wrapper');
     
     // Informationen
-    forCalFormManager::addCollapsePanel($form, 'wrapper', $addon->i18n('forcal_entry_name'));
+    forCalFormHelper::addCollapsePanel($form, 'wrapper', $addon->i18n('forcal_entry_name'));
     
     // Name als Pflichtfeld
     $name = $form->addTextField('name_' . rex_clang::getCurrentId());
@@ -399,7 +399,7 @@ if ($func == 'add' || $func == 'edit') {
         // für jede verfügbare Sprache (außer der aktuellen) Formular-Tab erstellen
         foreach (rex_clang::getAll() as $clang) {
             if ($clang->getId() != rex_clang::getCurrentId()) {
-                forCalFormManager::addCollapsePanel($form, 'wrapper', $clang->getName());
+                forCalFormHelper::addCollapsePanel($form, 'wrapper', $clang->getName());
                 
                 $name = $form->addTextField('name_' . $clang->getId());
                 $name->setLabel($addon->i18n('forcal_entry_name'));
@@ -423,13 +423,13 @@ if ($func == 'add' || $func == 'edit') {
                     $text->setAttribute('class', 'ckeditor');
                 }
                 
-                forCalFormManager::addCollapsePanel($form, 'close_wrapper');
+                forCalFormHelper::addCollapsePanel($form, 'close_wrapper');
             }
         }
     }
     
     // Benutzerdefinierte Felder hinzufügen
-    forCalFormManager::addCustomFormField($form, rex_clang::get(rex_clang::getCurrentId()));
+    forCalFormHelper::addCustomFormField($form, rex_clang::get(rex_clang::getCurrentId()));
     
     // Generate UID field beim Erstellen
     if ($func == 'add') {
