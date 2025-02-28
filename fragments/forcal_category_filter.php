@@ -1,6 +1,7 @@
 <?php
 /**
  * Fragment zur Filterung der Kategorien im Kalender
+ * - Vereinfachte Version für eingeschränkte Nutzer
  */
 
 $all_categories = rex_sql::factory()->getArray(
@@ -18,7 +19,8 @@ if (!$user->isAdmin()) {
     $user_categories = \forCal\Utils\forCalUserPermission::getUserCategories($user->getId());
 }
 
-$show_all = rex_request('show_all', 'bool', false);
+// Die Checkbox wird jetzt nur für Admins angezeigt
+$show_all = $user->isAdmin() ? rex_request('show_all', 'bool', false) : false;
 $userFilter = rex_request('user_filter', 'array', []);
 
 // Aktuelle URL mit Parametern abrufen
@@ -42,7 +44,8 @@ foreach ($_GET as $param => $value) {
                 <input type="hidden" name="<?= $param ?>" value="<?= $value ?>">
             <?php endforeach; ?>
             
-            <?php if (!$user->isAdmin() && !empty($user_categories)): ?>
+            <?php if ($user->isAdmin()): ?>
+                <!-- Nur Admins sehen die "Alle anzeigen" Checkbox -->
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" name="show_all" value="1" <?= $show_all ? 'checked' : '' ?> onchange="this.form.submit()">
@@ -51,47 +54,29 @@ foreach ($_GET as $param => $value) {
                 </div>
             <?php endif; ?>
             
-            <?php if ($user->isAdmin() || $show_all): ?>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="user_filter"><?= rex_i18n::msg('forcal_category_select') ?>:</label>
-                    <select name="user_filter[]" id="user_filter" class="form-control selectpicker" multiple data-selected-text-format="count" data-actions-box="true" onchange="this.form.submit()">
-                        <?php 
-                        // Bestimmen, welche Kategorien im Dropdown angezeigt werden sollen
-                        $filter_categories = $all_categories;
-                        if (!$user->isAdmin() && !$show_all) {
-                            // Wenn kein Admin und nicht "Alle anzeigen", dann nur die eigenen Kategorien anzeigen
-                            $filter_categories = array_filter($all_categories, function($category) use ($user_categories) {
-                                return in_array($category['id'], $user_categories);
-                            });
-                        }
-                        
-                        foreach ($filter_categories as $category): 
-                        ?>
-                            <option value="<?= $category['id'] ?>" <?= in_array($category['id'], $userFilter) ? 'selected' : '' ?>>
-                                <?= $category['name'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php elseif (!$user->isAdmin() && !$show_all && !empty($user_categories)): ?>
-                <!-- Wenn kein Admin und nicht "Alle anzeigen", eigene Kategorien direkt zum Filtern anbieten -->
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="user_filter"><?= rex_i18n::msg('forcal_category_select') ?>:</label>
-                    <select name="user_filter[]" id="user_filter" class="form-control selectpicker" multiple data-selected-text-format="count" data-actions-box="true" onchange="this.form.submit()">
-                        <?php 
+            <!-- Kategorie-Auswahl -->
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="user_filter"><?= rex_i18n::msg('forcal_category_select') ?>:</label>
+                <select name="user_filter[]" id="user_filter" class="form-control selectpicker" multiple data-selected-text-format="count" data-actions-box="true" onchange="this.form.submit()">
+                    <?php 
+                    // Bestimmen, welche Kategorien im Dropdown angezeigt werden sollen
+                    $filter_categories = $all_categories;
+                    
+                    // Für nicht-Admins nur die zugewiesenen Kategorien anzeigen
+                    if (!$user->isAdmin()) {
                         $filter_categories = array_filter($all_categories, function($category) use ($user_categories) {
                             return in_array($category['id'], $user_categories);
                         });
-                        
-                        foreach ($filter_categories as $category): 
-                        ?>
-                            <option value="<?= $category['id'] ?>" <?= in_array($category['id'], $userFilter) ? 'selected' : '' ?>>
-                                <?= $category['name'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            <?php endif; ?>
+                    }
+                    
+                    foreach ($filter_categories as $category): 
+                    ?>
+                        <option value="<?= $category['id'] ?>" <?= in_array($category['id'], $userFilter) ? 'selected' : '' ?>>
+                            <?= $category['name'] ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
         </form>
         
         <?php if (!empty($all_categories)): ?>
@@ -101,8 +86,8 @@ foreach ($_GET as $param => $value) {
                     <?php 
                     $filtered_categories = $all_categories;
                     
-                    // Wenn User kein Admin ist und eigene Kategorien anzeigen soll
-                    if (!$user->isAdmin() && !$show_all) {
+                    // Wenn User kein Admin ist, nur seine zugewiesenen Kategorien anzeigen
+                    if (!$user->isAdmin()) {
                         $filtered_categories = array_filter($all_categories, function($category) use ($user_categories) {
                             return in_array($category['id'], $user_categories);
                         });
