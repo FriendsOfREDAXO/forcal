@@ -12,8 +12,16 @@ use forCal\Manager\forCalDatabaseManager;
 if (rex::isBackend() && rex::getUser()) {
     $config = $this->getConfig();
 
-    if (rex_addon::get('watson')->isAvailable()) {
+    // Multiuser Einstellungen aktivieren, wenn gesetzt
+    if (isset($config['forcal_multiuser']) && $config['forcal_multiuser']) {
+        // Rechte für Administrations-Seiten setzen
+        if (rex::getUser()->isAdmin()) {
+            // User Permissions nur für Admins
+            rex_perm::register('forcal[userpermissions]', null, rex_perm::OPTIONS);
+        }
+    }
 
+    if (rex_addon::get('watson')->isAvailable()) {
         function forcal_search(rex_extension_point $ep)
         {
             $subject = $ep->getSubject();
@@ -31,6 +39,7 @@ if (rex::isBackend() && rex::getUser()) {
     // create custom fields
     forCalDatabaseManager::executeCustomFieldHandle();
     rex_view::setJsProperty('forcal_events_api_url', rex_url::backendController(['rex-api-call' => 'forcal_exchange', '_csrf_token' => \forCal\Handler\forCalApi::getToken()]));
+    
     // add js
     rex_view::addJSFile($this->getAssetsUrl('vendor/palettecolorpicker/palette-color-picker.js'));
     rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/main.js'));
@@ -72,6 +81,7 @@ if (rex::isBackend() && rex::getUser()) {
         $this->setProperty('page', $page);
     }
 }
+
 if (rex_plugin::get('forcal', 'documentation')->isInstalled()) {
     $plugin = rex_plugin::get('forcal', 'documentation');
     $manager = rex_package_manager::factory($plugin);
