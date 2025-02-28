@@ -20,3 +20,8 @@ if (rex_addon::get('forcal')->hasConfig()) {
     $config['forcal_multiuser'] = 1;
     rex_addon::get('forcal')->setConfig($config);
 }
+
+// Neue Rechte für Benutzer registrieren
+if (rex::isBackend() && rex::getUser()) {
+    rex_perm::register('forcal[userpermissions]', null, rex_perm::OPTIONS);
+}
