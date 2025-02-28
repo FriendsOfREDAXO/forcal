@@ -530,34 +530,21 @@ function forcal_fullcalendar(forcal) {
            extraParams: function() {
                 let params = {};
                 
-                // Falls Kategorie-Filter gesetzt sind
+                // Einfache Lösung: Wenn Kategorien ausgewählt sind, übergeben wir sie als kommagetrennte Liste
                 if (urlParams.category && urlParams.category.length > 0) {
-                    // ÄNDERUNG: Statt Komma-getrennte Liste, übergeben wir die Kategorien einzeln als Array
-                    // Das alte Format: params.category = urlParams.category.join(',');
-                    
-                    // Neues Format: Mehrere Parameter mit demselben Namen
-                    urlParams.category.forEach(function(categoryId, index) {
-                        params['category[' + index + ']'] = categoryId;
-                    });
+                    params.category = urlParams.category.join(',');
                 }
                 
                 return params;
             },
             cache: false, // Cache deaktivieren, um sicherzustellen, dass Änderungen sofort wirken
             error: function (xhr, type, exception) {
-                console.error("API Error:", exception);
-                alert("Error: " + exception);
-            },
-            success: function (doc) {
-                console.log("API Response:", doc);
+                console.error("Kalender-API Fehler:", xhr, type, exception);
             }
         },
     });
 
     calendar.render();
-    
-    // Debug-Hilfe: Zeigt die aktuellen Filter-Parameter
-    console.log("Aktuelle Filter-Parameter:", urlParams);
 }
 
 function addAddIconDay(forcal) {
