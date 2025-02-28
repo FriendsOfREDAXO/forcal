@@ -45,7 +45,7 @@ foreach ($_GET as $param => $value) {
             <!-- Kategorie-Auswahl -->
             <div class="form-group" style="margin-bottom: 15px;">
                 <label for="user_filter"><?= rex_i18n::msg('forcal_category_select') ?>:</label>
-                <select name="user_filter[]" id="user_filter" class="form-control selectpicker" multiple data-selected-text-format="count" data-actions-box="true" onchange="this.form.submit()">
+                <select name="user_filter[]" id="user_filter" class="form-control selectpicker" data-width="auto" multiple data-selected-text-format="count" data-actions-box="true" onchange="this.form.submit()">
                     <?php 
                     // Bestimmen, welche Kategorien im Dropdown angezeigt werden sollen
                     $filter_categories = $all_categories;
