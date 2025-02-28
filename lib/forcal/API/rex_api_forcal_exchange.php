@@ -12,8 +12,6 @@ class rex_api_forcal_exchange extends rex_api_function
      */
     protected $published = true;
 
-    // http://redaxo5/index.php?rex-api-call=forcal_range_exchange&test=123
-
     /**
      * This method have to be overriden by a subclass and does all logic which the api function represents.
      *
@@ -29,19 +27,11 @@ class rex_api_forcal_exchange extends rex_api_function
         rex_response::cleanOutputBuffers();
         rex_response::sendContentType('application/json');
 
-        /*
-        if (\forCal\Handler\forCalApi::isTokenValid() !== true) {
-            rex_response::setHeader('status', 401);
-            rex_response::sendContent('');
-            exit;
-        }
-        */
-
         // Benutzer-Berechtigung berücksichtigen
         $useUserPermissions = true;
         
         // Wenn der Benutzer die Option "alle anzeigen" gewählt hat, ignorieren wir die Benutzerfilter
-        if (rex_request('show_all', 'boolean', false)) {
+        if (rex_request::get('show_all', 'boolean', false)) {
             $useUserPermissions = false;
         }
 
@@ -60,6 +50,32 @@ class rex_api_forcal_exchange extends rex_api_function
 
         $page_number = rex_request('page','integer',null);
         $page_size = rex_request('page_size','integer',null);
+        
+        // ÄNDERUNG: Verbesserte Verarbeitung von Kategorie-Filtern
+        $category = null;
+        
+        // Prüfen, ob Kategorie-Parameter vorhanden sind
+        if (rex_request::hasArgs()) {
+            $requestParams = rex_request::requestArray();
+            
+            // Nach 'category' als Array oder Einzel-Parameter suchen
+            if (isset($requestParams['category']) && is_array($requestParams['category'])) {
+                $category = $requestParams['category'];
+            } elseif (isset($requestParams['category']) && !empty($requestParams['category'])) {
+                // Komma-getrennte Liste verarbeiten
+                $categoryStr = rex_request('category', 'string', '');
+                if (strpos($categoryStr, ',') !== false) {
+                    $category = explode(',', $categoryStr);
+                } else {
+                    $category = $categoryStr;
+                }
+            }
+        }
+        
+        // Debug-Log für die Fehlerbehebung
+        if (rex::isDebugMode()) {
+            error_log('Kategorie-Filter: ' . print_r($category, true));
+        }
 
         $entries = \forCal\Handler\forCalHandler::exchangeEntries(
             rex_request('start','string',''),
@@ -67,7 +83,7 @@ class rex_api_forcal_exchange extends rex_api_function
             rex_request('short','boolean', true),
             rex_request('ignore_status', 'boolean', false),
             rex_request('sort', 'string', 'SORT_ASC'),
-            rex_request('category','string',null),
+            $category,   // Der Kategorie-Filter mit verbesserter Verarbeitung
             rex_request('venue','integer',null),
             rex_request('date_format','string',1),
             rex_request('time_format','string',1),
