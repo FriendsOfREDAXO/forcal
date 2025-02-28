@@ -21,6 +21,15 @@ if (!$user->isAdmin()) {
 $show_all = rex_request('show_all', 'bool', false);
 $userFilter = rex_request('user_filter', 'array', []);
 
+// Aktuelle URL mit Parametern abrufen
+$currentUrl = rex_url::currentBackendPage();
+$currentParams = [];
+foreach ($_GET as $param => $value) {
+    if ($param !== 'show_all' && $param !== 'user_filter') {
+        $currentParams[$param] = $value;
+    }
+}
+
 ?>
 
 <div class="panel panel-default">
@@ -28,11 +37,9 @@ $userFilter = rex_request('user_filter', 'array', []);
         <h3 class="panel-title"><?= rex_i18n::msg('forcal_category_filter') ?></h3>
     </div>
     <div class="panel-body">
-        <form action="<?= rex_url::currentBackendPage() ?>" method="get" class="form-inline">
-            <?php foreach (rex_url::currentBackendPageParams() as $param => $value): ?>
-                <?php if ($param !== 'show_all' && $param !== 'user_filter'): ?>
-                    <input type="hidden" name="<?= $param ?>" value="<?= $value ?>">
-                <?php endif; ?>
+        <form action="<?= $currentUrl ?>" method="get" class="form-inline">
+            <?php foreach ($currentParams as $param => $value): ?>
+                <input type="hidden" name="<?= $param ?>" value="<?= $value ?>">
             <?php endforeach; ?>
             
             <?php if (!$user->isAdmin() && !empty($user_categories)): ?>
