@@ -13,7 +13,7 @@ page:
         entries: { title: 'translate:forcal_entries', icon: rex-icon fa-list-ul }
         categories: { title: 'translate:forcal_categories', icon: rex-icon fa-th-list, perm: forcal[catspage] }
         venues: { title: 'translate:forcal_venues', icon: rex-icon fa-map-marker, perm: forcal[venuespage] }
-        user_permissions: { title: 'translate:forcal_user_permissions', icon: rex-icon fa-users, perm: forcal[userpermissions] }
+        user_permissions: { title: 'translate:forcal_user_permissions', icon: rex-icon fa-users, itemclass: pull-right, perm: forcal[userpermissions] }
         settings: { title: 'translate:forcal_settings', icon: rex-icon fa-cog, itemclass: pull-right, perm: forcal[settings] }
 
 requires:
