@@ -1,5 +1,4 @@
 <?php
-// Add to existing install.php
 
 // Create user-category assignment table
 rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_categories')
