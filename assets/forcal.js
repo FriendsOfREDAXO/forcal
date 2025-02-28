@@ -462,6 +462,38 @@ function forcal_fullcalendar(forcal) {
         csrf_token = forcal.data('csrf'),
         calendarEl = document.getElementById(forcal.attr('id'));
 
+    // Parameter aus der URL auslesen, um die Filter zu erfassen
+    function getUrlParameters() {
+        let params = {};
+        let queryString = window.location.search.substring(1);
+        let pairs = queryString.split('&');
+        
+        for(let i = 0; i < pairs.length; i++) {
+            if (!pairs[i]) continue;
+            
+            let pair = pairs[i].split('=');
+            if (pair.length < 2) continue;
+            
+            let key = decodeURIComponent(pair[0]);
+            let value = decodeURIComponent(pair[1]);
+            
+            // Die Kategorie-Filter sind als Array gespeichert ('user_filter[]')
+            if (key === 'user_filter[]') {
+                if (!params['category']) {
+                    params['category'] = [];
+                }
+                params['category'].push(value);
+            } else if (key === 'show_all') {
+                params[key] = value;
+            }
+        }
+        
+        return params;
+    }
+    
+    // URL-Parameter abrufen
+    let urlParams = getUrlParameters();
+
     let calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: ['interaction', 'dayGrid', 'timeGrid'],
         header: {
@@ -474,9 +506,6 @@ function forcal_fullcalendar(forcal) {
         weekNumbersWithinDays: true,
         dragScroll: true,
         defaultDate: forcal_date,
-        // lazyFetching: false,
-        // selectable: true,
-        // editable: true,
         eventLimit: true,
         eventClick: function (info) {
             window.location.replace('index.php?page=forcal/entries&func=edit&id=' + info.event.id);
@@ -497,17 +526,22 @@ function forcal_fullcalendar(forcal) {
         viewSkeletonRender: function (info) {
         },
         events: {
-           url:  rex.forcal_events_api_url,
-            cache: true,
-            error: function (xhr, type, exception) {
-                // todo later show warning field
-                // $('#script-warning').show();
-                alert("Error: " + exception);
+           url: rex.forcal_events_api_url,
+           extraParams: function() {
+                let params = {};
+                
+                // Einfache Lösung: Wenn Kategorien ausgewählt sind, übergeben wir sie als kommagetrennte Liste
+                if (urlParams.category && urlParams.category.length > 0) {
+                    params.category = urlParams.category.join(',');
+                }
+                
+                return params;
             },
-            success: function (doc) {
+            cache: false, // Cache deaktivieren, um sicherzustellen, dass Änderungen sofort wirken
+            error: function (xhr, type, exception) {
+                console.error("Kalender-API Fehler:", xhr, type, exception);
             }
         },
-
     });
 
     calendar.render();
@@ -565,4 +599,3 @@ function forcal_save_init(forcal_form) {
         });
     }
 }
-

@@ -15,6 +15,7 @@ use forCal\Utils\forCalDateTimeHelper;
 use forCal\Utils\forCalDefinitions;
 use forCal\Utils\forCalHelper;
 use forCal\Utils\forCalTableKey;
+use forCal\Utils\forCalUserPermission;
 
 class forCalHandler
 {
@@ -405,17 +406,23 @@ class forCalHandler
      * @param bool $ignoreStatus
      * @param int|null|array $categoryId
      * @param int|null $venueId
+     * @param bool $useUserPermissions Ob Benutzerberechtigungen berücksichtigt werden sollen
      * @return array
      * @throws \rex_sql_exception
      */
-    protected static function loadEntries(\DateTime $startDate, \DateTime $endDate, $ignoreStatus = true, $categoryId = null, $venueId = null)
+    protected static function loadEntries(\DateTime $startDate, \DateTime $endDate, $ignoreStatus = true, $categoryId = null, $venueId = null, $useUserPermissions = true)
     {
         $select = self::createSelect();
         $statusIgnore = '';
         $statusHaving = '';
         $venue = '';
         $category = '';
+        $userFilter = '';
         
+        // Benutzerrechte-Filter hinzufügen
+        if ($useUserPermissions && rex::getUser() && !rex::getUser()->isAdmin()) {
+            $userFilter = forCalUserPermission::getCategoryFilter('en');
+        }
 
         if (!$ignoreStatus) {
             $statusIgnore = ' AND en.status = 1 ';
@@ -428,9 +435,7 @@ class forCalHandler
         if (is_array($categoryId) && sizeof($categoryId) > 0) {
             $category = ' AND en.category IN ("' . implode('", "', $categoryId) . '")';
         } else {
-
             $catId = (int) $categoryId;
-
             if ($catId > 0) {
                 $category = ' AND en.category = ' . $catId . ' ';
             }
@@ -463,7 +468,7 @@ class forCalHandler
             (en.end_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
             en.start_date <= \'' . $startDate->format("Y-m-d H:i:s") . '\' AND
             en.end_date >= \'' . $endDate->format("Y-m-d H:i:s") . '\')
-            ' . $statusIgnore . $category . $venue . $statusHaving . '
+            ' . $statusIgnore . $category . $venue . $userFilter . $statusHaving . '
             
           UNION
           
@@ -488,16 +493,11 @@ class forCalHandler
             (en.end_repeat_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
             en.start_date <= \'' . $startDate->format("Y-m-d H:i:s") . '\' AND
             en.end_repeat_date >= \'' . $endDate->format("Y-m-d H:i:s") . '\')
-            ' . $statusIgnore . $category . $venue . $statusHaving . '
+            ' . $statusIgnore . $category . $venue . $userFilter . $statusHaving . '
             
           ORDER BY 
             entry_start_date, entry_start_time
         ';
-
-        # SELECT * FROM rex_entry_calendar WHERE
-        # (start_date BETWEEN "2016-09-09" AND "2016-09-12") OR
-        # (end_date BETWEEN '2016-09-09' AND '2016-09-12') OR
-        # start_date <= '2016-09-09' AND end_date >= '2013-09-12'
 
         return $sql->getArray($query);
     }
@@ -511,7 +511,7 @@ class forCalHandler
     {
         $select = self::createSelect();
         $sql = rex_sql::factory();
-        $sql->setQuery('
+        $query = '
           SELECT
             ' .implode(', ', $select). '
           FROM
@@ -528,10 +528,17 @@ class forCalHandler
             ca.id = en.category
 
           WHERE
-            en.id = ' . $id . '
-        ');
+            en.id = ' . $id;
+            
+        // Benutzerrechte-Filter hinzufügen
+        if (rex::getUser() && !rex::getUser()->isAdmin()) {
+            $userFilter = forCalUserPermission::getCategoryFilter('en');
+            if ($userFilter) {
+                $query .= $userFilter;
+            }
+        }
 
-        return $sql->getArray();
+        return $sql->getArray($query);
     }
 
     /**
@@ -563,11 +570,12 @@ class forCalHandler
      * @param int|null $venueId
      * @param null $pageSize
      * @param null $pageNumber
+     * @param bool $useUserPermissions Ob Benutzerberechtigungen berücksichtigt werden sollen
      * @return array <\StdClass>
      * @throws \rex_sql_exception
      * @author Joachim Doerr
      */
-    public static function getEntries($start, $end, $ignoreStatus = false, $sort = SORT_ASC, $categoryId = null, $venueId = null, $pageSize = null, $pageNumber = null)
+    public static function getEntries($start, $end, $ignoreStatus = false, $sort = SORT_ASC, $categoryId = null, $venueId = null, $pageSize = null, $pageNumber = null, $useUserPermissions = true)
     {
         $today = new \DateTime();
         $monthEnd = clone $today;
@@ -588,7 +596,7 @@ class forCalHandler
             $endDate = $end;
         }
 
-        $result = self::loadEntries($startDate, $endDate, $ignoreStatus, $categoryId, $venueId);
+        $result = self::loadEntries($startDate, $endDate, $ignoreStatus, $categoryId, $venueId, $useUserPermissions);
         $entries = array();
 
         if (is_array($result) && sizeof($result) > 0) {

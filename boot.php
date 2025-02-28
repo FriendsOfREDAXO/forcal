@@ -67,10 +67,12 @@ if (rex::isBackend() && rex::getUser()) {
         rex_view::addCssFile($this->getAssetsUrl('forcal-dark.css'));
     }
 
+    // Register clang added event
     rex_extension::register('CLANG_ADDED', function () {
         // duplicate lang columns
         forCalDatabaseManager::executeAddLangFields();
     });
+    
     rex_view::setJsProperty('forcal_shortcut_save', isset($config['forcal_shortcut_save']) && $config['forcal_shortcut_save'] ? $config['forcal_shortcut_save'] : false);
 
     $page = $this->getProperty('page');

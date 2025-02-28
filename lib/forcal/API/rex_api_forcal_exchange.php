@@ -12,15 +12,8 @@ class rex_api_forcal_exchange extends rex_api_function
      */
     protected $published = true;
 
-    // http://redaxo5/index.php?rex-api-call=forcal_range_exchange&test=123
-
     /**
      * This method have to be overriden by a subclass and does all logic which the api function represents.
-     *
-     * In the first place this method may retrieve and validate parameters from the request.
-     * Afterwards the actual logic should be executed.
-     *
-     * This function may also throw exceptions e.g. in case when permissions are missing or the provided parameters are invalid.
      *
      * @return rex_api_result The result of the api-function
      */
@@ -29,13 +22,13 @@ class rex_api_forcal_exchange extends rex_api_function
         rex_response::cleanOutputBuffers();
         rex_response::sendContentType('application/json');
 
-        /*
-        if (\forCal\Handler\forCalApi::isTokenValid() !== true) {
-            rex_response::setHeader('status', 401);
-            rex_response::sendContent('');
-            exit;
+        // Benutzer-Berechtigung berücksichtigen
+        $useUserPermissions = true;
+        
+        // Wenn der Benutzer die Option "alle anzeigen" gewählt hat, ignorieren wir die Benutzerfilter
+        if (rex_request::get('show_all', 'boolean', false)) {
+            $useUserPermissions = false;
         }
-        */
 
         if (rex_request::get('id', 'int', 0) > 0) {
             $entry = \forCal\Handler\forCalHandler::exchangeEntry(
@@ -48,11 +41,25 @@ class rex_api_forcal_exchange extends rex_api_function
             rex_response::sendContent(json_encode($entry));
 
             exit;
-
         }
 
         $page_number = rex_request('page','integer',null);
         $page_size = rex_request('page_size','integer',null);
+        
+        // Kategorie-Parameter aus der Anfrage auslesen
+        $categoryParam = rex_request('category', 'string', null);
+        $category = null;
+        
+        // Wenn der Parameter nicht leer ist, verarbeiten wir ihn
+        if (!empty($categoryParam)) {
+            // Wenn es ein Komma enthält, ist es eine Liste von Kategorien
+            if (strpos($categoryParam, ',') !== false) {
+                $category = explode(',', $categoryParam);
+            } else {
+                // Sonst ist es eine einzelne Kategorie
+                $category = $categoryParam;
+            }
+        }
 
         $entries = \forCal\Handler\forCalHandler::exchangeEntries(
             rex_request('start','string',''),
@@ -60,12 +67,13 @@ class rex_api_forcal_exchange extends rex_api_function
             rex_request('short','boolean', true),
             rex_request('ignore_status', 'boolean', false),
             rex_request('sort', 'string', 'SORT_ASC'),
-            rex_request('category','string',null),
+            $category,
             rex_request('venue','integer',null),
             rex_request('date_format','string',1),
             rex_request('time_format','string',1),
             $page_size,
-            $page_number
+            $page_number,
+            $useUserPermissions
         );
 
         if (is_int($page_size)) {
@@ -76,6 +84,5 @@ class rex_api_forcal_exchange extends rex_api_function
         rex_response::sendContent(json_encode($entries));
 
         exit;
-
     }
 }

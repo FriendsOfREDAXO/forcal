@@ -1,33 +1,32 @@
 package: forcal
-version: '4.1.3'
-name: forcal
-author: Friends Of REDAXO
-supportpage: https://github.com/FriendsOfREDAXO/forcal
+version: '5.0.0'
+author: 'Friends Of REDAXO'
+supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 
 page:
-  title: 'translate:forcal_title'
-  perm: forcal[]
-  icon: rex-icon fa-calendar
-  block: system
-  subpages:
-    calendar: { title: 'translate:forcal_calendar',perm: 'forcal[]', icon: rex-icon fa-calendar, itemclass: item_calendar }
-    entries: { title: 'translate:forcal_entries',perm: 'forcal[]', icon: rex-icon fa-calendar-plus-o, itemclass: item_entries }
-    categories: { title: 'translate:forcal_categories',perm: 'forcal[catspage]', icon: rex-icon fa-folder, itemclass: item_categories }
-    venues: { title: 'translate:forcal_venues',perm: 'forcal[venuespage]', icon: rex-icon fa-map-marker, itemclass: item_venues }
-    settings:
-      title: 'translate:forcal_settings'
-      perm: forcal[settings]
-      icon: rex-icon fa-cogs
-      itemclass: pull-right
-    help:
-      title: 'translate:forcal_help'
-      perm: admin[]
-      subPath: README.md
-      itemclass: pull-right
+    title: 'translate:forcal_title'
+    perm: forcal[]
+    icon: rex-icon fa-calendar
+    block: system
+    subpages:
+        calendar: { title: 'translate:forcal_calendar', icon: rex-icon fa-calendar }
+        entries: { title: 'translate:forcal_entries', icon: rex-icon fa-list-ul }
+        categories: { title: 'translate:forcal_categories', icon: rex-icon fa-th-list, perm: forcal[catspage] }
+        venues: { title: 'translate:forcal_venues', icon: rex-icon fa-map-marker, perm: forcal[venuespage] }
+        user_permissions: { title: 'translate:forcal_user_permissions', icon: rex-icon fa-users, perm: forcal[userpermissions] }
+        settings: { title: 'translate:forcal_settings', icon: rex-icon fa-cog, itemclass: pull-right, perm: forcal[settings] }
+
 requires:
-  redaxo: '^5.11'
-  php:
-    version: '>=7.4'
-conflicts:
-    packages:
-        quick_navigation: '<8.1.0'    
+    redaxo: ^5.8.0
+    php:
+        version: '>=8.1, <9'
+        extensions: [intl]
+
+default_config:
+    forcal_multiuser: 1
+    forcal_shortcut_save: 1
+    forcal_full_time_preselection: 1
+    forcal_start_page: 'calendar'
+
+console_commands:
+    forcal:list: forCal\Command\ListCommand

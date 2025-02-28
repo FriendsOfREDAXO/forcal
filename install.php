@@ -15,6 +15,7 @@ if (!$addon->hasConfig()) {
         $addon->setConfig('forcal_datepicker', 0);
         $addon->setConfig('forcal_full_time_preselection', 1);
         $addon->setConfig('forcal_start_page', 'calendar');
+        $addon->setConfig('forcal_multiuser', 1); // Multiuser standardmäßig aktivieren
 }
 
 use forCal\Manager\forCalDatabaseManager;
@@ -90,6 +91,14 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
         ->setPrimaryKey('id')
         ->ensure();
 
+    // Benutzer-Kategorie-Rechte-Tabelle erstellen
+    rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_categories')
+        ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
+        ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
+        ->ensureColumn(new rex_sql_column('category_id', 'int(11)'))
+        ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
+        ->setPrimaryKey('id')
+        ->ensure();
 
     // copy default definitions to data
     rex_dir::copy($this->getPath('data'), $this->getDataPath());
@@ -100,4 +109,3 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
     // create for all tables the lang fields
     forCalDatabaseManager::executeAddLangFields();
 }
-

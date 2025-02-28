@@ -5,27 +5,50 @@
  * @license MIT
  */
 
-// thanks @thorben for the cool calendar view idea !
-// and for the nice colors for the calender headline and weekend
+$addon = rex_addon::get('forcal');
+$user = rex::getUser();
 
-// Get Backend-Lang
-$userLang = rex::getUser()->getLanguage();
-        if ('' === trim($userLang)) {
-            $userLang = rex::getProperty('lang');
+// Benutzerrechte prüfen
+if (!$user->hasPerm('forcal[]')) {
+    echo rex_view::error($addon->i18n('permission_denied'));
+    return;
 }
-$userLang = substr($userLang , 0,-3); 
-// show
-$fragment = new rex_fragment();
-$fragment->setVar('class', 'default calendarview', false);
-$fragment->setVar('title', rex_i18n::msg('forcal_calendar_view'));
-$fragment->setVar('body', '<div id="forcal" data-date="' . date("Y-m-d") . '" data-csrf="' . \forCal\Handler\forCalApi::getToken() . '" data-locale="'. $userLang.'"></div>
-<div id="calmodal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-  <div class="modal-dialog modal-full" role="document">
-    <div class="modal-content">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <div class="calmodal-body"></div>
-    </div>
-  </div>
-</div>', false);
-echo $fragment->parse('core/page/section.php');
 
+// Prüfen, ob der Benutzer überhaupt Kategorien hat (wenn kein Admin)
+if (!$user->isAdmin() && !\forCal\Utils\forCalUserPermission::hasAnyPermission()) {
+    echo rex_view::warning($addon->i18n('forcal_no_permission_categories'));
+}
+
+// Kalender-Filter-Einstellungen
+$show_all = rex_request('show_all', 'bool', false);
+$user_filter = rex_request('user_filter', 'array', []);
+
+// Kategorien für SQL-Abfrage vorbereiten
+$categoryFilter = null;
+
+if (!$user->isAdmin() && !$show_all) {
+    // Nur Kategorien anzeigen, für die der Benutzer Berechtigung hat
+    $categoryFilter = \forCal\Utils\forCalUserPermission::getUserCategories($user->getId());
+} elseif (!empty($user_filter)) {
+    // Nur ausgewählte Kategorien anzeigen
+    $categoryFilter = $user_filter;
+}
+
+// Inhalt
+$fragment = new rex_fragment();
+echo $fragment->parse('forcal_category_filter.php');
+
+?>
+
+<section class="rex-page-section">
+    <div class="panel panel-default calendarview">
+        <div class="panel-body">
+            <div id="forcal" 
+                data-locale="<?= \Locale::getPrimaryLanguage(\Locale::getDefault()) ?>" 
+                data-date="<?= date('Y-m-d') ?>" 
+                data-csrf="<?= rex_csrf_token::factory('forcal_api_call')->getValue() ?>">
+            </div>
+        </div>
+    </div>
+</section>
+</script>
