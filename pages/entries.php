@@ -7,7 +7,7 @@
 
 use forCal\Handler\forCalHandler;
 use forCal\Manager\forCalFormManager;
-use forCal\Manager\forCalFormHelper;
+use forCal\Utils\forCalFormHelper;
 use forCal\Utils\forCalAttributesHelper;
 use forCal\Utils\forCalListHelper;
 use forCal\Utils\forCalUserPermission;
