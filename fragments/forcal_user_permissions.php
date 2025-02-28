@@ -45,7 +45,8 @@ $assigned_categories = $this->getVar('assigned_categories', []);
                         <?php foreach ($categories as $category): ?>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="categories[]" value="<?= $category->getValue('id') ?>" <?= in_array($category->getValue('id'), $assigned_categories) ? 'checked' : '' ?>> 
+                                <input type="checkbox" name="categories[]" value="<?= $category->getValue('id') ?>" <?= in_array($category->getValue('id'), $assigned_categories) ? 'checked' : '' ?>>
+                                <span style="display: inline-block; width: 20px; height: 20px; background-color: <?= $category->getValue('color') ?>; margin-right: 5px; vertical-align: middle;"></span>
                                 <?= $category->getValue('name') ?>
                             </label>
                         </div>
