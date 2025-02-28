@@ -441,7 +441,7 @@ if ($func == 'add' || $func == 'edit') {
     
     // Generate UID field beim Erstellen
     if ($func == 'add') {
-        $form->addHiddenField('uid', \Ramsey\Uuid\Uuid::uuid4()->toString());
+      #  $form->addHiddenField('uid', \Ramsey\Uuid\Uuid::uuid4()->toString());
     }
 
     $content = $form->get();
