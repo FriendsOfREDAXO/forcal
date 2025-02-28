@@ -134,3 +134,19 @@ forcal_select_last_week = letzten
 forcal_entry_name_validation = Bitte geben Sie einen Titel ein
 
 forcal_quick_navigation_label = Aktuelle Termine
+
+### multiuser additions
+forcal_user_permissions = Benutzerberechtigungen
+forcal_users = Benutzer
+forcal_assign_categories = Kategorien zuweisen
+forcal_assign_categories_info = Wählen Sie die Kategorien aus, die der Benutzer verwalten darf.
+forcal_select_all_categories = Alle Kategorien auswählen
+forcal_save_permissions = Berechtigungen speichern
+forcal_user_permissions_saved = Die Berechtigungen wurden gespeichert.
+forcal_permission_denied = Zugriff verweigert. Sie haben keine ausreichenden Berechtigungen.
+forcal_no_permission_for_category = Sie haben keine Berechtigung für diese Kategorie.
+forcal_no_permission_categories = Sie haben keine Berechtigungen für Kalender-Kategorien.
+forcal_filter_my_categories = Nur meine Kategorien anzeigen
+forcal_all_categories = Alle Kategorien
+
+perm_general_forcal[userpermissions] = FORCal Benutzerberechtigungen verwalten
