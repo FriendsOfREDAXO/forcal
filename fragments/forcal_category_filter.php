@@ -1,7 +1,7 @@
 <?php
 /**
  * Fragment zur Filterung der Kategorien im Kalender
- * - Vereinfachte Version für eingeschränkte Nutzer
+ * - Vereinfachte Version mit direkter Filterung
  */
 
 $all_categories = rex_sql::factory()->getArray(
@@ -19,15 +19,13 @@ if (!$user->isAdmin()) {
     $user_categories = \forCal\Utils\forCalUserPermission::getUserCategories($user->getId());
 }
 
-// Die Checkbox wird jetzt nur für Admins angezeigt
-$show_all = $user->isAdmin() ? rex_request('show_all', 'bool', false) : false;
 $userFilter = rex_request('user_filter', 'array', []);
 
 // Aktuelle URL mit Parametern abrufen
 $currentUrl = rex_url::currentBackendPage();
 $currentParams = [];
 foreach ($_GET as $param => $value) {
-    if ($param !== 'show_all' && $param !== 'user_filter') {
+    if ($param !== 'user_filter') {
         $currentParams[$param] = $value;
     }
 }
@@ -43,16 +41,6 @@ foreach ($_GET as $param => $value) {
             <?php foreach ($currentParams as $param => $value): ?>
                 <input type="hidden" name="<?= $param ?>" value="<?= $value ?>">
             <?php endforeach; ?>
-            
-            <?php if ($user->isAdmin()): ?>
-                <!-- Nur Admins sehen die "Alle anzeigen" Checkbox -->
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="show_all" value="1" <?= $show_all ? 'checked' : '' ?> onchange="this.form.submit()">
-                        <?= rex_i18n::msg('forcal_filter_my_categories') ?>
-                    </label>
-                </div>
-            <?php endif; ?>
             
             <!-- Kategorie-Auswahl -->
             <div class="form-group" style="margin-bottom: 15px;">
