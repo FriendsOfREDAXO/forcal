@@ -5,10 +5,8 @@
  * @license MIT
  */
 
-use forCal\Handler\forCalHandler;
-use forCal\Manager\forCalFormManager;
-use forCal\Utils\forCalFormHelper;
 use forCal\Utils\forCalAttributesHelper;
+use forCal\Utils\forCalFormHelper;
 use forCal\Utils\forCalListHelper;
 use forCal\Utils\forCalUserPermission;
 
@@ -209,11 +207,12 @@ if ($func == 'add' || $func == 'edit') {
     
     $repeat_every = $form->addSelectField('repeats');
     $repeat_every->setAttribute('class', 'forcal_repeat_select');
-    $repeat_every->addOption('', 'chose');
-    $repeat_every->addOption(rex_i18n::msg('forcal_select_weekly'), 'weekly');
-    $repeat_every->addOption(rex_i18n::msg('forcal_select_monthly'), 'monthly');
-    $repeat_every->addOption(rex_i18n::msg('forcal_select_monthly_day'), 'monthly-week');
-    $repeat_every->addOption(rex_i18n::msg('forcal_select_yearly'), 'yearly');
+    $select = $repeat_every->getSelect();
+    $select->addOption('', 'chose');
+    $select->addOption(rex_i18n::msg('forcal_select_weekly'), 'weekly');
+    $select->addOption(rex_i18n::msg('forcal_select_monthly'), 'monthly');
+    $select->addOption(rex_i18n::msg('forcal_select_monthly_day'), 'monthly-week');
+    $select->addOption(rex_i18n::msg('forcal_select_yearly'), 'yearly');
     $repeat_every->setLabel(rex_i18n::msg('forcal_repeat_every'));
     
     // views
@@ -248,24 +247,26 @@ if ($func == 'add' || $func == 'edit') {
     
     $repeat_month_week = $form->addSelectField('repeat_month_week');
     $repeat_month_week->setLabel(rex_i18n::msg('forcal_entry_everyn'));
-    $repeat_month_week->addOption(rex_i18n::msg('forcal_select_first_week'), 'first');
-    $repeat_month_week->addOption(rex_i18n::msg('forcal_select_second_week'), 'second');
-    $repeat_month_week->addOption(rex_i18n::msg('forcal_select_third_week'), 'third');
-    $repeat_month_week->addOption(rex_i18n::msg('forcal_select_fourth_week'), 'fourth');
-    $repeat_month_week->addOption(rex_i18n::msg('forcal_select_last_week'), 'last');
+    $select = $repeat_month_week->getSelect();
+    $select->addOption(rex_i18n::msg('forcal_select_first_week'), 'first');
+    $select->addOption(rex_i18n::msg('forcal_select_second_week'), 'second');
+    $select->addOption(rex_i18n::msg('forcal_select_third_week'), 'third');
+    $select->addOption(rex_i18n::msg('forcal_select_fourth_week'), 'fourth');
+    $select->addOption(rex_i18n::msg('forcal_select_last_week'), 'last');
     
     $form->addRawField('</div>');
     $form->addRawField('<div class="col-xs-12 col-sm-4">');
     
     $repeat_day = $form->addSelectField('repeat_day');
     $repeat_day->setLabel(rex_i18n::msg('forcal_entry_repeats'));
-    $repeat_day->addOption(rex_i18n::msg('forcal_select_mon'), 'mon');
-    $repeat_day->addOption(rex_i18n::msg('forcal_select_tue'), 'tue');
-    $repeat_day->addOption(rex_i18n::msg('forcal_select_wed'), 'wed');
-    $repeat_day->addOption(rex_i18n::msg('forcal_select_thu'), 'thu');
-    $repeat_day->addOption(rex_i18n::msg('forcal_select_fri'), 'fri');
-    $repeat_day->addOption(rex_i18n::msg('forcal_select_sat'), 'sat');
-    $repeat_day->addOption(rex_i18n::msg('forcal_select_sun'), 'sun');
+    $select = $repeat_day->getSelect();
+    $select->addOption(rex_i18n::msg('forcal_select_mon'), 'mon');
+    $select->addOption(rex_i18n::msg('forcal_select_tue'), 'tue');
+    $select->addOption(rex_i18n::msg('forcal_select_wed'), 'wed');
+    $select->addOption(rex_i18n::msg('forcal_select_thu'), 'thu');
+    $select->addOption(rex_i18n::msg('forcal_select_fri'), 'fri');
+    $select->addOption(rex_i18n::msg('forcal_select_sat'), 'sat');
+    $select->addOption(rex_i18n::msg('forcal_select_sun'), 'sun');
     
     $form->addRawField('</div>');
     $form->addRawField('</div>');
@@ -341,6 +342,7 @@ if ($func == 'add' || $func == 'edit') {
     // Kategorien-Feld anpassen für Benutzerberechtigungen
     $category = $form->addSelectField('category');
     $category->setLabel($addon->i18n('forcal_entry_category'));
+    
     if (!$user->isAdmin()) {
         // Kategorien filtern, auf die der Benutzer Zugriff hat
         $allowedCategories = forCalUserPermission::getUserCategories($user->getId());
@@ -385,14 +387,22 @@ if ($func == 'add' || $func == 'edit') {
     // Orte-Auswahl
     $venue = $form->addSelectField('venue');
     $venue->setLabel($addon->i18n('forcal_entry_venue'));
-    $venue->getSelect()->addSqlOptions('select id, name_' . rex_clang::getCurrentId() . ' from ' . rex::getTable('forcal_venues') . ' where status = 1 order by name_' . rex_clang::getCurrentId());
+    $select = $venue->getSelect();
+    
+    $sql = rex_sql::factory();
+    $sql->setQuery('SELECT id, name_' . rex_clang::getCurrentId() . ' as name FROM ' . rex::getTable('forcal_venues') . ' WHERE status = 1 ORDER BY name_' . rex_clang::getCurrentId());
+    
+    foreach ($sql as $option) {
+        $select->addOption($option->getValue('name'), $option->getValue('id'));
+    }
     
     $status = $form->addSelectField('status');
     $status->setLabel($addon->i18n('forcal_entry_status'));
-    $status->addOption('online', 1);
-    $status->addOption('offline', 0);
+    $select = $status->getSelect();
+    $select->addOption('online', 1);
+    $select->addOption('offline', 0);
     
-    forCalFormManager::addCollapsePanel($form, 'close_wrapper');
+    forCalFormHelper::addCollapsePanel($form, 'close_wrapper');
     
     // Weitere Formularfelder zu anderen Sprachen hinzufügen
     if (rex_clang::count() > 1) {
@@ -427,9 +437,6 @@ if ($func == 'add' || $func == 'edit') {
             }
         }
     }
-    
-    // Benutzerdefinierte Felder hinzufügen
-    forCalFormHelper::addCustomFormField($form, rex_clang::get(rex_clang::getCurrentId()));
     
     // Generate UID field beim Erstellen
     if ($func == 'add') {
