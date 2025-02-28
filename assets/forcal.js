@@ -475,15 +475,16 @@ function forcal_fullcalendar(forcal) {
             if (pair.length < 2) continue;
             
             let key = decodeURIComponent(pair[0]);
+            let value = decodeURIComponent(pair[1]);
             
             // Die Kategorie-Filter sind als Array gespeichert ('user_filter[]')
             if (key === 'user_filter[]') {
                 if (!params['category']) {
                     params['category'] = [];
                 }
-                params['category'].push(decodeURIComponent(pair[1]));
+                params['category'].push(value);
             } else if (key === 'show_all') {
-                params[key] = decodeURIComponent(pair[1]);
+                params[key] = value;
             }
         }
         
@@ -505,9 +506,6 @@ function forcal_fullcalendar(forcal) {
         weekNumbersWithinDays: true,
         dragScroll: true,
         defaultDate: forcal_date,
-        // lazyFetching: false,
-        // selectable: true,
-        // editable: true,
         eventLimit: true,
         eventClick: function (info) {
             window.location.replace('index.php?page=forcal/entries&func=edit&id=' + info.event.id);
@@ -530,33 +528,36 @@ function forcal_fullcalendar(forcal) {
         events: {
            url: rex.forcal_events_api_url,
            extraParams: function() {
-                // Hier fügen wir die Filter-Parameter für die Events-API hinzu
                 let params = {};
                 
                 // Falls Kategorie-Filter gesetzt sind
                 if (urlParams.category && urlParams.category.length > 0) {
-                    params.category = urlParams.category.join(',');
-                }
-                
-                // Falls "Alle anzeigen" aktiviert ist
-                if (urlParams.show_all) {
-                    params.show_all = urlParams.show_all;
+                    // ÄNDERUNG: Statt Komma-getrennte Liste, übergeben wir die Kategorien einzeln als Array
+                    // Das alte Format: params.category = urlParams.category.join(',');
+                    
+                    // Neues Format: Mehrere Parameter mit demselben Namen
+                    urlParams.category.forEach(function(categoryId, index) {
+                        params['category[' + index + ']'] = categoryId;
+                    });
                 }
                 
                 return params;
             },
-            cache: true,
+            cache: false, // Cache deaktivieren, um sicherzustellen, dass Änderungen sofort wirken
             error: function (xhr, type, exception) {
-                // todo later show warning field
-                // $('#script-warning').show();
+                console.error("API Error:", exception);
                 alert("Error: " + exception);
             },
             success: function (doc) {
+                console.log("API Response:", doc);
             }
         },
     });
 
     calendar.render();
+    
+    // Debug-Hilfe: Zeigt die aktuellen Filter-Parameter
+    console.log("Aktuelle Filter-Parameter:", urlParams);
 }
 
 function addAddIconDay(forcal) {
