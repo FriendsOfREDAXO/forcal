@@ -12,8 +12,16 @@ use forCal\Manager\forCalDatabaseManager;
 if (rex::isBackend() && rex::getUser()) {
     $config = $this->getConfig();
 
-    if (rex_addon::get('watson')->isAvailable()) {
+    // Multiuser Einstellungen aktivieren, wenn gesetzt
+    if (isset($config['forcal_multiuser']) && $config['forcal_multiuser']) {
+        // Rechte für Administrations-Seiten setzen
+        if (rex::getUser()->isAdmin()) {
+            // User Permissions nur für Admins
+            rex_perm::register('forcal[userpermissions]', null, rex_perm::OPTIONS);
+        }
+    }
 
+    if (rex_addon::get('watson')->isAvailable()) {
         function forcal_search(rex_extension_point $ep)
         {
             $subject = $ep->getSubject();
@@ -31,6 +39,7 @@ if (rex::isBackend() && rex::getUser()) {
     // create custom fields
     forCalDatabaseManager::executeCustomFieldHandle();
     rex_view::setJsProperty('forcal_events_api_url', rex_url::backendController(['rex-api-call' => 'forcal_exchange', '_csrf_token' => \forCal\Handler\forCalApi::getToken()]));
+    
     // add js
     rex_view::addJSFile($this->getAssetsUrl('vendor/palettecolorpicker/palette-color-picker.js'));
     rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/main.js'));
@@ -42,6 +51,7 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addJSFile($this->getAssetsUrl('vendor/daterangepicker/moment.min.js'));
     rex_view::addJSFile($this->getAssetsUrl('vendor/daterangepicker/daterangepicker.js'));
     rex_view::addJSFile($this->getAssetsUrl('vendor/clockpicker/bootstrap-clockpicker.js'));
+    rex_view::addJSFile($this->getAssetsUrl('vendor/selectpicker/bootstrap-select.min.js')); // Hinzugefügt für die Kategorieauswahl
     rex_view::addJSFile($this->getAssetsUrl('forcal.js'));
 
     // add css
@@ -52,16 +62,19 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addCssFile($this->getAssetsUrl('vendor/fullcalendar/packages/list/main.css'));
     rex_view::addCssFile($this->getAssetsUrl('vendor/daterangepicker/daterangepicker.css'));
     rex_view::addCssFile($this->getAssetsUrl('vendor/clockpicker/bootstrap-clockpicker.min.css'));
+    rex_view::addCssFile($this->getAssetsUrl('vendor/selectpicker/bootstrap-select.min.css')); // Hinzugefügt für die Kategorieauswahl
     rex_view::addCssFile($this->getAssetsUrl('forcal.css'));
 
     if(rex_string::versionCompare(rex::getVersion(), '5.13.0-dev', '>=')) {
         rex_view::addCssFile($this->getAssetsUrl('forcal-dark.css'));
     }
 
+    // Register clang added event
     rex_extension::register('CLANG_ADDED', function () {
         // duplicate lang columns
         forCalDatabaseManager::executeAddLangFields();
     });
+    
     rex_view::setJsProperty('forcal_shortcut_save', isset($config['forcal_shortcut_save']) && $config['forcal_shortcut_save'] ? $config['forcal_shortcut_save'] : false);
 
     $page = $this->getProperty('page');
@@ -72,6 +85,7 @@ if (rex::isBackend() && rex::getUser()) {
         $this->setProperty('page', $page);
     }
 }
+
 if (rex_plugin::get('forcal', 'documentation')->isInstalled()) {
     $plugin = rex_plugin::get('forcal', 'documentation');
     $manager = rex_package_manager::factory($plugin);
