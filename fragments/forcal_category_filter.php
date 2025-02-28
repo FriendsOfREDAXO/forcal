@@ -55,7 +55,36 @@ foreach ($_GET as $param => $value) {
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="user_filter"><?= rex_i18n::msg('forcal_category_select') ?>:</label>
                     <select name="user_filter[]" id="user_filter" class="form-control selectpicker" multiple data-selected-text-format="count" data-actions-box="true" onchange="this.form.submit()">
-                        <?php foreach ($all_categories as $category): ?>
+                        <?php 
+                        // Bestimmen, welche Kategorien im Dropdown angezeigt werden sollen
+                        $filter_categories = $all_categories;
+                        if (!$user->isAdmin() && !$show_all) {
+                            // Wenn kein Admin und nicht "Alle anzeigen", dann nur die eigenen Kategorien anzeigen
+                            $filter_categories = array_filter($all_categories, function($category) use ($user_categories) {
+                                return in_array($category['id'], $user_categories);
+                            });
+                        }
+                        
+                        foreach ($filter_categories as $category): 
+                        ?>
+                            <option value="<?= $category['id'] ?>" <?= in_array($category['id'], $userFilter) ? 'selected' : '' ?>>
+                                <?= $category['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            <?php elseif (!$user->isAdmin() && !$show_all && !empty($user_categories)): ?>
+                <!-- Wenn kein Admin und nicht "Alle anzeigen", eigene Kategorien direkt zum Filtern anbieten -->
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="user_filter"><?= rex_i18n::msg('forcal_category_select') ?>:</label>
+                    <select name="user_filter[]" id="user_filter" class="form-control selectpicker" multiple data-selected-text-format="count" data-actions-box="true" onchange="this.form.submit()">
+                        <?php 
+                        $filter_categories = array_filter($all_categories, function($category) use ($user_categories) {
+                            return in_array($category['id'], $user_categories);
+                        });
+                        
+                        foreach ($filter_categories as $category): 
+                        ?>
                             <option value="<?= $category['id'] ?>" <?= in_array($category['id'], $userFilter) ? 'selected' : '' ?>>
                                 <?= $category['name'] ?>
                             </option>
