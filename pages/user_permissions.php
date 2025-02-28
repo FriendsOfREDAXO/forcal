@@ -79,6 +79,6 @@ $content .= $fragment->parse('forcal_user_permissions.php');
 
 // Ausgabe
 $title = $addon->i18n('user_permissions');
-$content = rex_view::content('block', $content, $title);
+$content = rex_view::content('ForCal user permissions', $content, $title);
 
 echo $content;
