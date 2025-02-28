@@ -37,6 +37,14 @@ class rex_api_forcal_exchange extends rex_api_function
         }
         */
 
+        // Benutzer-Berechtigung berücksichtigen
+        $useUserPermissions = true;
+        
+        // Wenn der Benutzer die Option "alle anzeigen" gewählt hat, ignorieren wir die Benutzerfilter
+        if (rex_request('show_all', 'boolean', false)) {
+            $useUserPermissions = false;
+        }
+
         if (rex_request::get('id', 'int', 0) > 0) {
             $entry = \forCal\Handler\forCalHandler::exchangeEntry(
                 rex_request('id'),
@@ -48,7 +56,6 @@ class rex_api_forcal_exchange extends rex_api_function
             rex_response::sendContent(json_encode($entry));
 
             exit;
-
         }
 
         $page_number = rex_request('page','integer',null);
@@ -65,7 +72,8 @@ class rex_api_forcal_exchange extends rex_api_function
             rex_request('date_format','string',1),
             rex_request('time_format','string',1),
             $page_size,
-            $page_number
+            $page_number,
+            $useUserPermissions
         );
 
         if (is_int($page_size)) {
@@ -76,6 +84,5 @@ class rex_api_forcal_exchange extends rex_api_function
         rex_response::sendContent(json_encode($entries));
 
         exit;
-
     }
 }
