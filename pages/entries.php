@@ -360,10 +360,21 @@ if ($func == 'add' || $func == 'edit') {
             
             // Select-Feld mit den erlaubten Kategorien erstellen
             $select = $category->getSelect();
-            $select->resetOptions();
             
+            // Statt resetOptions manuell Optionen hinzufügen
+            $categoryOptions = [];
             foreach ($sql as $option) {
-                $select->addOption($option->getValue('name'), $option->getValue('id'));
+                $categoryOptions[$option->getValue('id')] = $option->getValue('name');
+            }
+            
+            // Alte Optionen entfernen
+            foreach ($select->getOptions() as $option) {
+                $select->removeOption($option->getValue());
+            }
+            
+            // Neue Optionen hinzufügen
+            foreach ($categoryOptions as $id => $name) {
+                $select->addOption($name, $id);
             }
         }
     } else {
@@ -377,10 +388,21 @@ if ($func == 'add' || $func == 'edit') {
         );
         
         $select = $category->getSelect();
-        $select->resetOptions();
         
+        // Statt resetOptions manuell Optionen hinzufügen
+        $categoryOptions = [];
         foreach ($sql as $option) {
-            $select->addOption($option->getValue('name'), $option->getValue('id'));
+            $categoryOptions[$option->getValue('id')] = $option->getValue('name');
+        }
+        
+        // Alte Optionen entfernen (falls vorhanden)
+        foreach ($select->getOptions() as $option) {
+            $select->removeOption($option->getValue());
+        }
+            
+        // Neue Optionen hinzufügen
+        foreach ($categoryOptions as $id => $name) {
+            $select->addOption($name, $id);
         }
     }
     
@@ -392,6 +414,12 @@ if ($func == 'add' || $func == 'edit') {
     $sql = rex_sql::factory();
     $sql->setQuery('SELECT id, name_' . rex_clang::getCurrentId() . ' as name FROM ' . rex::getTable('forcal_venues') . ' WHERE status = 1 ORDER BY name_' . rex_clang::getCurrentId());
     
+    // Alte Optionen entfernen (falls vorhanden)
+    foreach ($select->getOptions() as $option) {
+        $select->removeOption($option->getValue());
+    }
+        
+    // Neue Optionen hinzufügen
     foreach ($sql as $option) {
         $select->addOption($option->getValue('name'), $option->getValue('id'));
     }
