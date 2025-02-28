@@ -51,7 +51,6 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addJSFile($this->getAssetsUrl('vendor/daterangepicker/moment.min.js'));
     rex_view::addJSFile($this->getAssetsUrl('vendor/daterangepicker/daterangepicker.js'));
     rex_view::addJSFile($this->getAssetsUrl('vendor/clockpicker/bootstrap-clockpicker.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/selectpicker/bootstrap-select.min.js')); // Hinzugefügt für die Kategorieauswahl
     rex_view::addJSFile($this->getAssetsUrl('forcal.js'));
 
     // add css
@@ -62,7 +61,6 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addCssFile($this->getAssetsUrl('vendor/fullcalendar/packages/list/main.css'));
     rex_view::addCssFile($this->getAssetsUrl('vendor/daterangepicker/daterangepicker.css'));
     rex_view::addCssFile($this->getAssetsUrl('vendor/clockpicker/bootstrap-clockpicker.min.css'));
-    rex_view::addCssFile($this->getAssetsUrl('vendor/selectpicker/bootstrap-select.min.css')); // Hinzugefügt für die Kategorieauswahl
     rex_view::addCssFile($this->getAssetsUrl('forcal.css'));
 
     if(rex_string::versionCompare(rex::getVersion(), '5.13.0-dev', '>=')) {
