@@ -48,6 +48,40 @@ class forCalHandler
     );
 
     /**
+     * Benutzerfreundliche Methode zum Abrufen von Terminen
+     * 
+     * @param string $start_time Startzeit (z.B. 'now', 'today', '-1 hour')
+     * @param mixed $categories Kategorien-IDs (einzelne ID, Array oder null für alle)
+     * @param string $end_time Endzeit relativ zum Start (z.B. '+6 months', '+1 year')
+     * @param mixed $venue_id Ort-ID zum Filtern (oder null für alle)
+     * @param array $custom_filters Zusätzliche Filter (z.B. ['image' => true])
+     * @return array Liste der Termine
+     */
+    public static function getEvents($start_time = 'now', $categories = null, $end_time = '+6 months', $venue_id = null, $custom_filters = [])
+    {
+        // Startdatum verarbeiten
+        $startDate = new \DateTime($start_time);
+        
+        // Enddatum berechnen
+        $endDate = clone $startDate;
+        $endDate->modify($end_time);
+        
+        // Termine abrufen und zurückgeben
+        return self::exchangeEntries(
+            $startDate->format('Y-m-d'),
+            $endDate->format('Y-m-d'),
+            false,                // Vollständige Informationen
+            false,                // Nur aktive Termine
+            'SORT_ASC',           // Aufsteigend sortieren
+            $categories,          // Kategorien
+            $venue_id,            // Ort
+            1,                    // Datumsformat
+            1,                    // Zeitformat
+            $custom_filters       // Benutzerdefinierte Filter
+        );
+    }
+
+    /**
      * @param \stdClass $entry
      * @param \DateTime $startSearchDate
      * @param \DateTime $endSearchDate
@@ -656,15 +690,81 @@ class forCalHandler
      * @param int $timeFormat
      * @param null $pageSize
      * @param null $pageNumber
+     * @param bool $useUserPermissions
+     * @param array $customFilters
      * @return array
      * @throws \rex_sql_exception
      * @author Joachim Doerr
      */
-    public static function exchangeEntries($start, $end, $short = true, $ignoreStatus = false, $sort = 'SORT_ASC', $categoryId = null, $venueId = null, $dateFormat = 1, $timeFormat = 1, $pageSize = null, $pageNumber = null)
+    public static function exchangeEntries($start, $end, $short = true, $ignoreStatus = false, $sort = 'SORT_ASC', $categoryId = null, $venueId = null, $dateFormat = 1, $timeFormat = 1, $pageSize = null, $pageNumber = null, $useUserPermissions = true, $customFilters = [])
     {
         // get entries with date ranges
         // create data list
-        self::getEntries($start, $end, $ignoreStatus, $sort, $categoryId, $venueId, $pageSize, $pageNumber);
+        self::getEntries($start, $end, $ignoreStatus, $sort, $categoryId, $venueId, $pageSize, $pageNumber, $useUserPermissions);
+
+        // Wenn benutzerdefinierte Filter vorhanden sind, wenden wir sie an
+        if (!empty($customFilters)) {
+            $filtered_list = [];
+            
+            foreach (self::$dateList as $item) {
+                $entry = $item['entry'];
+                $include = true;
+                
+                // Jeden benutzerdefinierten Filter prüfen
+                foreach ($customFilters as $field => $value) {
+                    // Callback-Funktion als Filter
+                    if (is_callable($value)) {
+                        // Übergebe den Eintrag an die Callback-Funktion
+                        if (!$value($entry)) {
+                            $include = false;
+                            break;
+                        }
+                        continue;
+                    }
+                    
+                    // Prüfen, ob das Feld existiert (mit oder ohne "entry_" Präfix)
+                    $fieldExists = property_exists($entry, $field);
+                    if (!$fieldExists) {
+                        $entryField = "entry_" . $field;
+                        $fieldExists = property_exists($entry, $entryField);
+                        if ($fieldExists) {
+                            $field = $entryField;
+                        }
+                    }
+                    
+                    // Wenn das Feld nicht existiert, diesen Eintrag überspringen
+                    if (!$fieldExists) {
+                        $include = false;
+                        break;
+                    }
+                    
+                    // Prüfen, ob der Feldwert den Filterkriterien entspricht
+                    if ($value === true && (empty($entry->$field) || $entry->$field === '0')) {
+                        $include = false;
+                        break;
+                    }
+                    
+                    if ($value === false && !empty($entry->$field) && $entry->$field !== '0') {
+                        $include = false;
+                        break;
+                    }
+                    
+                    if (is_string($value) || is_numeric($value)) {
+                        if ($entry->$field != $value) {
+                            $include = false;
+                            break;
+                        }
+                    }
+                }
+                
+                if ($include) {
+                    $filtered_list[] = $item;
+                }
+            }
+            
+            // Gefilterte Liste für die Weiterverarbeitung verwenden
+            self::$dateList = $filtered_list;
+        }
 
         // use the data list
         $decoratedEntries = self::decorateEntries(self::$dateList, $short, $dateFormat, $timeFormat);
