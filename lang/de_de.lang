@@ -84,6 +84,11 @@ rex_forcal_entries_copy = Kopie
 ### entry list
 forcal_entry_list_view = Termine
 forcal_add_entry = Termin anlegen
+forcal_filter = Filtern
+forcal_reset = Zurücksetzen
+forcal_category_filter_title = Nach Kategorie filtern
+forcal_category_filter_all = Alle Kategorien
+forcal_apply_filter = Filter anwenden
 
 ### entry form
 forcal_entry_delete = löschen
