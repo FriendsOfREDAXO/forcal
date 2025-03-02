@@ -15,7 +15,7 @@ Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssyste
 *   **Backend- und Frontend-Integration**: Vollständig kompatibel mit der bestehenden `forCalHandler`-Implementierung.
 *   **Benutzerberechtigungen**: Automatische Berücksichtigung von Benutzerrechten im Backend und Frontend.
 
-![Screenshot](https://github.com/FriendsOfREDAXO/forcal/blob/assets/users.png?raw=true)
+![Screenshot](https://github.com/FriendsOfREDAXO/forcal/blob/assets/user.png?raw=true)
 
 
 ## FORCalEventsFactory
