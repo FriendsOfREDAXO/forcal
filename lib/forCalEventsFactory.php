@@ -1,6 +1,8 @@
 <?php
 namespace forCal\Factory;
 
+use rex;
+
 class forCalEventsFactory
 {
     protected $startTime = 'now';
@@ -9,6 +11,7 @@ class forCalEventsFactory
     protected $venueId = null;
     protected $customFilters = [];
     protected $sortCriteria = [];
+    protected $useUserPermissions = null; // Automatisch bestimmen lassen
 
     /**
      * Setzt den Startzeitpunkt
@@ -69,10 +72,28 @@ class forCalEventsFactory
     }
 
     /**
+     * Explizit Benutzerberechtigungen aktivieren/deaktivieren
+     * In der Regel nicht notwendig, da automatisch erkannt wird
+     */
+    public function withUserPermissions($usePermissions = true)
+    {
+        $this->useUserPermissions = $usePermissions;
+        return $this;
+    }
+
+    /**
      * Gibt alle Termine zurück
      */
     public function get()
     {
+        // Bestimme, ob Benutzerberechtigungen verwendet werden sollen
+        // Falls nicht explizit gesetzt, automatisch erkennen
+        $useUserPermissions = $this->useUserPermissions;
+        if ($useUserPermissions === null) {
+            // Im Frontend keine Berechtigungen verwenden, im Backend nur wenn angemeldet
+            $useUserPermissions = rex::isBackend() && rex::getUser();
+        }
+
         // Erst die Standardsortierung nach Datum verwenden
         $results = \forCal\Handler\forCalHandler::exchangeEntries(
             $this->startTime,
@@ -84,7 +105,10 @@ class forCalEventsFactory
             $this->venueId,
             1,
             1,
-            $this->customFilters
+            $this->customFilters,
+            null, // pageSize
+            null, // pageNumber
+            $useUserPermissions // Benutzerberechtigungen
         );
 
         // Wenn benutzerdefinierte Sortierung angegeben wurde
