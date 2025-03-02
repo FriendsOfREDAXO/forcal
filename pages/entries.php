@@ -707,7 +707,10 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('class', 'forcal_category_select selectpicker form-control');
     $field->setAttribute('data-live-search', 'true');
     $field->setAttribute('required', 'required');
+    
+    $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
 
+    if ($venuesEnabled) {
     // Column: Location
     $field = $form->addSelectField('venue');
     $select = $field->getSelect();
@@ -715,7 +718,7 @@ if ($func == '' || $func == 'filter') {
     $field->setLabel(rex_i18n::msg('forcal_entry_venue'));
     $field->setAttribute('class', 'forcal_venue_select selectpicker form-control');
     $field->setAttribute('data-live-search', 'true');
-
+    }
     // Column: Status
     $field = $form->addSelectField('status');
     $select = $field->getSelect();
