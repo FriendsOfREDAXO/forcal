@@ -1,43 +1,352 @@
-# REDAXO AddOn: FORCal 
+# REDAXO AddOn: FORCal
 
 Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssystem, Event- und Terminplaner für REDAXO 5.x. Das AddOn kann nach Belieben angepasst werden. Es können jderzeit zusätzliche Eingabe-Felder hinzugefügt werden. Darüber hinaus unterstützt das AddOn mehrsprachige REDAXO-Installationen.
 
+## Hauptmerkmale
 
-## Features
-- Erfassung der Einträge
-- Wiederkehrende Ereignisse
-- Zyklen für wiederkehrende Ereignisse (z.B. alle x Monate, jeder x Wochentag im Monat, alle x Wochen)
-- Mehrfachkategorisierung der Einträge
-- Location-Verwaltung
-- Mehrsprachigkeit
-- Anpassbare Eingabeformulare, definierbar über custom yml-Dateien
-- Sprachspezifische Felder
-- Einfacher Abruf der Termine per PHP-Class-Methoden, Rückgabe als Objekte
-- API zur Ausgabe und Filterung der Events als JSON
-- forCalLink class für: data: link für .ics, Terminübergabe zu Google Calendar, Microsoft Outlook (web) möglich
+*   **Flexibler Kalender**: Erstellung von Terminkalendern, Veranstaltungskalendern und Nachrichten.
+*   **Erweiterbarkeit**: Anpassbare Eingabeformulare durch benutzerdefinierte `.yml`-Dateien.
+*   **Mehrsprachigkeit**: Unterstützung mehrsprachiger REDAXO-Installationen.
+*   **Einfache Datenabfrage**: Abruf der Termine über PHP-Class-Methoden, Rückgabe als Objekte.
+*   **API für JSON-Ausgabe**: Ermöglicht die Ausgabe und Filterung von Events als JSON.
+*   **forCalLink-Klasse**: Generierung von Links für `.ics`-Dateien, Terminübergabe zu Google Calendar und Microsoft Outlook (Web).
+*   **Backend- und Frontend-Integration**: Vollständig kompatibel mit der bestehenden `forCalHandler`-Implementierung.
+*   **Benutzerberechtigungen**: Automatische Berücksichtigung von Benutzerrechten im Backend und Frontend.
 
-FOR Calendars ist daher vielfältig einsetzbar und erweiterbar. Terminkalender, Veranstaltungskalender, Nachrichten… alles ist denkbar.  
+## FORCalEventsFactory
 
-## Eigene Felder definieren
-Eigene Felder können im Ordner `/redaxo/data/addons/forcal/definitions/` angelegt werden. Die nach Installation dort befindlichen .yml Dateien erzeugen die Standardfelder. Möchte man eigene Definitionen erstellen, erstellt man entsprechende yml-files mit dem Prefix `custom_`. Möchte man die Standardfelder behalten und weiternutzen, sollten diese auch in die custom Definitionen kopiert werden. 
-Beispiele für mögliche Felder findet man auch in den mitgelieferten yml. 
+Die `forCalEventsFactory`-Klasse bietet eine elegante und flexible Methode, um Termine in forCal abzufragen. Mit einer intuitiven Fluent API ermöglicht sie komplexe Abfragen ohne umständliche Parameter und unterstützt automatisch die korrekte Behandlung von Benutzerberechtigungen im Backend und Frontend.
 
-### Feldtypen
+### Grundlegende Verwendung
 
-- **media** definiert ein Medienauswahfeld für Medien aus dem Medienpool
-- **medialist** definiert ein Mehrfach-Medienauswahfeld für Medien aus dem Medienpool
-- **text** stellt eine Texteingabe zur Veffügung
-- **textarea** stellt eine mehrzeilige Texteingabe zur Veffügung
-- **Link** stellt einen Auswahldialog zur Auswahl eines internen Links zur Verfügung
-- **Linklist** stellt einen Auswahldialog zur Mehrfach-Auswahl eines internen Links zur Verfügung
-- **select** fügt dem Formular eine Selectbox mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
-- **radio** fügt dem Formular eine Radiobutton Group mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
-- **checkbox** fügt dem Formular eine Checkbox mit definierbaren Werten hinzu
-- **checkboxsql** fügt dem Formular eine Checkbox mit Werten aus einer Tabelle hinzu
+Die Factory-Klasse bietet eine fluide API für das Abrufen von Terminen:
+
+```php
+// Alle Termine ab heute für die nächsten 6 Monate
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->to('+6 months')
+    ->get();
+```
+
+### Methoden im Überblick
+
+#### Initialisierung
+
+*   **create()**: Statische Methode zum Erstellen einer neuen Factory-Instanz
+
+#### Zeitraum
+
+*   **from($startTime)**: Setzt den Startzeitpunkt (z.B. 'now', 'today', 'all', DateTime-Objekt)
+*   **to($endTime)**: Setzt den Endzeitpunkt (z.B. '+6 months', '+1 year', DateTime-Objekt)
+
+#### Filterung
+
+*   **inCategories($categories)**: Filtert nach Kategorien (ID oder Array von IDs)
+*   **atVenue($venueId)**: Filtert nach Veranstaltungsort
+*   **withFilter($field, $value)**: Fügt einen benutzerdefinierten Filter hinzu
+*   **withUserPermissions($use)**: Aktiviert/Deaktiviert die Benutzerberechtigungen explizit
+
+#### Sortierung
+
+*   **sortBy($field, $direction)**: Fügt ein Sortierkriterium hinzu ('asc' oder 'desc')
+
+#### Ausführung
+
+*   **get()**: Führt die Abfrage aus und gibt die Termine zurück
+*   **getEntryById($id)**: Gibt einen einzelnen Termin nach ID zurück
 
 ### Beispiele
 
-#### Bei Auslieferung vorhanden: 
+#### Zeiträume mit Strings
+
+```php
+// Termine ab jetzt
+$termine = forCalEventsFactory::create()
+    ->from('now')
+    ->get();
+
+// Termine ab heute bis Ende des Jahres
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->to('last day of december')
+    ->get();
+
+// Alle vergangenen und zukünftigen Termine
+$termine = forCalEventsFactory::create()
+    ->from('all')
+    ->get();
+
+// Termine der letzten Woche
+$termine = forCalEventsFactory::create()
+    ->from('-1 week')
+    ->to('today')
+    ->get();
+
+// Termine für die nächsten 4 Wochen
+$termine = forCalEventsFactory::create()
+    ->from('now')
+    ->to('+4 weeks')
+    ->get();
+```
+
+#### Zeiträume mit DateTime-Objekten
+
+```php
+// Mit DateTime-Objekten für den aktuellen Monat
+$startDate = new \DateTime('first day of this month');
+$endDate = new \DateTime('last day of this month');
+
+$termine = forCalEventsFactory::create()
+    ->from($startDate)
+    ->to($endDate)
+    ->get();
+
+// Einen spezifischen Zeitraum definieren
+$startDate = new \DateTime('2024-05-01');
+$endDate = new \DateTime('2024-08-31');
+
+$termine = forCalEventsFactory::create()
+    ->from($startDate)
+    ->to($endDate)
+    ->get();
+
+// DateTime mit spezifischen Uhrzeiten
+$start = new \DateTime();
+$start->setTime(8, 0, 0); // Heute um 8:00 Uhr
+
+$end = new \DateTime();
+$end->setTime(18, 0, 0); // Heute um 18:00 Uhr
+$end->modify('+7 days'); // Eine Woche später
+
+$termine = forCalEventsFactory::create()
+    ->from($start)
+    ->to($end)
+    ->get();
+```
+
+#### Filtern nach Kategorien
+
+```php
+// Termine der Kategorie 3
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->inCategories(3)
+    ->get();
+
+// Termine der Kategorien 1, 3 und 5
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->inCategories([1, 3, 5])
+    ->get();
+```
+
+#### Filtern nach Orten
+
+```php
+// Termine am Ort mit ID 2
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->atVenue(2)
+    ->get();
+
+// Termine der Kategorie 3 am Ort 2
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->inCategories(3)
+    ->atVenue(2)
+    ->get();
+```
+
+#### Benutzerdefinierte Filter
+
+```php
+// Nur Termine mit Bildern
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->withFilter('image', true)
+    ->get();
+
+// Termine in Berlin
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->withFilter('city', 'Berlin')
+    ->get();
+
+// Termine mit Bildern, aber ohne Datei-Anhänge
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->withFilter('image', true)
+    ->withFilter('file', false)
+    ->get();
+```
+
+#### Sortierung
+
+```php
+// Nach Titel alphabetisch sortieren
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->sortBy('title', 'asc')
+    ->get();
+
+// Nach Datum absteigend (neueste zuerst)
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->sortBy('date_time.date', 'desc')
+    ->get();
+
+// Mehrfache Sortierung: Erst nach Kategorie, dann nach Datum
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->sortBy('category_name', 'asc')  // Primäres Sortierkriterium
+    ->sortBy('date_time.date', 'asc') // Sekundäres Sortierkriterium
+    ->get();
+```
+
+#### Frontend/Backend-Erkennung
+
+Die Factory erkennt automatisch, ob sie im Frontend oder Backend verwendet wird:
+
+```php
+// Im Frontend: Ignoriert Benutzerberechtigungen
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->get();
+
+// Im Backend: Berücksichtigt Benutzerberechtigungen automatisch
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->get();
+
+// Explizit Benutzerberechtigungen ignorieren (z.B. für Admin-Übersicht)
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->withUserPermissions(false)
+    ->get();
+```
+
+#### Einzelnen Termin abrufen
+
+```php
+// Termin mit ID 123 abrufen
+$termin = forCalEventsFactory::create()
+    ->getEntryById(123);
+
+// Termin mit ID 123 abrufen, aber nur wenn er ein Bild hat
+$termin = forCalEventsFactory::create()
+    ->withFilter('image', true)
+    ->getEntryById(123);
+```
+
+#### Komplexere Beispiele
+
+```php
+// Workshop-Termine aus Berlin mit Bildern, nach Datum sortiert
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->to('+1 year')
+    ->inCategories(3)  // Angenommen, Kategorie 3 ist "Workshops"
+    ->withFilter('city', 'Berlin')
+    ->withFilter('image', true)
+    ->sortBy('date_time.date', 'asc')
+    ->get();
+
+// Alle vergangenen Konzerte, gruppiert nach Veranstaltungsort
+$termine = forCalEventsFactory::create()
+    ->from('all')
+    ->to('today')
+    ->inCategories(2)  // Angenommen, Kategorie 2 ist "Konzerte"
+    ->sortBy('venue_name', 'asc')
+    ->sortBy('date_time.date', 'desc')
+    ->get();
+```
+
+## Integration in Module
+
+### Einfaches Modul zur Anzeige kommender Termine
+
+```php
+// Termine abrufen
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->to('+3 months')
+    ->sortBy('date_time.date', 'asc')
+    ->get();
+
+// Termine ausgeben
+echo '<div class="termine-liste">';
+foreach ($termine as $termin) {
+    echo '<div class="termin">';
+    echo '<h3>' . $termin['title'] . '</h3>';
+    echo '<p>' . $termin['date_time']['date'] . '</p>';
+
+    if (!$termin['date_time']['full_time'] && !empty($termin['date_time']['time'])) {
+        echo '<p>' . $termin['date_time']['time'] . '</p>';
+    }
+
+    if (isset($termin['teaser'])) {
+        echo '<div class="teaser">' . $termin['teaser'] . '</div>';
+    }
+
+    echo '</div>';
+}
+echo '</div>';
+```
+
+### Filtern nach benutzerdefinierten Feldern
+
+```php
+// Termine in einer bestimmten Stadt und mit einem bestimmten Attribut
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->withFilter('city', 'München')
+    ->withFilter('besondere_eigenschaft', true)
+    ->get();
+```
+
+### Verwendung von Callback-Funktionen für komplexe Filter
+
+```php
+// Nur Termine, deren Name das Wort "Workshop" enthält
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->withFilter('custom_filter', function($entry) {
+        return stripos($entry->entry_name, 'Workshop') !== false;
+    })
+    ->get();
+
+// Nur Termine, die vormittags stattfinden
+$termine = forCalEventsFactory::create()
+    ->from('today')
+    ->withFilter('time_filter', function($entry) {
+        $hour = (int)substr($entry->entry_start_time, 0, 2);
+        return $hour >= 8 && $hour < 12;
+    })
+    ->get();
+```
+
+## Eigene Felder definieren
+
+Eigene Felder können im Ordner `/redaxo/data/addons/forcal/definitions/` angelegt werden. Die nach Installation dort befindlichen .yml Dateien erzeugen die Standardfelder. Möchte man eigene Definitionen erstellen, erstellt man entsprechende yml-files mit dem Prefix `custom_`. Möchte man die Standardfelder behalten und weiternutzen, sollten diese auch in die custom Definitionen kopiert werden.
+Beispiele für mögliche Felder findet man auch in den mitgelieferten yml.
+
+### Feldtypen
+
+*   **media**: Definiert ein Medienauswahfeld für Medien aus dem Medienpool
+*   **medialist**: Definiert ein Mehrfach-Medienauswahfeld für Medien aus dem Medienpool
+*   **text**: Stellt eine Texteingabe zur Verfügung
+*   **textarea**: Stellt eine mehrzeilige Texteingabe zur Verfügung
+*   **Link**: Stellt einen Auswahldialog zur Auswahl eines internen Links zur Verfügung
+*   **Linklist**: Stellt einen Auswahldialog zur Mehrfach-Auswahl eines internen Links zur Verfügung
+*   **select**: Fügt dem Formular eine Selectbox mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
+*   **radio**: Fügt dem Formular eine Radiobutton Group mit definierbaren Werten und ggf. Werte aus einer Tabelle hinzu
+*   **checkbox**: Fügt dem Formular eine Checkbox mit definierbaren Werten hinzu
+*   **checkboxsql**: Fügt dem Formular eine Checkbox mit Werten aus einer Tabelle hinzu
+
+### Beispiele
+
+#### Bei Auslieferung vorhanden:
 
 ```yml
 fields:
@@ -117,7 +426,6 @@ langfields:
       rt: 'Rot'
 ```
 
-
 ### Attribute
 
 Zu allen Feldern können Attribute angegeben werden.
@@ -149,317 +457,34 @@ Ein Selectfeld mit mehrfacher Auswahlmöglichkeit und einer Höhe von 5 Elemente
       size: 5
 ```
 
-
 ## Text-Editor definieren
 
-forCal erlaubt es einen beliebigen Editor für die Eingabe in den Textfeldern zu wählen. Die Standard Textfelder können über JSON-Definitionen eingestellt werden. Das Verfahren entspreicht der Lösung in yForm. 
+forCal erlaubt es, einen beliebigen Editor für die Eingabe in den Textfeldern zu wählen. Die Standard Textfelder können über JSON-Definitionen eingestellt werden. Das Verfahren entspricht der Lösung in yForm.
 
-### Teaser und Beschreibung 
-In den Einstellungen findet man zwei Felder zur Definition der *individuellen Attribute* für die Textfelder. 
-Hier gibt man die gewünschten Attribute für den gewünschten Editor ein: 
+### Teaser und Beschreibung
+
+In den Einstellungen findet man zwei Felder zur Definition der *individuellen Attribute* für die Textfelder.
+Hier gibt man die gewünschten Attribute für den gewünschten Editor ein:
 
 z.B.
+
 ```
 {"class":"redactorEditor2-forcal_text"}
 ```
+
 oder
+
 ```
 {"class":"tinyMCEEditor-lite"}
 ```
-Es können beliebige weitere Attribute hinzugefügt werden wie required , data-attribute, Zeichenlänge etc.. 
+
+Es können beliebige weitere Attribute hinzugefügt werden wie `required`, `data-attribute`, Zeichenlänge etc..
 
 ### Eigene Textfelder
 
-In den Eigenen Feldern können für jedes Feld Attribute angegeben werden, die die Textfelder beeinflussen und so auch Editoren einbinden. 
+In den Eigenen Feldern können für jedes Feld Attribute angegeben werden, die die Textfelder beeinflussen und so auch Editoren einbinden.
 
-
-## Modulbeispiel
-Hier ein Modul, das einige Filtermöglichkeiten zur Verfügung stellt. 
-
-### Modul-Eingabe:
-
-Es werden drei Filter-Dropdowns erstellt
-- Zeitraum
-- Kategorie (zieht die Werte aus der Datenbank)
-- Location (zieht die Werte aus der Datenbank) + 'Alle Locations'
-
-Anhand der gesetzten Filter werden im Output die Kalendereinträge geladen
-
-```php 
-<?php
-// Perioden zur Auswahl stellen. 
-// ------------------------------------
-$select_p = new rex_select();
-$select_p->setId('period'); 
-$select_p->setAttribute('class', 'selectpicker form-control');
-$select_p->setName('REX_INPUT_VALUE[2]');
-$select_p->addOption('Gesamter Zeitraum','all');
-$select_p->addOption('Halbes Jahr','halfayear');
-$select_p->addOption('Vierteljahr','quarter');
-$select_p->setSelected('REX_VALUE[2]');
-$periodselect = $select_p->get(); 
-
-// forCal-Kategorien zur Auswahl stellen. 
-// ------------------------------------
-$select = new rex_select();
-$select->setId('forcal_category');
-$select->setAttribute('class', 'selectpicker form-control');
-$select->setName('REX_INPUT_VALUE[3]');
-$select->addOption('Alle','');
-$select->addSqlOptions('SELECT `name_1`, `id` FROM `' . rex::getTablePrefix() . 'forcal_categories` ORDER BY `name_1` ASC');
-$select->setSelected('REX_VALUE[3]');
-$catselect = $select->get(); 
-
-// Venues zur Auswahl stellen. 
-// ------------------------------------
-$select_v = new rex_select();
-$select_v->setId('forcal_category');
-$select_v->setAttribute('class', 'selectpicker form-control');
-$select_v->addOption('Alle',null);
-$select_v->setName('REX_INPUT_VALUE[4]');
-$select_v->addSqlOptions('SELECT `name_1`, `id` FROM `' . rex::getTablePrefix() . 'forcal_venues` ORDER BY `name_1` ASC');
-$select_v->setSelected('REX_VALUE[4]');
-$venueselect = $select_v->get(); 
-?>
-
-<fieldset class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label" for="category">Kategorie</label>
-    <div class="col-sm-10">
-    <?= $catselect ?>
-    </div>
-  </div>
-</fieldset>
-<fieldset class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label" for="period">Zeitraum</label>
-    <div class="col-sm-10">
-	    <?= $periodselect ?>
-    </div>
-  </div>
-</fieldset>
-<fieldset class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label" for="venues">Location</label>
-    <div class="col-sm-10">
-	    <?= $venueselect ?>
-    </div>
-  </div>
-</fieldset>
-```
-
-### Modulausgabe:
-
-```php
-<?php
-// Sprache festlegen ... ggf. aus Sprachmetas auslesen 
-setlocale (LC_ALL, 'de_DE.utf8');
-
-$categoryId ='';
-$filter_date = "";
-$today       = date("Y-m-d H:i:s");
-$today       = strtotime($today);
-
-//init start date and get end date
-$start = date("Y-m-d");
- $end = REX_VALUE[2];
-
-//react to period filter
-if ($end == 'all') {
-    $start       = new DateTime("1900-08-09");
-    $filter_date = ("2100-01-01");
-}
-if ($end == 'halfayear') {
-    $halfayear = strtotime('+ 6 month', $today);
-    $filter_date = date("Y-m-d", $halfayear);
-}
-if ($end == 'quarter') {
-    $quarter     = strtotime('+ 3 month', $today);
-    $filter_date = date("Y-m-d", $quarter);
-}
-//get CategoryID and VenueID
-$categoryId = REX_VALUE[3];
-if($categoryId==''){
-$categoryId = null;
-}
-else {
-    $categoryId = REX_VALUE[3];
-}
-$venues = REX_VALUE[4];
-if ($venues == '') {
-    $entries = \forCal\Handler\forCalHandler::getEntries($start, $filter_date, true, 'SORT_ASC', $categoryId);
-}
-if ($venues != '') {
-    $entries = \forCal\Handler\forCalHandler::getEntries($start, $filter_date, true, 'SORT_ASC', $categoryId, $venues);
-}
-
-////////////////////////////////////////////////////////////
-//////////You get the dates from every forCal entry//////////
-//////////////////////////////////////////////////////////
-
-foreach ($entries as $data) {
-    // dump($data);   // Array ausgeben  
-    $event                 = $data['entry'];
-    //Format start and end date
-    $end_date = rex_formatter::format(date_timestamp_get($event->entry_end_date),'strftime','%A, %d. %B %Y');   
-    $start_date = rex_formatter::format(date_timestamp_get($event->entry_start_date),'strftime','%A, %d. %B %Y');
-    //Format start time without seconds
-    $entry_start_time      = $event->entry_start_time;
-    $entry_start_time_date = new DateTime($entry_start_time);
-    $start_time            = $entry_start_time_date->format('H:i');
-    //Format end time without seconds
-    $entry_end_time        = $event->entry_end_time;
-    $entry_end_time_date   = new DateTime($entry_end_time);
-    $end_time              = $entry_end_time_date->format('H:i');
-    //dump($events);
-    if ($event->entry_id != '0') {
-        echo '<div id="wrapper_entry">';
-        echo '<div class="entry_name"> ' . $event->entry_name . ' </div>';
-        echo '<div class="entry_data"> ' . $event->venue_name . ' <i class="fa fa-map-marker" aria-hidden="true"></i></div>';
-        echo '<div class="entry_data">', $start_date, ' ', ' bis ', $end_date, '</br>', $start_time, ' ', ' bis ', $end_time, '</div>';
-        echo '<p class="entry_data">' . $event->type . '</p>';
-        echo '<div class="entry_teaser">' . $event->entry_teaser . '</div>';
-        echo '<div class="textbox entry_text">' . $event->entry_text . '</p></div>';
-        echo '</div>';
-    }
-}
-```
-
-
-## FOR calendar als FullCalendar im Frontend
-
-inkl. Anzeige einer Detailseite 
-
-### CSS und Javascript 
-
-Zunächst erstellt man ein Javascript zur Initialisierung des Kalenders. Dieses verwendet die API um sich die Termine des Kalenders zu holen. 
-Es sucht auf der Website einen Container mit der ID `#forcal` in dem der Kalender ausgegeben wird. Hier wird ein Kalender inkl. Terminliste ausgegeben. 
-Dies lässt sich leicht anpassen und den eigenen Wünschen entsprechend gestalten. Weitere Infos dazu hier: [FullCalendar - JavaScript Event Calendar](https://fullcalendar.io/) 
-
-Das Skript legt man z.B. unter `/assets/js/forcal.js` ab 
-
-```js
-$(function () {
-    forcal_init();
-});
-
-function forcal_init() {
-    var forcal = $('#forcal');
-
-    if (forcal.length) {
-        forcal_fullcalendar(forcal);
-    }
-
-}
-
-function forcal_fullcalendar(forcal) {
-    var base_link = forcal.data('link'),
-        calendarEl = document.getElementById(forcal.attr('id'));
-
-    let calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ['interaction', 'dayGrid', 'timeGrid'],
-        
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        locale: 'de',
-        weekNumbers: true,
-        weekNumbersWithinDays:true,
-        dragScroll: true,
-        eventLimit: true, // allow "more" link when too many events
-        eventDrop: function(event, delta, revertFunc) {
-        },
-        eventResize: function(event, delta, revertFunc) {
-        },
-        eventClick: function(info) {
-            window.location.replace(base_link + '?event_id=' + info.event.id);
-        },
-        events: {
-            url: '/?rex-api-call=forcal_exchange',
-            cache: true,
-            error: function(xhr, type, exception) {
-                 console.log("Error: " + exception);
-            },
-            success: function(doc) {
-                // add plus circle
-            }
-        }
-    });
-    
-     calendar.render();
-}
-
-```
-
-> wird kein Rewriter verwendet muss `window.location.replace(base_link + '?event_id=' + info.event.id);` in `window.location.replace(base_link + '&event_id=' + info.event.id);`
-geändert werden. 
-
-Anschließend bindet man die erforderlichen JS und CSS für die Frontendausgabe im Template ein. 
-
-#### CSS
-
-```html
-<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/core/main.min.css') ?>">
-<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/daygrid/main.min.css') ?>"> 
-<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/list/main.min.css') ?>">
-<link rel="stylesheet" href="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/timegrid/main.min.css') ?>">
-```
-
-
-#### Javascript 
-
-***JQuery*** muss vor allen anderen Skripten eingebunden sein. Die Skripte sollten im Header oder vor dem schließenden body Tag eingebunden werden.  
-
-```html
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/core/main.js') ?>"></script>
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/daygrid/main.js') ?>"></script>   
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/interaction/main.js') ?>"></script>   
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/timegrid/main.js') ?>"></script>    
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/list/main.js') ?>"></script> 
-<script type="text/javascript" src="<?= rex_url::base('assets/addons/forcal/vendor/fullcalendar/packages/core/locales-all.min.js') ?>"></script>
-<script type="text/javascript" src="<?= rex_url::base('assets/js/forcal.js') ?>"></script>
-```
-
-
-### Das Modul für die Ausgabe. 
-
-Es besteht nur aus einem Ausgabecode. (Diesen ggf. den eigenen Stilen entsprechend anpassen)
-
-```php 
-<?php
-// Ausgabe der Detail-Seite
-if(!is_null(rex_request::get('event_id', 'integer', null))) {
-    $data = \forCal\Handler\forCalHandler::exchangeEntry(rex_request::get('event_id'), false);
-    // dump($data);
-    $header = '<div class="forcal-title">';
-    $header .= '<h1>'.$data['title'].'</h1>';
-    $header .= '<span class="forcal-meta">' . \forCal\Utils\forCalDateTimeHelper::getFromToDate(new \DateTime($data['start']), new \DateTime($data['end'])) . ' ' . \forCal\Utils\forCalDateTimeHelper::getFromToTime(new \DateTime($data['start']), new \DateTime($data['end'])) . '</span> ';
-    $header .= '<hr style="border-color:'.$data['color'].'"> ';
-    // Backlink
-    $header .= '<div class="pull-left">
-    <a class="btn btn-primary" href="'.rex_getUrl('REX_ARTICLE_ID', rex_clang::getCurrentId()).'">Kalender</a>
-    </div>';
-    // Bild
-    if (!empty($data['entries_image'])) {
-        $media = rex_media::get($data['entries_image']);
-        $header .= '<img class="forcal-img" src="'.$media->getUrl().'">';
-    }
-    $header .= '</div>';
-    $teaser = '<div class="forcal-teaser">'.$data['teaser'].'</div>';
-    echo $header.$teaser.'<article class="forcal-text">'.$data['text'].'</article>';
-} 
-// Kalender ausgeben
-else {
-?>
-<div id="forcal" class="forcal" data-link="<?php echo rex_getUrl('REX_ARTICLE_ID', rex_clang::getCurrentId());?>"></div>
-<?php } ?>
-
-```
-
-## Terminlink erstellen 
-
+## Terminlink erstellen
 
 ```php
 // Datum und Uhrzeit für Termin-Link holen und vorbereiten
@@ -486,12 +511,9 @@ echo '<a href="'.$link->webOutlook().'">Outlook</a><br>';
 echo '<a href="'.$link->ics().'">ICS</a>';
 ```
 
-
-
 ## Bugtracker
 
 Du hast einen Fehler gefunden oder ein nettes Feature parat? [Lege ein Issue an](https://github.com/FriendsOfREDAXO/forcal/issues). Bevor du ein neues Issue erstellst, suche bitte ob bereits eines mit deinem Anliegen existiert und lese die [Issue Guidelines (englisch)](https://github.com/necolas/issue-guidelines) von [Nicolas Gallagher](https://github.com/necolas/).
-
 
 ## Lizenz
 
@@ -501,20 +523,21 @@ siehe [LICENSE](https://github.com/FriendsOfREDAXO/forcal/blob/master/LICENCE)
 
 **Friends Of REDAXO**
 
-* http://www.redaxo.org
-* https://github.com/FriendsOfREDAXO
-
+*   http://www.redaxo.org
+*   https://github.com/FriendsOfREDAXO
 
 **Development-Team**
-* [Joachim Dörr](https://github.com/joachimdoerr) 
-* [Wolfgang Bund](https://github.com/dtpop) 
-* [Thomas Skerbis](https://github.com/skerbis)
-* [Christian Gehrke](https://github.com/chrison94)
+
+*   [Joachim Dörr](https://github.com/joachimdoerr)
+*   [Wolfgang Bund](https://github.com/dtpop)
+*   [Thomas Skerbis](https://github.com/skerbis)
+*   [Christian Gehrke](https://github.com/chrison94)
 
 **Chief Developer**
-[Joachim Dörr](https://github.com/joachimdoerr) 
 
+[Joachim Dörr](https://github.com/joachimdoerr)
 
-Mit freundlicher Unterstützung durch: 
+Mit freundlicher Unterstützung durch:
 
 [Deutsche Fußball-Route NRW e.V.](https://dfr-nrw.de)
+```

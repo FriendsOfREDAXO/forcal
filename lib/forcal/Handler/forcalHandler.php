@@ -396,7 +396,6 @@ class forCalHandler
             $select = array_merge($select, $fields);
         }
 
-
         return $select;
     }
 
@@ -654,17 +653,83 @@ class forCalHandler
      * @param null|int $venueId
      * @param int $dateFormat
      * @param int $timeFormat
+     * @param array $customFilters
      * @param null $pageSize
      * @param null $pageNumber
+     * @param bool $useUserPermissions Ob Benutzerberechtigungen berücksichtigt werden sollen
      * @return array
      * @throws \rex_sql_exception
      * @author Joachim Doerr
      */
-    public static function exchangeEntries($start, $end, $short = true, $ignoreStatus = false, $sort = 'SORT_ASC', $categoryId = null, $venueId = null, $dateFormat = 1, $timeFormat = 1, $pageSize = null, $pageNumber = null)
+    public static function exchangeEntries($start, $end, $short = true, $ignoreStatus = false, $sort = 'SORT_ASC', $categoryId = null, $venueId = null, $dateFormat = 1, $timeFormat = 1, $customFilters = [], $pageSize = null, $pageNumber = null, $useUserPermissions = true)
     {
         // get entries with date ranges
         // create data list
-        self::getEntries($start, $end, $ignoreStatus, $sort, $categoryId, $venueId, $pageSize, $pageNumber);
+        self::getEntries($start, $end, $ignoreStatus, $sort, $categoryId, $venueId, $pageSize, $pageNumber, $useUserPermissions);
+
+        // Wenn benutzerdefinierte Filter vorhanden sind, wenden wir sie an
+        if (!empty($customFilters)) {
+            $filtered_list = [];
+            
+            foreach (self::$dateList as $item) {
+                $entry = $item['entry'];
+                $include = true;
+                
+                // Jeden benutzerdefinierten Filter prüfen
+                foreach ($customFilters as $field => $value) {
+                    // Callback-Funktion als Filter
+                    if (is_callable($value)) {
+                        // Übergebe den Eintrag an die Callback-Funktion
+                        if (!$value($entry)) {
+                            $include = false;
+                            break;
+                        }
+                        continue;
+                    }
+                    
+                    // Prüfen, ob das Feld existiert (mit oder ohne "entry_" Präfix)
+                    $fieldExists = property_exists($entry, $field);
+                    if (!$fieldExists) {
+                        $entryField = "entry_" . $field;
+                        $fieldExists = property_exists($entry, $entryField);
+                        if ($fieldExists) {
+                            $field = $entryField;
+                        }
+                    }
+                    
+                    // Wenn das Feld nicht existiert, diesen Eintrag überspringen
+                    if (!$fieldExists) {
+                        $include = false;
+                        break;
+                    }
+                    
+                    // Prüfen, ob der Feldwert den Filterkriterien entspricht
+                    if ($value === true && (empty($entry->$field) || $entry->$field === '0')) {
+                        $include = false;
+                        break;
+                    }
+                    
+                    if ($value === false && !empty($entry->$field) && $entry->$field !== '0') {
+                        $include = false;
+                        break;
+                    }
+                    
+                    if (is_string($value) || is_numeric($value)) {
+                        if ($entry->$field != $value) {
+                            $include = false;
+                            break;
+                        }
+                    }
+                }
+                
+                if ($include) {
+                    $filtered_list[] = $item;
+                }
+            }
+            
+            // Gefilterte Liste für die Weiterverarbeitung verwenden
+            self::$dateList = $filtered_list;
+        }
 
         // use the data list
         $decoratedEntries = self::decorateEntries(self::$dateList, $short, $dateFormat, $timeFormat);
