@@ -322,6 +322,7 @@ class forCalHandler
     protected static function createSelect()
     {
         $additional_for_title = \rex_config::get('forcal','forcal_additional_for_title');
+        $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
 
         $name = 'en.name_' . rex_clang::getCurrentId() . ' AS entry_name';
         if ($additional_for_title && \rex::isBackend() && \rex_be_controller::getCurrentPage() == 'forcal' ) {
@@ -348,14 +349,18 @@ class forCalHandler
             'en.full_time AS full_time',
             'PERIOD_DIFF(DATE_FORMAT(en.end_date, "%Y%m"), DATE_FORMAT(en.start_date, "%Y%m")) AS entry_month_diff',
             'IFNULL(ca.status, 1) AS category_status',
-            'IFNULL(ve.status, 1) AS venue_status',
             'en.teaser_' . rex_clang::getCurrentId() . ' AS entry_teaser',
             'en.text_' . rex_clang::getCurrentId() . ' AS entry_text',
             'ca.name_' . rex_clang::getCurrentId() . ' AS category_name',
             'ca.id AS category_id',
-            've.name_' . rex_clang::getCurrentId() . ' AS venue_name',
-            've.id AS venue_id',
         );
+        
+        // Venue-Felder nur hinzufügen, wenn Venues aktiviert sind
+        if ($venuesEnabled) {
+            $select[] = 'IFNULL(ve.status, 1) AS venue_status';
+            $select[] = 've.name_' . rex_clang::getCurrentId() . ' AS venue_name';
+            $select[] = 've.id AS venue_id';
+        }
 
         $definitionFields = array();
 
@@ -417,6 +422,7 @@ class forCalHandler
         $venue = '';
         $category = '';
         $userFilter = '';
+        $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
         
         // Benutzerrechte-Filter hinzufügen
         if ($useUserPermissions && rex::getUser() && !rex::getUser()->isAdmin()) {
@@ -429,6 +435,11 @@ class forCalHandler
 
         if (!$ignoreStatus) {
             $statusHaving = ' HAVING category_status = 1';
+            
+            // Wenn Venues aktiviert sind, auch venue_status in HAVING berücksichtigen
+            if ($venuesEnabled) {
+                $statusHaving .= ' AND venue_status = 1';
+            }
         }
 
         if (is_array($categoryId) && sizeof($categoryId) > 0) {
@@ -439,8 +450,9 @@ class forCalHandler
                 $category = ' AND en.category = ' . $catId . ' ';
             }
         }
-
-        if (!is_null($venueId)) {
+        
+        // Venue-Filter nur berücksichtigen, wenn Venues aktiviert sind
+        if ($venuesEnabled && !is_null($venueId)) {
             $venue = ' AND en.venue = ' . $venueId . ' ';
         }
 
@@ -452,15 +464,20 @@ class forCalHandler
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
           LEFT JOIN
-            ' . rex::getTablePrefix() . 'forcal_venues AS ve 
-          ON
-            ve.id = en.venue
-            
-          LEFT JOIN
             ' . rex::getTablePrefix() . 'forcal_categories AS ca 
           ON
-            ca.id = en.category
+            ca.id = en.category';
             
+        // Venue-JOIN nur hinzufügen, wenn Venues aktiviert sind
+        if ($venuesEnabled) {
+            $query .= '
+          LEFT JOIN
+            ' . rex::getTablePrefix() . 'forcal_venues AS ve 
+          ON
+            ve.id = en.venue';
+        }
+            
+        $query .= '  
           WHERE
             en.type = \'one_time\' AND
             ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
@@ -477,15 +494,20 @@ class forCalHandler
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
           LEFT JOIN
-            ' . rex::getTablePrefix() . 'forcal_venues AS ve 
-          ON
-            ve.id = en.venue
-            
-          LEFT JOIN
             ' . rex::getTablePrefix() . 'forcal_categories AS ca 
           ON
-            ca.id = en.category
+            ca.id = en.category';
             
+        // Venue-JOIN auch in der UNION nur hinzufügen, wenn Venues aktiviert sind
+        if ($venuesEnabled) {
+            $query .= '
+          LEFT JOIN
+            ' . rex::getTablePrefix() . 'forcal_venues AS ve 
+          ON
+            ve.id = en.venue';
+        }
+            
+        $query .= '  
           WHERE
             en.type = \'repeat\' AND
             ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
@@ -510,6 +532,8 @@ class forCalHandler
     {
         $select = self::createSelect();
         $sql = rex_sql::factory();
+        $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
+        
         $query = '
           SELECT
             ' .implode(', ', $select). '
@@ -517,15 +541,20 @@ class forCalHandler
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
           LEFT JOIN
-            ' . rex::getTablePrefix() . 'forcal_venues AS ve 
-          ON
-            ve.id = en.venue
-            
-          LEFT JOIN
             ' . rex::getTablePrefix() . 'forcal_categories AS ca 
           ON
-            ca.id = en.category
-
+            ca.id = en.category';
+            
+        // Venue-JOIN nur hinzufügen, wenn Venues aktiviert sind
+        if ($venuesEnabled) {
+            $query .= '
+          LEFT JOIN
+            ' . rex::getTablePrefix() . 'forcal_venues AS ve 
+          ON
+            ve.id = en.venue';
+        }
+            
+        $query .= '
           WHERE
             en.id = ' . $id;
             
@@ -643,14 +672,7 @@ class forCalHandler
         return $decoratedEntries;
     }
 
-    /**
-     * @param $start
-     * @param $end
-     * @param bool $short
-     * @param bool $ignoreStatus
-     * @param string $sort [SORT_ASC, SORT_DESC]
-     * @param null|int|array $categoryId
-     * @param null|int $venueId
+    * @param null|int $venueId
      * @param int $dateFormat
      * @param int $timeFormat
      * @param array $customFilters
