@@ -1,114 +1,137 @@
 ### defaults
-forcal_title = Calendar
+forcal_title = Kalender
 forcal_help = Hjälp
-forcal_offline = offline
-forcal_online = online
+forcal_offline = Offline
+forcal_online = Online
 forcal_startdate = Datum
 forcal_starttime = Tid
 forcal_config = Inställningar
 forcal_config_save = Spara inställningar
-forcal_config_saved = Inställningar sparades
-forcal_colors = Kategorifärger hexadezimal #ffffff, #000000
-forcal_datepicker = Datepicker
-forcal_customfield_check = Definitions-Fieldcheck
-forcal_additional_attributes = Individuella attribut
-forcal_additional_attributes_notice = Var god skriv i JSON format. T.ex. {"class":"my-class","placeholder":"My placeholder"}
-forcal_additional_field_for_category = Ytterligare fält för identifiering av kategorin
-forcal_please_select = Optional utval
+forcal_config_saved = Inställningarna sparades.
+forcal_colors = Kategori Färger Hexadecimal #ffffff, #000000
+forcal_datepicker = Datumväljare
+forcal_customfield_check = Definitionsfältkontroll
+forcal_additional_attributes = Anpassade attribut
+forcal_additional_attributes_notice = Skriv som JSON. t.ex. {"class":"my-class","placeholder":"Min platshållare"}
+forcal_additional_field_for_category = Ytterligare fält för kategoridentifiering
+forcal_please_select = Valfritt val
 forcal_only_multilanguage_fields_shown = Endast flerspråkiga fält visas
-forcal_clone = duplicera
-forcal_status_function = Status/funktion
+forcal_clone = Duplicera
+forcal_status_function = Status/Funktion
+forcal_shortcut_save = Använd kortkommando för att spara mötet (Ctrl+S)
+forcal_full_time_preselection = "Heldagshändelse" förvalt
+forcal_start_page = Startsida
+forcal_change_message = Uppgifterna har hämtats från ett annat kalender-tillägg. Det ursprungliga tillägget har avinstallerats.
+forcal_add_new_entry = Lägg till ny post
 
-perm_general_forcal[settings] = Ändra Inställningarna
+# Nya poster för utökade behörigheter
+forcal_venues_enabled = Aktivera plats-tabell
+forcal_media_upload_permission = Tillåt bild uppladdning (använd Media/Medialist-fält)
+forcal_all_categories_access = Obegränsad åtkomst till alla kategorier (som admin)
+forcal_users_with_permission = Användare med forCal-behörigheter
+
+perm_general_forcal[] = Använd forCal
+perm_general_forcal[settings] = Redigera FORCal-inställningar
+perm_general_forcal[catspage] = Hantera FORCal-kategorier
+perm_general_forcal[venuespage] = Hantera FORCal-platser
+perm_general_forcal[userpermissions] = Hantera FORCal-användarbehörigheter
+perm_general_forcal[all] = FORCal-åtkomst till alla kategorier
+perm_general_forcal[media] = FORCal Ladda upp bilder
 
 ### navigation points
 forcal_calendar = Kalender
-forcal_entries = Bidrag
+forcal_entries = Poster
 forcal_categories = Kategorier
-forcal_venues = Locations
+forcal_venues = Platser
 forcal_settings = Inställningar
 
 ### cal view
-forcal_calendar_view = Kalenderblad
+forcal_calendar_view = Översikt
 
 ### venue
-rex_forcal_venues_toggle_status_error = Evenemangsortens status kunde inte ändras.
-rex_forcal_venues_toggle_status_success = Evenemangsortens status ändrades
-rex_forcal_venues_deleted = Evenemangsorten raderades
+rex_forcal_venues_toggle_status_error = Kunde inte ändra platsens status.
+rex_forcal_venues_toggle_status_success = Platsens status ändrades.
+rex_forcal_venues_deleted = Platsen raderades.
 rex_forcal_venues_cloned = Platsen duplicerades.
 
 ### venue list
-forcal_venues_title = Locations
-forcal_venue_name = Location
-forcal_add_venue = Skapa location
-forcal_venue_delete = Radera location
+forcal_venues_title = Platser
+forcal_venue_name = Plats
+forcal_add_venue = Lägg till plats
+forcal_venue_delete = Radera plats
 
 ### venue form
-forcal_venue_add = Tillfoga location
-forcal_venue_edit = Ändra location
+forcal_venue_add = Lägg till plats
+forcal_venue_edit = Redigera plats
 
 ### categories
-rex_forcal_categories_toggle_status_error = Kategoriens status kunde inte ändras
-rex_forcal_categories_toggle_status_success = Kategoriens status ändrades
-rex_forcal_categories_deleted = Kategorien raderades.
-rex_forcal_categories_cloned = Kategorin har duplicerats.
+rex_forcal_categories_toggle_status_error = Kunde inte ändra kategori status.
+rex_forcal_categories_toggle_status_success = Kategori status ändrades.
+rex_forcal_categories_deleted = Kategorin raderades.
+rex_forcal_categories_cloned = Kategorin duplicerades.
 
 ### categories list
 forcal_categories_title = Kategorier
-forcal_add_category = Skapa kategori
+forcal_add_category = Lägg till kategori
 
 ### categories form
 forcal_category = Kategori
 forcal_category_delete = Radera kategori
-forcal_category_add = Tillfoga kategori
-forcal_category_edit = Ändra kategori
+forcal_category_add = Lägg till kategori
+forcal_category_edit = Redigera kategori
 forcal_category_name = Namn
 forcal_category_color = Färg
-forcal_category_color_not_empty = Vänligen välj en färg
+forcal_category_color_not_empty = Välj en färg
 
 ### entry
-rex_forcal_entries_toggle_status_error = Statusen kunde inte ändras
-rex_forcal_entries_toggle_status_success = Statusen ändrades.
-rex_forcal_entries_deleted = Bidraget raderades.
-rex_forcal_entries_cloned = Datumet duplicerades.
+rex_forcal_entries_toggle_status_error = Kunde inte ändra postens status.
+rex_forcal_entries_toggle_status_success = Postens status ändrades.
+rex_forcal_entries_deleted = Posten raderades.
+rex_forcal_entries_cloned = Posten duplicerades.
+rex_forcal_entries_copy = Kopiera
 
 ### entry list
-forcal_entry_list_view = Bidrag
-forcal_add_entry = Skapa nytt bidrag
+forcal_entry_list_view = Poster
+forcal_add_entry = Lägg till post
+forcal_filter = Filter
+forcal_reset = Återställ
+forcal_category_filter_title = Filtrera efter kategori
+forcal_category_filter_all = Alla kategorier
+forcal_apply_filter = Använd filter
 
 ### entry form
-forcal_entry_delete = Radera bidrag
-forcal_entry_add = Skapa nytt bidrag
-forcal_entry_edit = Ändra bidrag
+forcal_entry_delete = Radera
+forcal_entry_add = Lägg till post
+forcal_entry_edit = Redigera post
 forcal_entry_date = Datum
-forcal_from = från
-forcal_to = till
-forcal_entry_type = Typ
-forcal_radio_one_time = unik händelse
-forcal_radio_repeat = återkommande händelse
-forcal_repeat_every = frekvens
-forcal_entry_repeats = Upprepa
+forcal_from = Från
+forcal_to = Till
+forcal_entry_type = Upprepa
+forcal_radio_one_time = Engångshändelse
+forcal_radio_repeat = Återkommande händelse
+forcal_repeat_every = Frekvens
+forcal_entry_repeats = Upprepas
 forcal_entry_everyn = varje
 forcal_entry_everye = varje
 forcal_entry_everys = varje
-forcal_select_monthly = månadsvis
-forcal_select_weekly = veckovis
-forcal_select_yearly = årsvis
+forcal_select_monthly = Månatligen
+forcal_select_weekly = Varje vecka
+forcal_select_yearly = Årligen
 forcal_repeat_every_weekly = Vecka
 forcal_repeat_every_monthly = Månad
 forcal_repeat_every_yearly = År
 forcal_repeat_ending = Slutdatum
 forcal_entry_name = Titel
 forcal_entry_teaser = Teaser / Kort beskrivning
-forcal_entry_text = Teaser / Längre breskrivning
+forcal_entry_text = Beskrivning
 forcal_entry_category = Kategori
 forcal_entry_venue = Plats
 forcal_entry_status = Status
-forcal_entry_full_time = heltid
+forcal_entry_full_time = Hela dagen
 forcal_checkbox_full_time = Hela dagen händelse
-forcal_redactor2 = Redactor 2
+forcal_redactor2 = Redaktör 2
 
-forcal_sql_database_min_version = Databasen {0} {1} är inaktuell, åtminstone version {2} krävs!
+forcal_sql_database_min_version = Databasen {0} {1} är föråldrad, en minimiversion {2} krävs!
 forcal_select_monthly_day = månadsvis [veckodag]
 forcal_select_sun = Söndag
 forcal_select_sat = Lördag
@@ -117,10 +140,31 @@ forcal_select_tue = Tisdag
 forcal_select_wed = Onsdag
 forcal_select_thu = Torsdag
 forcal_select_fri = Fredag
-forcal_select_first_week = första
-forcal_select_second_week = andra
-forcal_select_third_week = tredje
-forcal_select_fourth_week = fjärde
-forcal_select_last_week = sista
+forcal_select_first_week = Första
+forcal_select_second_week = Andra
+forcal_select_third_week = Tredje
+forcal_select_fourth_week = Fjärde
+forcal_select_last_week = Sista
 
-forcal_entry_name_validation = Vänligen ange en titel
+forcal_entry_name_validation = Ange en titel
+
+forcal_quick_navigation_label = Aktuella poster
+
+### multiuser additions
+forcal_user_permissions = Användarbehörigheter
+forcal_users = Användare
+forcal_assign_categories = Tilldela kategorier
+forcal_assign_categories_info = Välj de kategorier som användaren får hantera.
+forcal_select_all_categories = Välj alla kategorier
+forcal_save_permissions = Spara behörigheter
+forcal_user_permissions_saved = Behörigheter sparade.
+forcal_user_permissions_error = Ett fel uppstod när behörigheter sparades.
+forcal_permission_denied = Åtkomst nekad. Du har inte tillräcklig behörighet.
+forcal_no_permission_for_category = Du har inte behörighet för den här kategorin.
+forcal_no_permission_categories = Du har inte behörighet för kalenderkategorier.
+forcal_filter_my_categories = Visa bara mina kategorier
+forcal_all_categories = Alla kategorier
+forcal_no_categories = Inga kategorier
+forcal_select_categories = Välj kategorier
+forcal_category_filter = Kategori filter
+forcal_category_select = Kategorier
