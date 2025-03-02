@@ -172,10 +172,27 @@ class forCalFormFieldsetHandler
         // Prüfen, ob der aktuelle Benutzer Media-Felder sehen darf
         $canUploadMedia = rex::getUser() && (rex::getUser()->isAdmin() || forCalUserPermission::canUploadMedia());
         
+        // Prüfen, ob Orte-Felder angezeigt werden sollen
+        $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
+        
         if (array_key_exists('type', $field)) {
             // Bei Media-Feldern prüfen, ob der Benutzer die Berechtigung hat
             if (in_array($field['type'], ['media', 'medialist']) && !$canUploadMedia) {
                 return; // Media-Feld überspringen
+            }
+            
+            // Bei Orte-Feldern prüfen, ob Orte aktiviert sind
+            if (array_key_exists('name', $field)) {
+                // Wenn es ein Feld für Orte ist und Orte sind deaktiviert, überspringen
+                if (!$venuesEnabled && (
+                    $field['name'] == 'venue' || 
+                    strpos($field['name'], 'venue_') === 0 ||
+                    (isset($field['label_de']) && stripos($field['label_de'], 'ort') !== false) ||
+                    (isset($field['label_en']) && stripos($field['label_en'], 'venue') !== false) ||
+                    (isset($field['label_all']) && (stripos($field['label_all'], 'ort') !== false || stripos($field['label_all'], 'venue') !== false))
+                )) {
+                    return; // Orte-Feld überspringen
+                }
             }
             
             switch ($field['type']) {
@@ -256,6 +273,11 @@ class forCalFormFieldsetHandler
                     break;
                 case 'select':
                 case 'selectsql':
+                    // Bei select für 'venue' prüfen wir, ob Orte aktiviert sind
+                    if ($field['name'] === 'venue' && !$venuesEnabled) {
+                        return; // Orte-Feld überspringen
+                    }
+                    
                     $formField = $form->addSelectField($field['name']);
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
