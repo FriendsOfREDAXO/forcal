@@ -2,6 +2,8 @@
 
 Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssystem, Event- und Terminplaner für REDAXO 5.x. Das AddOn kann nach Belieben angepasst werden. Es können jderzeit zusätzliche Eingabe-Felder hinzugefügt werden. Darüber hinaus unterstützt das AddOn mehrsprachige REDAXO-Installationen.
 
+![Screenshot](https://github.com/FriendsOfREDAXO/forcal/blob/assets/screenshot5.png?raw=true)
+
 ## Hauptmerkmale
 
 *   **Flexibler Kalender**: Erstellung von Terminkalendern, Veranstaltungskalendern und Nachrichten.
@@ -12,6 +14,9 @@ Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssyste
 *   **forCalLink-Klasse**: Generierung von Links für `.ics`-Dateien, Terminübergabe zu Google Calendar und Microsoft Outlook (Web).
 *   **Backend- und Frontend-Integration**: Vollständig kompatibel mit der bestehenden `forCalHandler`-Implementierung.
 *   **Benutzerberechtigungen**: Automatische Berücksichtigung von Benutzerrechten im Backend und Frontend.
+
+![Screenshot](https://github.com/FriendsOfREDAXO/forcal/blob/assets/user.png?raw=true)
+
 
 ## FORCalEventsFactory
 
