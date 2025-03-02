@@ -8,10 +8,12 @@
 namespace forCal\Handler;
 
 
+use rex;
 use rex_clang;
 use rex_form;
 use rex_i18n;
 use forCal\Utils\forCalFormHelper;
+use forCal\Utils\forCalUserPermission;
 
 class forCalFormFieldsetHandler
 {
@@ -167,7 +169,15 @@ class forCalFormFieldsetHandler
      */
     private static function addFormElementByField(rex_form $form, $field)
     {
+        // Prüfen, ob der aktuelle Benutzer Media-Felder sehen darf
+        $canUploadMedia = rex::getUser() && (rex::getUser()->isAdmin() || forCalUserPermission::canUploadMedia());
+        
         if (array_key_exists('type', $field)) {
+            // Bei Media-Feldern prüfen, ob der Benutzer die Berechtigung hat
+            if (in_array($field['type'], ['media', 'medialist']) && !$canUploadMedia) {
+                return; // Media-Feld überspringen
+            }
+            
             switch ($field['type']) {
                 case 'media':
                     $formField = $form->addMediaField($field['name']);
@@ -244,8 +254,6 @@ class forCalFormFieldsetHandler
                         }
                     }
                     break;
-
-
                 case 'select':
                 case 'selectsql':
                     $formField = $form->addSelectField($field['name']);
@@ -278,5 +286,16 @@ class forCalFormFieldsetHandler
             }
 
         }
+    }
+    
+    /**
+     * Prüft, ob ein Feld vom Typ 'media' oder 'medialist' ist
+     * 
+     * @param array $field Das zu prüfende Feld
+     * @return bool true wenn es ein Media-Feld ist
+     */
+    private static function isMediaField($field)
+    {
+        return isset($field['type']) && in_array($field['type'], ['media', 'medialist']);
     }
 }
