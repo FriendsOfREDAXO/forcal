@@ -71,9 +71,9 @@ $users = forCalUserPermission::filterUsersWithForcalPermission($users);
                         <?php foreach ($categories as $category): ?>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="categories[]" value="<?= $category->getValue('id') ?>" <?= in_array($category->getValue('id'), $assigned_categories) ? 'checked' : '' ?>>
-                                <span style="display: inline-block; width: 20px; height: 20px; background-color: <?= $category->getValue('color') ?>; margin-right: 5px; vertical-align: middle;"></span>
-                                <?= $category->getValue('name') ?>
+                                <input type="checkbox" name="categories[]" value="<?= $category->id ?>" <?= in_array($category->id, $assigned_categories) ? 'checked' : '' ?>>
+                                <span style="display: inline-block; width: 20px; height: 20px; background-color: <?= $category->color ?>; margin-right: 5px; vertical-align: middle;"></span>
+                                <?= $category->name ?>
                             </label>
                         </div>
                         <?php endforeach; ?>
