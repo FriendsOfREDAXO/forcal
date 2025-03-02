@@ -1,26 +1,46 @@
 ### defaults
-forcal_title = Calendar
+forcal_title = Kalender
 forcal_help = Hjælp
-forcal_offline = offline
-forcal_online = online
+forcal_offline = Offline
+forcal_online = Online
 forcal_startdate = Dato
 forcal_starttime = Tid
 forcal_config = Indstillinger
 forcal_config_save = Gem indstillinger
-forcal_config_saved = Indstillinger blev gemt.
-forcal_colors = Kategori farver Hexadezimal #ffffff, #000000
-forcal_datepicker = Datepicker
-forcal_customfield_check = Definitioner-Fieldcheck
-forcal_additional_attributes = Individuelle egenskaber
-forcal_additional_attributes_notice = Skriv venligst som JSON. f.eks. {"class":"my-class","placeholder":"My placeholder"}
-forcal_additional_field_for_category = Yderligere felt til identifikation af kategorien
+forcal_config_saved = Indstillingerne er gemt.
+forcal_colors = Kategori Farver Hexadecimal #ffffff, #000000
+forcal_datepicker = Datovælger
+forcal_customfield_check = Definition Feltkontrol
+forcal_additional_attributes = Brugerdefinerede Attributter
+forcal_additional_attributes_notice = Skriv som JSON. f.eks. {"class":"min-klasse","placeholder":"Min pladsholder"}
+forcal_additional_field_for_category = Ekstra felt til kategoriidentifikation
+forcal_please_select = Valgfri valg
 forcal_only_multilanguage_fields_shown = Kun flersprogede felter vises
-forcal_clone = duplikere
-forcal_status_function = Status/funktion
+forcal_clone = Dupliker
+forcal_status_function = Status/Funktion
+forcal_shortcut_save = Brug genvejstasten til at gemme aftalen (Ctrl+S)
+forcal_full_time_preselection = "Heldagsbegivenhed" forvalgt
+forcal_start_page = Startside
+forcal_change_message = Dataene er blevet overført fra en anden kalender-add-on. Den originale add-on er blevet afinstalleret.
+forcal_add_new_entry = Tilføj ny post
+
+# Nye poster for udvidede tilladelser
+forcal_venues_enabled = Aktivér lokaler tabel
+forcal_media_upload_permission = Tillad billede upload (brug Media/Medialiste felter)
+forcal_all_categories_access = Ubegrænset adgang til alle kategorier (som admin)
+forcal_users_with_permission = Brugere med forCal tilladelser
+
+perm_general_forcal[] = Brug forCal
+perm_general_forcal[settings] = Rediger FORCal Indstillinger
+perm_general_forcal[catspage] = Administrer FORCal Kategorier
+perm_general_forcal[venuespage] = Administrer FORCal Lokaler
+perm_general_forcal[userpermissions] = Administrer FORCal Brugerrettigheder
+perm_general_forcal[all] = FORCal Adgang til alle kategorier
+perm_general_forcal[media] = FORCal Upload Billeder
 
 ### navigation points
 forcal_calendar = Kalender
-forcal_entries = Begivenheder
+forcal_entries = Indlæg
 forcal_categories = Kategorier
 forcal_venues = Lokaler
 forcal_settings = Indstillinger
@@ -29,78 +49,122 @@ forcal_settings = Indstillinger
 forcal_calendar_view = Oversigt
 
 ### venue
-rex_forcal_venues_toggle_status_error = Status for lokalet kunne ikke ændres.
-rex_forcal_venues_toggle_status_success = Status for lokalet er blevet ændret.
-rex_forcal_venues_deleted = Lokalet er blevet slettet.
-rex_forcal_venues_cloned = Lokalet blev dupliceret.
+rex_forcal_venues_toggle_status_error = Kunne ikke ændre lokales status.
+rex_forcal_venues_toggle_status_success = Lokales status er ændret.
+rex_forcal_venues_deleted = Lokalet er slettet.
+rex_forcal_venues_cloned = Lokalet er duplikeret.
 
 ### venue list
 forcal_venues_title = Lokaler
 forcal_venue_name = Lokale
-forcal_add_venue = Opret lokale
+forcal_add_venue = Tilføj lokale
 forcal_venue_delete = Slet lokale
 
 ### venue form
-forcal_venue_add = Opret Lokale
+forcal_venue_add = Tilføj lokale
 forcal_venue_edit = Rediger lokale
 
 ### categories
-rex_forcal_categories_toggle_status_error = Status for kategorien kunne ikke ændres.
-rex_forcal_categories_toggle_status_success = Status for kategorien er blevet ændret.
-rex_forcal_categories_deleted = Kategorien er blevet slettet.
-rex_forcal_categories_cloned = Kategorien er blevet dupliceret.
+rex_forcal_categories_toggle_status_error = Kunne ikke ændre kategoriens status.
+rex_forcal_categories_toggle_status_success = Kategoriens status er ændret.
+rex_forcal_categories_deleted = Kategorien er slettet.
+rex_forcal_categories_cloned = Kategorien er duplikeret.
 
 ### categories list
 forcal_categories_title = Kategorier
-forcal_add_category = Opret kategorie
+forcal_add_category = Tilføj kategori
 
 ### categories form
-forcal_category = Kategorie
-forcal_category_delete = Slet kategorie
-forcal_category_add = Opret kategorie
-forcal_category_edit = Rediger kategorie
+forcal_category = Kategori
+forcal_category_delete = Slet kategori
+forcal_category_add = Tilføj kategori
+forcal_category_edit = Rediger kategori
 forcal_category_name = Navn
 forcal_category_color = Farve
-forcal_category_color_not_empty = Vælg venligst en farve
+forcal_category_color_not_empty = Vælg en farve
 
 ### entry
-rex_forcal_entries_toggle_status_error = Status for begivenheden kunne ikke ændres.
-rex_forcal_entries_toggle_status_success = Status for begivenheden er blevet ændret.
-rex_forcal_entries_deleted = Begivenheden blevet slettet.
-rex_forcal_entries_cloned = Begivenheden blev dupliceret.
+rex_forcal_entries_toggle_status_error = Kunne ikke ændre postens status.
+rex_forcal_entries_toggle_status_success = Postens status er ændret.
+rex_forcal_entries_deleted = Posten er slettet.
+rex_forcal_entries_cloned = Posten er duplikeret.
+rex_forcal_entries_copy = Kopiér
 
 ### entry list
-forcal_entry_list_view = Begivenheder
-forcal_add_entry = Opret begivenhed
+forcal_entry_list_view = Poster
+forcal_add_entry = Tilføj post
+forcal_filter = Filter
+forcal_reset = Nulstil
+forcal_category_filter_title = Filtrér efter kategori
+forcal_category_filter_all = Alle kategorier
+forcal_apply_filter = Anvend filter
 
 ### entry form
-forcal_entry_delete = slet
-forcal_entry_add = Opret begivenhed
-forcal_entry_edit = Rediger begivenhed
+forcal_entry_delete = Slet
+forcal_entry_add = Tilføj post
+forcal_entry_edit = Rediger post
 forcal_entry_date = Dato
-forcal_from = fra
-forcal_to = til
-forcal_entry_type = Gentagelser
-forcal_radio_one_time = Unik begivenhed
-forcal_radio_repeat = Gentagende begivenhed
-forcal_repeat_every = Frekvens
+forcal_from = Fra
+forcal_to = Til
+forcal_entry_type = Gentag
+forcal_radio_one_time = Engangsforeteelse
+forcal_radio_repeat = Tilbagevendende begivenhed
+forcal_repeat_every = Hyppighed
 forcal_entry_repeats = Gentagelser
 forcal_entry_everyn = hver
 forcal_entry_everye = hver
 forcal_entry_everys = hver
-forcal_select_monthly = månedlige
-forcal_select_weekly = ugentlig
-forcal_select_yearly = årligt
-forcal_repeat_every_weekly = uge
-forcal_repeat_every_monthly = måned
-forcal_repeat_every_yearly = år
-forcal_repeat_ending = slutdato
+forcal_select_monthly = Månedligt
+forcal_select_weekly = Ugentligt
+forcal_select_yearly = Årligt
+forcal_repeat_every_weekly = Uge
+forcal_repeat_every_monthly = Måned
+forcal_repeat_every_yearly = År
+forcal_repeat_ending = Slutdato
 forcal_entry_name = Titel
-forcal_entry_teaser = Teaser / kort beskrivelse
+forcal_entry_teaser = Teaser / Kort beskrivelse
 forcal_entry_text = Beskrivelse
 forcal_entry_category = Kategori
 forcal_entry_venue = Lokale
 forcal_entry_status = Status
 forcal_entry_full_time = Hele dagen
-forcal_checkbox_full_time = Hele dagen begivenhed
-forcal_redactor2 = Redaktor 2
+forcal_checkbox_full_time = Heldagsbegivenhed
+forcal_redactor2 = Redaktør 2
+
+forcal_sql_database_min_version = Databasen {0} {1} er forældet, en minimumsversion {2} er påkrævet!
+forcal_select_monthly_day = månedligt [ugedag]
+forcal_select_sun = Søndag
+forcal_select_sat = Lørdag
+forcal_select_mon = Mandag
+forcal_select_tue = Tirsdag
+forcal_select_wed = Onsdag
+forcal_select_thu = Torsdag
+forcal_select_fri = Fredag
+forcal_select_first_week = Første
+forcal_select_second_week = Anden
+forcal_select_third_week = Tredje
+forcal_select_fourth_week = Fjerde
+forcal_select_last_week = Sidste
+
+forcal_entry_name_validation = Indtast en titel
+
+forcal_quick_navigation_label = Aktuelle indlæg
+
+### multiuser additions
+forcal_user_permissions = Brugerrettigheder
+forcal_users = Brugere
+forcal_assign_categories = Tildel kategorier
+forcal_assign_categories_info = Vælg de kategorier, som brugeren må administrere.
+forcal_select_all_categories = Vælg alle kategorier
+forcal_save_permissions = Gem rettigheder
+forcal_user_permissions_saved = Rettigheder gemt.
+forcal_user_permissions_error = Der opstod en fejl under lagring af rettigheder.
+forcal_permission_denied = Adgang nægtet. Du har ikke tilstrækkelige tilladelser.
+forcal_no_permission_for_category = Du har ikke tilladelse til denne kategori.
+forcal_no_permission_categories = Du har ikke tilladelser til kalenderkategorier.
+forcal_filter_my_categories = Vis kun mine kategorier
+forcal_all_categories = Alle kategorier
+forcal_no_categories = Ingen kategorier
+forcal_select_categories = Vælg kategorier
+forcal_category_filter = Kategori filter
+forcal_category_select = Kategorier
