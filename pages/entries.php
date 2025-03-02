@@ -708,13 +708,21 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('data-live-search', 'true');
     $field->setAttribute('required', 'required');
 
-    // Column: Location
-    $field = $form->addSelectField('venue');
-    $select = $field->getSelect();
-    $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . ' ORDER BY name_' . rex_clang::getCurrentId());
-    $field->setLabel(rex_i18n::msg('forcal_entry_venue'));
-    $field->setAttribute('class', 'forcal_venue_select selectpicker form-control');
-    $field->setAttribute('data-live-search', 'true');
+   // Prüfen, ob Orte aktiviert sind
+   $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
+
+   if ($venuesEnabled) {
+      // venue field
+      $field = $form->addSelectField('venue');
+      $field->setLabel(rex_i18n::msg('forcal_entry_venue'));
+      $select = $field->getSelect();
+      $select->addOption('- ' . rex_i18n::msg('forcal_please_select') . ' -', '');
+      $sql = rex_sql::factory();
+      $sql->setQuery('SELECT id, name_' . rex_clang::getCurrentId() . ' as name FROM ' . rex::getTable('forcal_venues') . ' WHERE status = 1 ORDER BY name');
+      foreach ($sql as $row) {
+          $select->addOption($row->getValue('name'), $row->getValue('id'));
+      }
+   }
 
     // Column: Status
     $field = $form->addSelectField('status');
