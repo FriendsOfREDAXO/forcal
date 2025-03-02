@@ -9,6 +9,7 @@ namespace forCal\Handler;
 
 
 use rex;
+use rex_addon;
 use rex_clang;
 use rex_sql;
 use forCal\Utils\forCalDateTimeHelper;
