@@ -18,8 +18,10 @@ if (rex::isBackend() && rex::getUser()) {
     // Neues Recht für uneingeschränkten Zugriff (wie Admin)
     rex_perm::register('forcal[all]', null, rex_perm::OPTIONS);
     
-    // Neues Recht für Upload von Medien
-    rex_perm::register('forcal[media]', null, rex_perm::OPTIONS);
+    // Rechte für spezifische Seiten
+    rex_perm::register('forcal[settings]', null, rex_perm::OPTIONS);
+    rex_perm::register('forcal[catspage]', null, rex_perm::OPTIONS);
+    rex_perm::register('forcal[venuespage]', null, rex_perm::OPTIONS);
 
     // Multiuser Einstellungen aktivieren, wenn gesetzt
     if (isset($config['forcal_multiuser']) && $config['forcal_multiuser']) {
@@ -42,7 +44,19 @@ if (rex::isBackend() && rex::getUser()) {
     }
     
     if (rex_addon::get('quick_navigation')->isAvailable()) {
-    rex_extension::register('QUICK_NAVI_CUSTOM', ['forCalQn','getCalHistory'], rex_extension::LATE);
+        rex_extension::register('QUICK_NAVI_CUSTOM', ['forCalQn','getCalHistory'], rex_extension::LATE);
+    }
+
+    // Tabelle für Medienberechtigungen erstellen, falls sie noch nicht existiert
+    $mediaPermTable = rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_media_permissions');
+    if (!$mediaPermTable->exists()) {
+        $mediaPermTable
+            ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
+            ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
+            ->ensureColumn(new rex_sql_column('can_upload_media', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
+            ->setPrimaryKey('id')
+            ->ensure();
     }
 
     // create custom fields
