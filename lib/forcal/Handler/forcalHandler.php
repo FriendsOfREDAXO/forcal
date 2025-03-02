@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author mail[at]doerr-softwaredevelopment[dot]com Joachim Doerr
  * @package redaxo5
@@ -47,59 +46,6 @@ class forCalHandler
         'thu' => 'thursday',
         'fri' => 'friday',
     );
-
-    /**
-     * Benutzerfreundliche Methode zum Abrufen von Terminen
-     * 
-     * @param string $start_time Startzeit (z.B. 'now', 'today', '-1 hour', 'all' für alle vergangenen Termine)
-     * @param mixed $categories Kategorien-IDs (einzelne ID, Array oder null für alle)
-     * @param string $end_time Endzeit relativ zum Start (z.B. '+6 months', '+1 year')
-     * @param mixed $venue_id Ort-ID zum Filtern (oder null für alle)
-     * @param array $custom_filters Zusätzliche Filter (z.B. ['image' => true])
-     * @return array Liste der Termine
-     */
-    public static function getEvents($start_time = 'now', $categories = null, $end_time = '+6 months', $venue_id = null, $custom_filters = [])
-    {
-        // Sonderfall: 'all' bedeutet alle Termine in der Vergangenheit bis zum angegebenen Enddatum
-        if ($start_time === 'all') {
-            $startDate = new \DateTime('1970-01-01'); // Weit in der Vergangenheit
-
-            // Wenn ein Enddatum angegeben ist, ab heute berechnen
-            if ($end_time !== null) {
-                $endDate = new \DateTime();
-                $endDate->modify($end_time);
-            } else {
-                // Wenn kein Enddatum angegeben ist, 100 Jahre in die Zukunft
-                $endDate = new \DateTime('+100 years');
-            }
-        } else {
-            // Standardfall: Startdatum verarbeiten
-            $startDate = new \DateTime($start_time);
-
-            // Enddatum berechnen
-            $endDate = clone $startDate;
-            if ($end_time !== null) {
-                $endDate->modify($end_time);
-            } else {
-                // Standardwert: 6 Monate
-                $endDate->modify('+6 months');
-            }
-        }
-
-        // Termine abrufen und zurückgeben
-        return self::exchangeEntries(
-            $startDate->format('Y-m-d'),
-            $endDate->format('Y-m-d'),
-            false,                // Vollständige Informationen
-            false,                // Nur aktive Termine
-            'SORT_ASC',           // Aufsteigend sortieren
-            $categories,          // Kategorien
-            $venue_id,            // Ort
-            1,                    // Datumsformat
-            1,                    // Zeitformat
-            $custom_filters       // Benutzerdefinierte Filter
-        );
-    }
 
     /**
      * @param \stdClass $entry
@@ -166,7 +112,7 @@ class forCalHandler
                     $dateBetween = forCalDateTimeHelper::isDateRangeBetweenDateRange($date, $endRepeatDate, $startSearchDate, $endSearchDate);
                 }
 
-                if ($dateBetween === false && $iterateBetween === true) {
+                if($dateBetween === false && $iterateBetween === true) {
                     continue;
                 }
 
@@ -194,14 +140,16 @@ class forCalHandler
 
                     self::$dateList[] = array(
                         'id' => $entry->entry_id,
-                        'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':', '', $entry->entry_start_time),
+                        'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':','', $entry->entry_start_time),
                         'date' => $entryRepeatDate,
                         'entry' => $dataListEntry
                     );
+
                 }
             }
 
             $entry->view_in_range = $between;
+
         } else {
 
             // only one time entry
@@ -217,7 +165,7 @@ class forCalHandler
 
             self::$dateList[] = array(
                 'id' => $entry->entry_id,
-                'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':', '', $entry->entry_start_time),
+                'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':','', $entry->entry_start_time),
                 'date' => $entryRepeatDate,
                 'entry' => $dataListEntry
             );
@@ -274,8 +222,7 @@ class forCalHandler
 
         $endDate = $end->format('Y-m-d\TH:i:s');
 
-        if ($interval->days == 0 && $start->format('His') < $end->format('His')) {
-        } else
+        if ($interval->days == 0 && $start->format('His') < $end->format('His')) {} else
             $end->modify('+1 day');
 
         if ($end->format('H:i:s') == '00:00:00') {
@@ -331,7 +278,7 @@ class forCalHandler
 
             // add all other properties
             foreach ($entry as $key => $values) {
-                if (in_array($key, array('entry_id', 'entry_name', 'entry_range', 'view_in_range'))) {
+                if (in_array($key, array('entry_id','entry_name','entry_range', 'view_in_range'))){
                     continue;
                 }
 
@@ -374,11 +321,11 @@ class forCalHandler
      */
     protected static function createSelect()
     {
-        $additional_for_title = \rex_config::get('forcal', 'forcal_additional_for_title');
+        $additional_for_title = \rex_config::get('forcal','forcal_additional_for_title');
 
         $name = 'en.name_' . rex_clang::getCurrentId() . ' AS entry_name';
-        if ($additional_for_title && \rex::isBackend() && \rex_be_controller::getCurrentPage() == 'forcal') {
-            $name = 'CONCAT(en.name_' . \rex_clang::getCurrentId() . '," - ",ca.' . $additional_for_title . '_' . \rex_clang::getCurrentId() . ') entry_name';
+        if ($additional_for_title && \rex::isBackend() && \rex_be_controller::getCurrentPage() == 'forcal' ) {
+            $name = 'CONCAT(en.name_'.\rex_clang::getCurrentId().'," - ",ca.'.$additional_for_title.'_'.\rex_clang::getCurrentId().') entry_name';
         }
 
         $select = array(
@@ -449,7 +396,6 @@ class forCalHandler
             $select = array_merge($select, $fields);
         }
 
-
         return $select;
     }
 
@@ -471,7 +417,7 @@ class forCalHandler
         $venue = '';
         $category = '';
         $userFilter = '';
-
+        
         // Benutzerrechte-Filter hinzufügen
         if ($useUserPermissions && rex::getUser() && !rex::getUser()->isAdmin()) {
             $userFilter = forCalUserPermission::getCategoryFilter('en');
@@ -501,7 +447,7 @@ class forCalHandler
         $sql = rex_sql::factory();
         $query = '
           SELECT
-            ' . implode(', ', $select) . '
+            ' .implode(', ', $select). '
           FROM
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
@@ -517,8 +463,8 @@ class forCalHandler
             
           WHERE
             en.type = \'one_time\' AND
-            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
-            (en.end_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
+            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
+            (en.end_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
             en.start_date <= \'' . $startDate->format("Y-m-d H:i:s") . '\' AND
             en.end_date >= \'' . $endDate->format("Y-m-d H:i:s") . '\')
             ' . $statusIgnore . $category . $venue . $userFilter . $statusHaving . '
@@ -526,7 +472,7 @@ class forCalHandler
           UNION
           
           SELECT
-            ' . implode(', ', $select) . '
+            ' .implode(', ', $select). '
           FROM
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
@@ -542,8 +488,8 @@ class forCalHandler
             
           WHERE
             en.type = \'repeat\' AND
-            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
-            (en.end_repeat_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
+            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
+            (en.end_repeat_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
             en.start_date <= \'' . $startDate->format("Y-m-d H:i:s") . '\' AND
             en.end_repeat_date >= \'' . $endDate->format("Y-m-d H:i:s") . '\')
             ' . $statusIgnore . $category . $venue . $userFilter . $statusHaving . '
@@ -566,7 +512,7 @@ class forCalHandler
         $sql = rex_sql::factory();
         $query = '
           SELECT
-            ' . implode(', ', $select) . '
+            ' .implode(', ', $select). '
           FROM
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
@@ -582,7 +528,7 @@ class forCalHandler
 
           WHERE
             en.id = ' . $id;
-
+            
         // Benutzerrechte-Filter hinzufügen
         if (rex::getUser() && !rex::getUser()->isAdmin()) {
             $userFilter = forCalUserPermission::getCategoryFilter('en');
@@ -670,9 +616,9 @@ class forCalHandler
 
             $page = min($pageNumber, self::$numberOfPages);
             $offset = ($page - 1) * $pageSize;
-            if ($offset < 0) $offset = 0;
+            if( $offset < 0 ) $offset = 0;
 
-            self::$dateList = array_slice(self::$dateList, $offset, $pageSize);
+            self::$dateList = array_slice( self::$dateList, $offset, $pageSize );
         }
 
         return self::$dateList;
@@ -707,15 +653,15 @@ class forCalHandler
      * @param null|int $venueId
      * @param int $dateFormat
      * @param int $timeFormat
+     * @param array $customFilters
      * @param null $pageSize
      * @param null $pageNumber
-     * @param bool $useUserPermissions
-     * @param array $customFilters
+     * @param bool $useUserPermissions Ob Benutzerberechtigungen berücksichtigt werden sollen
      * @return array
      * @throws \rex_sql_exception
      * @author Joachim Doerr
      */
-    public static function exchangeEntries($start, $end, $short = true, $ignoreStatus = false, $sort = 'SORT_ASC', $categoryId = null, $venueId = null, $dateFormat = 1, $timeFormat = 1, $pageSize = null, $pageNumber = null, $useUserPermissions = true, $customFilters = [])
+    public static function exchangeEntries($start, $end, $short = true, $ignoreStatus = false, $sort = 'SORT_ASC', $categoryId = null, $venueId = null, $dateFormat = 1, $timeFormat = 1, $customFilters = [], $pageSize = null, $pageNumber = null, $useUserPermissions = true)
     {
         // get entries with date ranges
         // create data list
@@ -724,11 +670,11 @@ class forCalHandler
         // Wenn benutzerdefinierte Filter vorhanden sind, wenden wir sie an
         if (!empty($customFilters)) {
             $filtered_list = [];
-
+            
             foreach (self::$dateList as $item) {
                 $entry = $item['entry'];
                 $include = true;
-
+                
                 // Jeden benutzerdefinierten Filter prüfen
                 foreach ($customFilters as $field => $value) {
                     // Callback-Funktion als Filter
@@ -740,7 +686,7 @@ class forCalHandler
                         }
                         continue;
                     }
-
+                    
                     // Prüfen, ob das Feld existiert (mit oder ohne "entry_" Präfix)
                     $fieldExists = property_exists($entry, $field);
                     if (!$fieldExists) {
@@ -750,24 +696,24 @@ class forCalHandler
                             $field = $entryField;
                         }
                     }
-
+                    
                     // Wenn das Feld nicht existiert, diesen Eintrag überspringen
                     if (!$fieldExists) {
                         $include = false;
                         break;
                     }
-
+                    
                     // Prüfen, ob der Feldwert den Filterkriterien entspricht
                     if ($value === true && (empty($entry->$field) || $entry->$field === '0')) {
                         $include = false;
                         break;
                     }
-
+                    
                     if ($value === false && !empty($entry->$field) && $entry->$field !== '0') {
                         $include = false;
                         break;
                     }
-
+                    
                     if (is_string($value) || is_numeric($value)) {
                         if ($entry->$field != $value) {
                             $include = false;
@@ -775,12 +721,12 @@ class forCalHandler
                         }
                     }
                 }
-
+                
                 if ($include) {
                     $filtered_list[] = $item;
                 }
             }
-
+            
             // Gefilterte Liste für die Weiterverarbeitung verwenden
             self::$dateList = $filtered_list;
         }
