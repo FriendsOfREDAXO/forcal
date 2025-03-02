@@ -99,7 +99,7 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
         ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
         ->setPrimaryKey('id')
         ->ensure();
-        <?php
+
 /**
  * Erweitert den install.php Code, um die Tabelle für Medienberechtigungen zu erstellen
  */
