@@ -3,10 +3,15 @@
  * Fragment zur Verwaltung der Benutzerberechtigungen für forCal
  */
 
+use forCal\Utils\forCalUserPermission;
+
 $users = $this->getVar('users');
 $categories = $this->getVar('categories');
 $current_user_id = $this->getVar('current_user_id', 0);
 $assigned_categories = $this->getVar('assigned_categories', []);
+
+// Filtere Benutzer, um nur diejenigen mit forcal-Rechten anzuzeigen
+$users = forCalUserPermission::filterUsersWithForcalPermission($users);
 
 ?>
 
@@ -34,7 +39,28 @@ $assigned_categories = $this->getVar('assigned_categories', []);
                 <div class="panel-body">
                     <p><?= rex_i18n::msg('forcal_assign_categories_info') ?></p>
                     
-                    <div class="checkbox-group">
+                    <?php
+                    // Prüfen, ob der Benutzer das globale forcal[all]-Recht hat
+                    $user = rex_user::get($current_user_id);
+                    $has_all_perm = $user->hasPerm('forcal[all]');
+                    $can_upload_media = $user->hasPerm('forcal[media]');
+                    ?>
+                    
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="has_all_perm" value="1" <?= $has_all_perm ? 'checked' : '' ?>>
+                            <strong><?= rex_i18n::msg('forcal_all_categories_access') ?></strong>
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="can_upload_media" value="1" <?= $can_upload_media ? 'checked' : '' ?>>
+                            <strong><?= rex_i18n::msg('forcal_media_upload_permission') ?></strong>
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-group" id="category-list" <?= $has_all_perm ? 'style="opacity: 0.5;"' : '' ?>>
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" id="select-all"> 
@@ -61,11 +87,21 @@ $assigned_categories = $this->getVar('assigned_categories', []);
         
         <script>
             $(document).ready(function() {
+                // Bei Änderung des "Alle Kategorien"-Rechts die Liste ein-/ausblenden
+                $('input[name="has_all_perm"]').change(function() {
+                    if ($(this).is(':checked')) {
+                        $('#category-list').css('opacity', '0.5');
+                    } else {
+                        $('#category-list').css('opacity', '1');
+                    }
+                });
+                
+                // Alle Kategorien auswählen/abwählen
                 $('#select-all').change(function() {
                     $('input[name="categories[]"]').prop('checked', $(this).prop('checked'));
                 });
                 
-                // Update "Select All" state
+                // Status "Alle auswählen" aktualisieren
                 function updateSelectAllState() {
                     var allChecked = $('input[name="categories[]"]:checked').length === $('input[name="categories[]"]').length;
                     $('#select-all').prop('checked', allChecked);
