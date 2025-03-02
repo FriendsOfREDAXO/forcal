@@ -18,6 +18,19 @@ $id = rex_request::request('id', 'int');
 $start = rex_request::request('start', 'int', NULL);
 $categoryFilter = rex_request::request('category_filter', 'int', NULL);
 
+// Speichern des Kategoriefilters in der Session, falls gesetzt
+if ($categoryFilter !== NULL) {
+    $_SESSION['forcal']['category_filter'] = $categoryFilter;
+} 
+// Zurücksetzen des Filters, falls explizit angefordert
+elseif (rex_request::request('reset_filter', 'boolean', false)) {
+    unset($_SESSION['forcal']['category_filter']);
+}
+// Wiederherstellen des Filters aus der Session, falls vorhanden
+elseif (isset($_SESSION['forcal']['category_filter'])) {
+    $categoryFilter = $_SESSION['forcal']['category_filter'];
+}
+
 $tableEvent = rex::getTablePrefix() . "forcal_entries";
 $tableCategories = rex::getTablePrefix() . "forcal_categories";
 $tableVenues = rex::getTablePrefix() . "forcal_venues";
@@ -142,6 +155,47 @@ if ($func == 'delete') {
 }
 
 if ($func == '' || $func == 'filter') {
+    // Kategorie-Filter Formular
+    $categoryFilterForm = '<form action="' . rex_url::currentBackendPage() . '" method="get" class="form-inline" style="margin-bottom: 20px;">';
+    $categoryFilterForm .= '<input type="hidden" name="page" value="' . rex_request('page', 'string') . '">';
+    
+    $categoryFilterForm .= '<div class="form-group">';
+    $categoryFilterForm .= '<label for="category_filter" style="margin-right: 10px;">' . rex_i18n::msg('forcal_category') . ':</label>';
+    $categoryFilterForm .= '<select id="category_filter" name="category_filter" class="form-control selectpicker" data-live-search="true">';
+    $categoryFilterForm .= '<option value="">' . rex_i18n::msg('please_select') . '</option>';
+    
+    // Kategorien holen
+    $categorySql = rex_sql::factory();
+    
+    // Abfrage-Bedingung für Kategorien basierend auf Benutzerrechten
+    $categoryWhere = '';
+    if (!$user->isAdmin()) {
+        $allowedCategories = forCalUserPermission::getUserCategories($user->getId());
+        if (!empty($allowedCategories)) {
+            $categoryWhere = ' WHERE id IN (' . implode(',', $allowedCategories) . ')';
+        } else {
+            $categoryWhere = ' WHERE 0'; // Keine Kategorien erlaubt = keine Ergebnisse
+        }
+    }
+    
+    $categorySql->setQuery('SELECT id, name_' . rex_clang::getCurrentId() . ' as name FROM ' . $tableCategories . $categoryWhere . ' ORDER BY name');
+    
+    foreach ($categorySql as $category) {
+        $selected = ($categoryFilter == $category->getValue('id')) ? 'selected' : '';
+        $categoryFilterForm .= '<option value="' . $category->getValue('id') . '" ' . $selected . '>' . $category->getValue('name') . '</option>';
+    }
+    
+    $categoryFilterForm .= '</select>';
+    $categoryFilterForm .= '</div>';
+    
+    $categoryFilterForm .= '<div class="form-group" style="margin-left: 10px;">';
+    $categoryFilterForm .= '<button type="submit" class="btn btn-primary">' . rex_i18n::msg('filter') . '</button>';
+    $categoryFilterForm .= '<a href="' . rex_url::currentBackendPage(['reset_filter' => true]) . '" class="btn btn-default" style="margin-left: 5px;">' . rex_i18n::msg('reset') . '</a>';
+    $categoryFilterForm .= '</div>';
+    
+    $categoryFilterForm .= '</form>';
+    
+    echo $categoryFilterForm;
 
     $select = array('en.id');
     $group = array(40);
@@ -187,6 +241,11 @@ if ($func == '' || $func == 'filter') {
             ' . $where , 30, null, false, 1, ['start_date'=>'desc','category'=>'desc']);
     $list->addTableAttribute('class', 'table-striped');
 
+    // Diese Parameter werden bei allen Listenlinks erhalten
+    if (!is_null($categoryFilter)) {
+        $list->addParam('category_filter', $categoryFilter);
+    }
+
     // merge group with default
     $group = array_merge($group, array('*', '*', '*', 80, 100, 90, 120));
 
@@ -209,7 +268,11 @@ if ($func == '' || $func == 'filter') {
     //    $list->setColumnSortable('venue');
 
     // Column 1: Action (add/edit button)
-    $thIcon = '<a href="' . $list->getUrl(['func' => 'add', 'itemdate' => date('Y-m-d')]) . '" title="' . rex_i18n::msg('forcal_add_entry') . '" accesskey="a"><i class="rex-icon rex-icon-add-action"></i></a>';
+    $addParams = ['func' => 'add', 'itemdate' => date('Y-m-d')];
+    if (!is_null($categoryFilter)) {
+        $addParams['category_filter'] = $categoryFilter;
+    }
+    $thIcon = '<a href="' . $list->getUrl($addParams) . '" title="' . rex_i18n::msg('forcal_add_entry') . '" accesskey="a"><i class="rex-icon rex-icon-add-action"></i></a>';
     $tdIcon = '<i class="rex-icon fa-file-o"></i>';
 
     // thanks to Oliver Kreischer for the cool color idea !
@@ -276,6 +339,11 @@ if ($func == '' || $func == 'filter') {
     $id = rex_request('id', 'int');
     $form = rex_form::factory($tableEvent, '', 'id=' . $id, 'post', 0);
     $form->addParam('start', $start);
+    
+    // Kategoriefilter für die Weiterleitung nach dem Speichern beibehalten
+    if (!is_null($categoryFilter)) {
+        $form->addParam('category_filter', $categoryFilter);
+    }
 
     // Column: uid
     $field = $form->addHiddenField('uid');
@@ -629,6 +697,12 @@ if ($func == '' || $func == 'filter') {
         }
     }
     
+    // Wenn ein Kategoriefilter aktiv ist und es sich um einen neuen Eintrag handelt, 
+    // setzen wir die Kategorie entsprechend vor
+    if ($func == 'add' && !is_null($categoryFilter)) {
+        $field->setValue($categoryFilter);
+    }
+    
     $field->setLabel(rex_i18n::msg('forcal_entry_category'));
     $field->setAttribute('class', 'forcal_category_select selectpicker form-control');
     $field->setAttribute('data-live-search', 'true');
@@ -711,3 +785,17 @@ if (rex_post('btn_save', 'string') && !$user->isAdmin()) {
         exit;
     }
 }
+
+// Initialize selectpicker for the category filter
+echo '
+<script type="text/javascript">
+    $(document).ready(function() {
+        if ($.fn.selectpicker) {
+            $("#category_filter").selectpicker({
+                liveSearch: true,
+                style: "btn-default"
+            });
+        }
+    });
+</script>
+';
