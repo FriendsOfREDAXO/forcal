@@ -331,6 +331,91 @@ $termine = forCalEventsFactory::create()
     ->get();
 ```
 
+
+## Erweiterte Benutzerberechtigungen
+
+### Uneingeschränkter Zugriff auf alle Kategorien
+Benutzer mit dem Recht `forcal[all]` haben vollen Zugriff auf alle Kategorien, ähnlich wie Administratoren. Diese Benutzer können alle Termine einsehen und bearbeiten, unabhängig von den ihnen zugewiesenen Kategorien.
+
+```php
+// Beispiel: Prüfen, ob ein Benutzer Zugriff auf eine bestimmte Kategorie hat
+$hasAccess = forCalUserPermission::hasPermission($category_id);
+```
+
+### Medien-Upload-Berechtigung
+Eine neue Berechtigung steuert, ob ein Benutzer Medien hochladen darf. Wenn deaktiviert, werden automatisch alle Media/Medialist-Felder in den Formularen ausgeblendet.
+
+```php
+// Beispiel: Prüfen, ob ein Benutzer Medien hochladen darf
+$canUploadMedia = forCalUserPermission::canUploadMedia();
+```
+
+### Filterung von Benutzern in der Verwaltung
+Die Benutzerauswahl in der Berechtigungsverwaltung zeigt jetzt nur noch Benutzer mit forCal-Rechten an.
+
+## Optionale Orte-Verwaltung
+
+### Deaktivieren der Orte-Tabelle
+Die Orte-Funktionalität kann jetzt komplett deaktiviert werden. Ist diese Option abgeschaltet:
+- Die Orte-Navigationspunkt wird ausgeblendet
+- Orte-Auswahlfelder werden in Formularen nicht angezeigt
+- SQL-Abfragen enthalten keine JOINs zur Orte-Tabelle
+- Keine Orte-Eigenschaften in API-Antworten
+
+```php
+// Beispiel: Prüfen, ob Orte aktiviert sind
+$venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
+```
+
+
+## Formulare und Felder
+
+### Automatisches Ausblenden von Formularfeldern
+Media/Medialist-Felder werden automatisch ausgeblendet, wenn der Benutzer keine Medien-Upload-Berechtigung hat.
+Orte-bezogene Felder werden ausgeblendet, wenn die Orte-Funktionalität deaktiviert ist.
+
+### JavaScript-Validierung für Pflichtfelder
+Validierung von Pflichtfeldern wie Terminname und Kategorie direkt im Browser mit benutzerfreundlichen Fehlermeldungen.
+
+## Installation und Kompatibilität
+
+### Automatische Tabellenanpassung
+Das Addon prüft bei der Installation, ob die notwendigen Tabellen vorhanden sind, und erstellt diese falls nötig.
+
+### Upgrade-Kompatibilität
+Bei einem Upgrade werden vorhandene Einstellungen beibehalten. Die neuen Berechtigungsfunktionen werden nahtlos zu bestehenden Installationen hinzugefügt.
+
+## Beispiele für die Implementierung
+
+### Verwendung der neuen Berechtigungen im eigenen Code
+
+```php
+// Prüfen, ob ein Benutzer Zugriff auf eine Kategorie hat
+if (forCalUserPermission::hasPermission($category_id)) {
+    // Benutzer hat Zugriff
+}
+
+// Prüfen, ob ein Benutzer Medien hochladen darf
+if (forCalUserPermission::canUploadMedia()) {
+    // Media-Felder anzeigen
+}
+```
+
+### Filterung von SQL-Abfragen nach Benutzerrechten
+
+```php
+// SQL-Abfrage mit Benutzerfilterung
+$query = forCalSqlHelper::createFilteredQuery(
+    rex::getTable('forcal_entries'),
+    'user_id',
+    rex::getUser()->getId(),
+    'status = 1'
+);
+$results = rex_sql::factory()->getArray($query);
+```
+
+
+
 ## Eigene Felder definieren
 
 Eigene Felder können im Ordner `/redaxo/data/addons/forcal/definitions/` angelegt werden. Die nach Installation dort befindlichen .yml Dateien erzeugen die Standardfelder. Möchte man eigene Definitionen erstellen, erstellt man entsprechende yml-files mit dem Prefix `custom_`. Möchte man die Standardfelder behalten und weiternutzen, sollten diese auch in die custom Definitionen kopiert werden.
@@ -461,6 +546,115 @@ Ein Selectfeld mit mehrfacher Auswahlmöglichkeit und einer Höhe von 5 Elemente
       multiple: multiple
       size: 5
 ```
+
+## Benutzerdefinierte Felder mit gefiltertem SQL
+
+forCal bietet jetzt die Möglichkeit, benutzerdefinierte Felder mit dynamisch gefilterten SQL-Abfragen zu erstellen. Dies ermöglicht eine berechtigungsabhängige Darstellung von Daten in Auswahlfeldern.
+
+### Einfaches Beispiel: Benutzerauswahl mit Filterung
+
+Um ein SQL-gefiltertes Auswahlfeld zu erstellen, nutze die `.yml`-Datei im `data/definitions/`-Verzeichnis:
+
+```yaml
+fields:
+  - name: 'assigned_user'
+    type: 'selectsql'
+    label_de: 'Zuständiger Benutzer'
+    label_en: 'Assigned User'
+    qry: 'SELECT id, name FROM rex_user WHERE id = ###user_id### OR (SELECT LENGTH(rights) FROM rex_user WHERE id = ###user_id###) > 0 ORDER BY name'
+```
+
+Die `###user_id###`-Platzhalter werden automatisch durch die ID des aktuellen Benutzers ersetzt.
+
+### Verwendung der forCalSqlHelper-Klasse
+
+Für komplexere Filterungen bietet die neue `forCalSqlHelper`-Klasse nützliche Methoden:
+
+```yaml
+fields:
+  - name: 'assigned_user'
+    type: 'selectsql'
+    label_de: 'Zuständiger Benutzer'
+    label_en: 'Assigned User'
+    qry: '<?php echo \forCal\Utils\forCalSqlHelper::getFilteredQueryString(rex::getTable("user"), "id", "name", "id", rex::getUser()->getId(), "status = 1"); ?>'
+```
+
+Die Methode `getFilteredQueryString` erzeugt eine SQL-Abfrage, die automatisch Benutzerberechtigungen berücksichtigt.
+
+### Fortgeschrittenes Beispiel: Dynamisch gefiltertes Auswahlfeld
+
+Hier ist ein Beispiel für ein Auswahlfeld, das basierend auf Benutzerberechtigungen unterschiedliche Optionen anzeigt:
+
+```yaml
+fields:
+  - name: 'assigned_user'
+    type: 'selectsql'
+    label_de: 'Zuständiger Benutzer'
+    label_en: 'Assigned User'
+    qry: '<?php 
+      $userId = rex::getUser()->getId();
+      $user = rex_user::get($userId);
+      
+      if ($user->isAdmin() || $user->hasPerm("forcal[all]")) {
+        echo "SELECT id, CONCAT(name, \' (\', login, \')\') as name FROM " . rex::getTable("user") . " WHERE status = 1 ORDER BY name";
+      } else {
+        echo "SELECT id, CONCAT(name, \' (\', login, \')\') as name FROM " . rex::getTable("user") . " WHERE id = " . $userId . " OR id IN (SELECT user_id FROM " . rex::getTablePrefix() . "forcal_user_categories WHERE category_id IN (SELECT category_id FROM " . rex::getTablePrefix() . "forcal_user_categories WHERE user_id = " . $userId . ")) ORDER BY name";
+      }
+    ?>'
+```
+
+Dieses Beispiel zeigt:
+- Für Administratoren oder Benutzer mit `forcal[all]`-Recht: Alle Benutzer
+- Für eingeschränkte Benutzer: Nur der eigene Benutzer plus Benutzer mit gemeinsamen Kategoriezuweisungen
+
+### Eigene Hilfsfunktionen erstellen
+
+Du kannst auch eigene Hilfsfunktionen für komplexe Filterungen definieren:
+
+1. Erstelle eine PHP-Datei in deinem `lib/`-Verzeichnis:
+
+```php
+<?php
+namespace forCal\Custom;
+
+use rex;
+use rex_user;
+
+class CustomFields
+{
+    public static function getFilteredUserOptions($user_id) 
+    {
+        // Prüfen, ob der aktuelle Benutzer Admin oder forcal[all]-Rechte hat
+        $user = rex_user::get($user_id);
+        $hasFullAccess = $user->isAdmin() || $user->hasPerm('forcal[all]');
+        
+        // SQL-Abfrage erstellen
+        $table = rex::getTable('user');
+        
+        if ($hasFullAccess) {
+            // Alle Benutzer anzeigen
+            return "SELECT id, name FROM $table ORDER BY name";
+        } else {
+            // Nur den eigenen Benutzer und Benutzer mit bestimmten Rechten anzeigen
+            return "SELECT id, name FROM $table WHERE id = $user_id OR rights LIKE '%forcal%' ORDER BY name";
+        }
+    }
+}
+```
+
+2. Verwende diese Funktion in deiner `.yml`-Datei:
+
+```yaml
+fields:
+  - name: 'assigned_user'
+    type: 'selectsql'
+    label_de: 'Zuständiger Benutzer'
+    label_en: 'Assigned User'
+    qry: '<?php echo \forCal\Custom\CustomFields::getFilteredUserOptions(rex::getUser()->getId()); ?>'
+```
+
+Mit diesem Ansatz kannst du komplexe, dynamisch gefilterte Auswahlfelder erstellen, die Benutzerberechtigungen berücksichtigen und nur relevante Optionen anzeigen.
+
 
 ## Text-Editor definieren
 

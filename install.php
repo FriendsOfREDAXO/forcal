@@ -100,6 +100,19 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
         ->setPrimaryKey('id')
         ->ensure();
 
+/**
+ * Erweitert den install.php Code, um die Tabelle für Medienberechtigungen zu erstellen
+ */
+
+// Neue Tabelle für Media-Berechtigungen erstellen
+rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_media_permissions')
+    ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
+    ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
+    ->ensureColumn(new rex_sql_column('can_upload_media', 'tinyint(1)', false, '0'))
+    ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
+    ->setPrimaryKey('id')
+    ->ensure();
+
     // copy default definitions to data
     rex_dir::copy($this->getPath('data'), $this->getDataPath());
 

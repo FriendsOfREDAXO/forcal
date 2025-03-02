@@ -1,33 +1,42 @@
 ### defaults
 forcal_title = Calendar
 forcal_help = Help
-forcal_offline = offline
-forcal_online = online
+forcal_offline = Offline
+forcal_online = Online
 forcal_startdate = Date
 forcal_starttime = Time
 forcal_config = Settings
-forcal_config_save = Save settings
+forcal_config_save = Save Settings
 forcal_config_saved = Settings saved.
-forcal_colors = Category colors hexadecimal #ffffff, #000000
+forcal_colors = Category Colors Hexadecimal #ffffff, #000000
 forcal_datepicker = Datepicker
-forcal_customfield_check = Definition fieldcheck
-forcal_additional_attributes = Additional attributes
+forcal_customfield_check = Definition Field Check
+forcal_additional_attributes = Custom Attributes
 forcal_additional_attributes_notice = Please write as JSON. e.g. {"class":"my-class","placeholder":"My placeholder"}
 forcal_additional_field_for_category = Additional field for category identification
-forcal_please_select = Optional selection
-forcal_only_multilanguage_fields_shown = Only multilingual fields are displayed
-forcal_clone = duplicate
+forcal_please_select = Optional Selection
+forcal_only_multilanguage_fields_shown = Only multilingual fields are shown
+forcal_clone = Duplicate
 forcal_status_function = Status/Function
-forcal_shortcut_save = Use shortcut to save the entry (Ctrl+S)
+forcal_shortcut_save = Use shortcut to save the appointment (Ctrl+S)
 forcal_full_time_preselection = "All-day event" preselected
-forcal_start_page = Start page
-forcal_change_message = The data from another calendar addon has been adopted. The original addon has been uninstalled.
-forcal_add_new_entry = New entry
+forcal_start_page = Start Page
+forcal_change_message = The data has been taken over from another calendar add-on. The original add-on has been uninstalled.
+forcal_add_new_entry = Add New Entry
 
-perm_general_forcal[settings] = Edit FORCal settings
-perm_general_forcal[catspage] = Manage FORCal categories
-perm_general_forcal[venuespage] = Manage FORCal venues
-perm_general_forcal[userpermissions] = Manage FORCal user permissions
+# New entries for extended permissions
+forcal_venues_enabled = Enable Venues Table
+forcal_media_upload_permission = Allow image upload (use Media/Medialist fields)
+forcal_all_categories_access = Unrestricted access to all categories (like admin)
+forcal_users_with_permission = Users with forCal permissions
+
+perm_general_forcal[] = Use forCal
+perm_general_forcal[settings] = Edit FORCal Settings
+perm_general_forcal[catspage] = Manage FORCal Categories
+perm_general_forcal[venuespage] = Manage FORCal Venues
+perm_general_forcal[userpermissions] = Manage FORCal User Permissions
+perm_general_forcal[all] = FORCal Access to all categories
+perm_general_forcal[media] = FORCal Upload Images
 
 ### navigation points
 forcal_calendar = Calendar
@@ -40,85 +49,90 @@ forcal_settings = Settings
 forcal_calendar_view = Overview
 
 ### venue
-rex_forcal_venues_toggle_status_error = The status of the venue could not be changed.
-rex_forcal_venues_toggle_status_success = The status of the venue has been changed.
-rex_forcal_venues_deleted = The venue has been deleted.
-rex_forcal_venues_cloned = The venue has been duplicated.
+rex_forcal_venues_toggle_status_error = Could not change venue status.
+rex_forcal_venues_toggle_status_success = Venue status changed.
+rex_forcal_venues_deleted = Venue deleted.
+rex_forcal_venues_cloned = Venue duplicated.
 
 ### venue list
 forcal_venues_title = Venues
 forcal_venue_name = Venue
-forcal_add_venue = Create venue
-forcal_venue_delete = Delete venue
+forcal_add_venue = Add Venue
+forcal_venue_delete = Delete Venue
 
 ### venue form
-forcal_venue_add = Add venue
-forcal_venue_edit = Edit venue
+forcal_venue_add = Add Venue
+forcal_venue_edit = Edit Venue
 
 ### categories
-rex_forcal_categories_toggle_status_error = The status of the category could not be changed.
-rex_forcal_categories_toggle_status_success = The status of the category has been changed.
-rex_forcal_categories_deleted = The category has been deleted.
-rex_forcal_categories_cloned = The category has been duplicated.
+rex_forcal_categories_toggle_status_error = Could not change category status.
+rex_forcal_categories_toggle_status_success = Category status changed.
+rex_forcal_categories_deleted = Category deleted.
+rex_forcal_categories_cloned = Category duplicated.
 
 ### categories list
 forcal_categories_title = Categories
-forcal_add_category = Create category
+forcal_add_category = Add Category
 
 ### categories form
 forcal_category = Category
-forcal_category_delete = Delete category
-forcal_category_add = Add category
-forcal_category_edit = Edit category
+forcal_category_delete = Delete Category
+forcal_category_add = Add Category
+forcal_category_edit = Edit Category
 forcal_category_name = Name
 forcal_category_color = Color
 forcal_category_color_not_empty = Please select a color
 
 ### entry
-rex_forcal_entries_toggle_status_error = The status of the entry could not be changed.
-rex_forcal_entries_toggle_status_success = The status of the entry has been changed.
-rex_forcal_entries_deleted = The entry has been deleted.
-rex_forcal_entries_cloned = The entry has been duplicated.
+rex_forcal_entries_toggle_status_error = Could not change entry status.
+rex_forcal_entries_toggle_status_success = Entry status changed.
+rex_forcal_entries_deleted = Entry deleted.
+rex_forcal_entries_cloned = Entry duplicated.
 rex_forcal_entries_copy = Copy
 
 ### entry list
 forcal_entry_list_view = Entries
-forcal_add_entry = Create entry
+forcal_add_entry = Add Entry
+forcal_filter = Filter
+forcal_reset = Reset
+forcal_category_filter_title = Filter by Category
+forcal_category_filter_all = All Categories
+forcal_apply_filter = Apply Filter
 
 ### entry form
-forcal_entry_delete = delete
-forcal_entry_add = Add entry
-forcal_entry_edit = Edit entry
+forcal_entry_delete = Delete
+forcal_entry_add = Add Entry
+forcal_entry_edit = Edit Entry
 forcal_entry_date = Date
-forcal_from = from
-forcal_to = to
-forcal_entry_type = Repetition
-forcal_radio_one_time = one-time event
-forcal_radio_repeat = recurring event
+forcal_from = From
+forcal_to = To
+forcal_entry_type = Repeat
+forcal_radio_one_time = One-time event
+forcal_radio_repeat = Recurring event
 forcal_repeat_every = Frequency
-forcal_entry_repeats = Repeat
+forcal_entry_repeats = Repeats
 forcal_entry_everyn = every
 forcal_entry_everye = every
 forcal_entry_everys = every
-forcal_select_monthly = monthly
-forcal_select_weekly = weekly
-forcal_select_yearly = yearly
+forcal_select_monthly = Monthly
+forcal_select_weekly = Weekly
+forcal_select_yearly = Yearly
 forcal_repeat_every_weekly = Week
 forcal_repeat_every_monthly = Month
 forcal_repeat_every_yearly = Year
 forcal_repeat_ending = End date
 forcal_entry_name = Title
-forcal_entry_teaser = Teaser / Short description
+forcal_entry_teaser = Teaser / Short Description
 forcal_entry_text = Description
 forcal_entry_category = Category
 forcal_entry_venue = Venue
 forcal_entry_status = Status
-forcal_entry_full_time = All-day
+forcal_entry_full_time = All Day
 forcal_checkbox_full_time = All-day event
 forcal_redactor2 = Redactor 2
 
-forcal_sql_database_min_version = The database {0} {1} is outdated, at least version {2} is required!
-forcal_select_monthly_day = monthly [weekday]
+forcal_sql_database_min_version = The database {0} {1} is outdated, a minimum version {2} is required!
+forcal_select_monthly_day = monthly [day of the week]
 forcal_select_sun = Sunday
 forcal_select_sat = Saturday
 forcal_select_mon = Monday
@@ -126,31 +140,31 @@ forcal_select_tue = Tuesday
 forcal_select_wed = Wednesday
 forcal_select_thu = Thursday
 forcal_select_fri = Friday
-forcal_select_first_week = first
-forcal_select_second_week = second
-forcal_select_third_week = third
-forcal_select_fourth_week = fourth
-forcal_select_last_week = last
+forcal_select_first_week = First
+forcal_select_second_week = Second
+forcal_select_third_week = Third
+forcal_select_fourth_week = Fourth
+forcal_select_last_week = Last
 
 forcal_entry_name_validation = Please enter a title
 
-forcal_quick_navigation_label = Current events
+forcal_quick_navigation_label = Current Entries
 
 ### multiuser additions
-forcal_user_permissions = User permissions
+forcal_user_permissions = User Permissions
 forcal_users = Users
-forcal_assign_categories = Assign categories
+forcal_assign_categories = Assign Categories
 forcal_assign_categories_info = Select the categories that the user is allowed to manage.
 forcal_select_all_categories = Select all categories
-forcal_save_permissions = Save permissions
-forcal_user_permissions_saved = The permissions have been saved.
-forcal_user_permissions_error = An error occurred while saving the permissions.
+forcal_save_permissions = Save Permissions
+forcal_user_permissions_saved = Permissions saved.
+forcal_user_permissions_error = An error occurred while saving permissions.
 forcal_permission_denied = Access denied. You do not have sufficient permissions.
 forcal_no_permission_for_category = You do not have permission for this category.
 forcal_no_permission_categories = You do not have permissions for calendar categories.
 forcal_filter_my_categories = Show only my categories
-forcal_all_categories = All categories
-forcal_no_categories = No categories
-forcal_select_categories = Select categories
-forcal_category_filter = Category filter
+forcal_all_categories = All Categories
+forcal_no_categories = No Categories
+forcal_select_categories = Select Categories
+forcal_category_filter = Category Filter
 forcal_category_select = Categories
