@@ -83,12 +83,15 @@ if (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('forcal[userpermissions
     $sql = rex_sql::factory();
     $categories = $sql->getArray('SELECT id, name_' . rex_clang::getCurrentId() . ' as name, color FROM ' . rex::getTable('forcal_categories') . ' WHERE status = 1 ORDER BY name_' . rex_clang::getCurrentId());
     
+    // Kategorien in ein Format umwandeln, das für das Fragment geeignet ist
     $category_objects = [];
     foreach ($categories as $category) {
+        // Wir erstellen ein einfaches Array mit Objekten statt stdClass zu verwenden
         $obj = new stdClass();
-        $obj->setValue('id', $category['id']);
-        $obj->setValue('name', $category['name']);
-        $obj->setValue('color', $category['color']);
+        // Wir speichern die Werte als Objekteigenschaften statt setValue() zu verwenden
+        $obj->id = $category['id'];
+        $obj->name = $category['name'];
+        $obj->color = $category['color'];
         $category_objects[] = $obj;
     }
     
