@@ -24,10 +24,19 @@ forcal_start_page = Startseite
 forcal_change_message = Es wurden die Daten von einem anderen Kalender-AddOn übernommen. Das Ursprungsaddon wurde deinstalliert. 
 forcal_add_new_entry = Neuer Termin
 
+# Neue Einträge für erweiterte Berechtigungen
+forcal_venues_enabled = Orte-Tabelle aktivieren
+forcal_media_upload_permission = Darf Bilder hochladen (Media/Medialist-Felder nutzen)
+forcal_all_categories_access = Uneingeschränkter Zugriff auf alle Kategorien (wie Admin)
+forcal_users_with_permission = Benutzer mit forCal-Berechtigungen
+
+perm_general_forcal[] = forCal benutzen
 perm_general_forcal[settings] = FORCal Einstellungen bearbeiten
 perm_general_forcal[catspage] = FORCal Kategorien verwalten
 perm_general_forcal[venuespage] = FORCal Orte verwalten
 perm_general_forcal[userpermissions] = FORCal Benutzerberechtigungen verwalten
+perm_general_forcal[all] = FORCal Zugriff auf alle Kategorien
+perm_general_forcal[media] = FORCal Bilder hochladen
 
 ### navigation points
 forcal_calendar = Kalender
