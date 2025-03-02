@@ -192,8 +192,55 @@ class forCalUserPermission
             return true;
         }
         
-        // Prüfen, ob der Benutzer das Recht zum Hochladen von Bildern hat
-        return $user->hasPerm('forcal[media]');
+        // Eigene Medienberechtigung prüfen
+        $sql = rex_sql::factory();
+        $sql->setQuery('SELECT can_upload_media FROM ' . rex::getTablePrefix() . 'forcal_user_media_permissions WHERE user_id = :user_id', [
+            ':user_id' => $user->getId()
+        ]);
+        
+        if ($sql->getRows() > 0) {
+            return (bool)$sql->getValue('can_upload_media');
+        }
+        
+        // Standardmäßig keine Berechtigung
+        return false;
+    }
+    
+    /**
+     * Speichert die Medienberechtigungen für einen Benutzer
+     * 
+     * @param int $user_id Die Benutzer-ID
+     * @param bool $can_upload_media Ob der Benutzer Bilder hochladen darf
+     * @return bool
+     */
+    public static function saveMediaPermissions($user_id, $can_upload_media)
+    {
+        $sql = rex_sql::factory();
+        
+        try {
+            // Prüfen, ob bereits ein Eintrag existiert
+            $sql->setQuery('SELECT id FROM ' . rex::getTablePrefix() . 'forcal_user_media_permissions WHERE user_id = :user_id', [
+                ':user_id' => $user_id
+            ]);
+            
+            $exists = $sql->getRows() > 0;
+            
+            $sql = rex_sql::factory();
+            $sql->setTable(rex::getTablePrefix() . 'forcal_user_media_permissions');
+            $sql->setValue('user_id', $user_id);
+            $sql->setValue('can_upload_media', $can_upload_media ? 1 : 0);
+            
+            if ($exists) {
+                $sql->setWhere(['user_id' => $user_id]);
+                $sql->update();
+            } else {
+                $sql->insert();
+            }
+            
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
