@@ -162,7 +162,7 @@ if ($func == '' || $func == 'filter') {
     $categoryFilterForm .= '<div class="form-group">';
     $categoryFilterForm .= '<label for="category_filter" style="margin-right: 10px;">' . rex_i18n::msg('forcal_category') . ':</label>';
     $categoryFilterForm .= '<select id="category_filter" name="category_filter" class="form-control selectpicker" data-live-search="true">';
-    $categoryFilterForm .= '<option value="">' . rex_i18n::msg('please_select') . '</option>';
+    $categoryFilterForm .= '<option value="">' . rex_i18n::msg('forcal_please_select') . '</option>';
     
     // Kategorien holen
     $categorySql = rex_sql::factory();
@@ -189,8 +189,8 @@ if ($func == '' || $func == 'filter') {
     $categoryFilterForm .= '</div>';
     
     $categoryFilterForm .= '<div class="form-group" style="margin-left: 10px;">';
-    $categoryFilterForm .= '<button type="submit" class="btn btn-primary">' . rex_i18n::msg('filter') . '</button>';
-    $categoryFilterForm .= '<a href="' . rex_url::currentBackendPage(['reset_filter' => true]) . '" class="btn btn-default" style="margin-left: 5px;">' . rex_i18n::msg('reset') . '</a>';
+    $categoryFilterForm .= '<button type="submit" class="btn btn-primary">' . rex_i18n::msg('forcal_filter') . '</button>';
+    $categoryFilterForm .= '<a href="' . rex_url::currentBackendPage(['reset_filter' => true]) . '" class="btn btn-default" style="margin-left: 5px;">' . rex_i18n::msg('forcal_reset') . '</a>';
     $categoryFilterForm .= '</div>';
     
     $categoryFilterForm .= '</form>';
