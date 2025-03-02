@@ -317,93 +317,103 @@ class forCalHandler
         return $eventDTO;
     }
 
-    /**
-     * @return array
-     */
-    protected static function createSelect()
-    {
-        $additional_for_title = \rex_config::get('forcal','forcal_additional_for_title');
-        $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
+   /**
+ * @return array
+ */
+protected static function createSelect()
+{
+    $additional_for_title = \rex_config::get('forcal','forcal_additional_for_title');
+    $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
 
-        $name = 'en.name_' . rex_clang::getCurrentId() . ' AS entry_name';
-        if ($additional_for_title && \rex::isBackend() && \rex_be_controller::getCurrentPage() == 'forcal' ) {
-            $name = 'CONCAT(en.name_'.\rex_clang::getCurrentId().'," - ",ca.'.$additional_for_title.'_'.\rex_clang::getCurrentId().') entry_name';
+    $name = 'en.name_' . rex_clang::getCurrentId() . ' AS entry_name';
+    if ($additional_for_title && \rex::isBackend() && \rex_be_controller::getCurrentPage() == 'forcal' ) {
+        $name = 'CONCAT(en.name_'.\rex_clang::getCurrentId().'," - ",ca.'.$additional_for_title.'_'.\rex_clang::getCurrentId().') entry_name';
+    }
+
+    $select = array(
+        'en.id AS entry_id',
+        $name,
+        'en.start_date AS entry_start_date',
+        'en.end_date AS entry_end_date',
+        'en.start_time AS entry_start_time',
+        'en.end_time AS entry_end_time',
+        'en.end_repeat_date AS end_repeat_date',
+        'en.type AS type',
+        'en.repeat AS repeats',
+        'en.repeat_week AS repeat_weeks',
+        'en.repeat_month AS repeat_months',
+        'en.repeat_year AS repeat_years',
+        'en.repeat_month_week AS repeat_month_week',
+        'en.repeat_day AS repeat_day',
+        'ca.color AS category_color',
+        'en.status AS entry_status',
+        'en.full_time AS full_time',
+        'PERIOD_DIFF(DATE_FORMAT(en.end_date, "%Y%m"), DATE_FORMAT(en.start_date, "%Y%m")) AS entry_month_diff',
+        'IFNULL(ca.status, 1) AS category_status',
+        'en.teaser_' . rex_clang::getCurrentId() . ' AS entry_teaser',
+        'en.text_' . rex_clang::getCurrentId() . ' AS entry_text',
+        'ca.name_' . rex_clang::getCurrentId() . ' AS category_name',
+        'ca.id AS category_id',
+    );
+    
+    // Venue-Felder nur hinzufügen, wenn Venues aktiviert sind
+    if ($venuesEnabled) {
+        $select[] = 'IFNULL(ve.status, 1) AS venue_status';
+        $select[] = 've.name_' . rex_clang::getCurrentId() . ' AS venue_name';
+        $select[] = 've.id AS venue_id';
+    }
+
+    $definitionFields = array();
+
+    foreach (forCalDefinitions::getDefinitions() as $table => $definition) {
+        // Wenn Orte deaktiviert sind und es sich um die Orte-Tabelle handelt, überspringen
+        if (!$venuesEnabled && $table === rex::getTablePrefix() . 'forcal_venues') {
+            continue;
         }
-
-        $select = array(
-            'en.id AS entry_id',
-            $name,
-            'en.start_date AS entry_start_date',
-            'en.end_date AS entry_end_date',
-            'en.start_time AS entry_start_time',
-            'en.end_time AS entry_end_time',
-            'en.end_repeat_date AS end_repeat_date',
-            'en.type AS type',
-            'en.repeat AS repeats',
-            'en.repeat_week AS repeat_weeks',
-            'en.repeat_month AS repeat_months',
-            'en.repeat_year AS repeat_years',
-            'en.repeat_month_week AS repeat_month_week',
-            'en.repeat_day AS repeat_day',
-            'ca.color AS category_color',
-            'en.status AS entry_status',
-            'en.full_time AS full_time',
-            'PERIOD_DIFF(DATE_FORMAT(en.end_date, "%Y%m"), DATE_FORMAT(en.start_date, "%Y%m")) AS entry_month_diff',
-            'IFNULL(ca.status, 1) AS category_status',
-            'en.teaser_' . rex_clang::getCurrentId() . ' AS entry_teaser',
-            'en.text_' . rex_clang::getCurrentId() . ' AS entry_text',
-            'ca.name_' . rex_clang::getCurrentId() . ' AS category_name',
-            'ca.id AS category_id',
-        );
-        
-        // Venue-Felder nur hinzufügen, wenn Venues aktiviert sind
-        if ($venuesEnabled) {
-            $select[] = 'IFNULL(ve.status, 1) AS venue_status';
-            $select[] = 've.name_' . rex_clang::getCurrentId() . ' AS venue_name';
-            $select[] = 've.id AS venue_id';
-        }
-
-        $definitionFields = array();
-
-        foreach (forCalDefinitions::getDefinitions() as $table => $definition) {
-            foreach ($definition['data'] as $fieldsetKey => $fieldset) {
-                switch ($fieldsetKey) {
-                    case 'langfields':
-                        $fields = forCalDatabaseFieldsetHandler::handleLangDatabaseFieldset($fieldset, $table);
-                        $definitionFields[] = array($table => $fields['select']);
-                        break;
-                    case 'fields':
-                        $fields = forCalDatabaseFieldsetHandler::handleDatabaseFieldset($fieldset, $table);
-                        $definitionFields[] = array($table => $fields['select']);
-                        break;
-                }
+            
+        foreach ($definition['data'] as $fieldsetKey => $fieldset) {
+            switch ($fieldsetKey) {
+                case 'langfields':
+                    $fields = forCalDatabaseFieldsetHandler::handleLangDatabaseFieldset($fieldset, $table);
+                    $definitionFields[] = array($table => $fields['select']);
+                    break;
+                case 'fields':
+                    $fields = forCalDatabaseFieldsetHandler::handleDatabaseFieldset($fieldset, $table);
+                    $definitionFields[] = array($table => $fields['select']);
+                    break;
             }
         }
+    }
 
-        $fields = array();
+    $fields = array();
 
-        if (sizeof($definitionFields) > 0) {
-            foreach ($definitionFields as $tableDefinitionFields) {
-                foreach ($tableDefinitionFields as $table => $definitionTableFields) {
-                    foreach ($definitionTableFields as $definitionTableField) {
-                        if (is_integer(substr($definitionTableField, -1))) {
-                            if (substr($definitionTableField, -2) == '_' . rex_clang::getCurrentId()) {
-                                $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . substr($definitionTableField, 0, -2);
-                            }
-                        } else {
-                            $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . $definitionTableField;
+    if (sizeof($definitionFields) > 0) {
+        foreach ($definitionFields as $tableDefinitionFields) {
+            foreach ($tableDefinitionFields as $table => $definitionTableFields) {
+                // Wenn Orte deaktiviert sind und es sich um die Orte-Tabelle handelt, überspringen
+                if (!$venuesEnabled && $table === rex::getTablePrefix() . 'forcal_venues') {
+                    continue;
+                }
+                    
+                foreach ($definitionTableFields as $definitionTableField) {
+                    if (is_integer(substr($definitionTableField, -1))) {
+                        if (substr($definitionTableField, -2) == '_' . rex_clang::getCurrentId()) {
+                            $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . substr($definitionTableField, 0, -2);
                         }
+                    } else {
+                        $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . $definitionTableField;
                     }
                 }
             }
         }
-
-        if (sizeof($fields) > 0) {
-            $select = array_merge($select, $fields);
-        }
-
-        return $select;
     }
+
+    if (sizeof($fields) > 0) {
+        $select = array_merge($select, $fields);
+    }
+
+    return $select;
+}
 
     /**
      * @param \DateTime $startDate
