@@ -1,108 +1,170 @@
 ### defaults
-forcal_title = Calendar
+forcal_title = Calendario
 forcal_help = Ayuda
 forcal_offline = Desconectado
-forcal_online = En línea
+forcal_online = Conectado
 forcal_startdate = Fecha
-forcal_starttime = Hora del día
-forcal_config = Ajustes
-forcal_config_save = Guardar configuraciones
-forcal_config_saved = La configuración ha sido guardada.
-forcal_colors = Categoría colores Hexadecimal #ffffff, # 000000
-forcal_datepicker = Selector de fechas
-forcal_customfield_check = Definir-Verificación de campo
-forcal_additional_attributes = Atributos individuales
-forcal_additional_attributes_notice = Por favor escribe como JSON. por ejemplo {"class":"my-class","placeholder":"My placeholder"}
+forcal_starttime = Hora
+forcal_config = Configuración
+forcal_config_save = Guardar configuración
+forcal_config_saved = Configuración guardada.
+forcal_colors = Colores de categoría Hexadecimal #ffffff, #000000
+forcal_datepicker = Selector de fecha
+forcal_customfield_check = Verificación de campo de definición
+forcal_additional_attributes = Atributos personalizados
+forcal_additional_attributes_notice = Por favor, escribe como JSON. Por ejemplo: {"class":"mi-clase","placeholder":"Mi marcador de posición"}
 forcal_additional_field_for_category = Campo adicional para la identificación de la categoría
-forcal_please_select = Por favor selecciona
-forcal_only_multilanguage_fields_shown = Solo se muestran campos de varios idiomas
-forcal_clone = duplicar
+forcal_please_select = Selección opcional
+forcal_only_multilanguage_fields_shown = Solo se muestran campos multilingües
+forcal_clone = Duplicar
 forcal_status_function = Estado/Función
+forcal_shortcut_save = Usa el atajo para guardar la cita (Ctrl+S)
+forcal_full_time_preselection = "Evento de todo el día" preseleccionado
+forcal_start_page = Página de inicio
+forcal_change_message = Los datos se han transferido desde otro complemento de calendario. El complemento original se ha desinstalado.
+forcal_add_new_entry = Añadir nueva entrada
 
+# Nuevas entradas para permisos extendidos
+forcal_venues_enabled = Activar tabla de lugares
+forcal_media_upload_permission = Permitir la subida de imágenes (usar campos Media/Medialist)
+forcal_all_categories_access = Acceso sin restricciones a todas las categorías (como administrador)
+forcal_users_with_permission = Usuarios con permisos de forCal
+
+perm_general_forcal[] = Usar forCal
+perm_general_forcal[settings] = Editar la configuración de FORCal
+perm_general_forcal[catspage] = Administrar las categorías de FORCal
+perm_general_forcal[venuespage] = Administrar los lugares de FORCal
+perm_general_forcal[userpermissions] = Administrar los permisos de usuario de FORCal
+perm_general_forcal[all] = FORCal Acceso a todas las categorías
+perm_general_forcal[media] = FORCal Subir imágenes
 
 ### navigation points
 forcal_calendar = Calendario
-forcal_entries = Cventos
+forcal_entries = Entradas
 forcal_categories = Categorías
 forcal_venues = Lugares
-forcal_settings = Ajustes
+forcal_settings = Configuración
 
 ### cal view
 forcal_calendar_view = Vista general
 
 ### venue
-rex_forcal_venues_toggle_status_error = El estado del lugar no se pudo cambiar.
+rex_forcal_venues_toggle_status_error = No se pudo cambiar el estado del lugar.
 rex_forcal_venues_toggle_status_success = El estado del lugar ha sido cambiado.
-rex_forcal_venues_deleted = El lugar ha sido eliminado.
-rex_forcal_venues_cloned = El lugar fue duplicado.
+rex_forcal_venues_deleted = El lugar se ha borrado.
+rex_forcal_venues_cloned = El lugar se ha duplicado.
 
 ### venue list
 forcal_venues_title = Lugares
 forcal_venue_name = Lugar
-forcal_add_venue = Crea un lugar
-forcal_venue_delete = Eliminar ubicación
+forcal_add_venue = Añadir lugar
+forcal_venue_delete = Borrar lugar
 
 ### venue form
 forcal_venue_add = Añadir lugar
-forcal_venue_edit = Editar ubicación
+forcal_venue_edit = Editar lugar
 
 ### categories
-rex_forcal_categories_toggle_status_error = El estado de la categoría no se pudo cambiar.
+rex_forcal_categories_toggle_status_error = No se pudo cambiar el estado de la categoría.
 rex_forcal_categories_toggle_status_success = El estado de la categoría ha sido cambiado.
-rex_forcal_categories_deleted = La categoría ha sido eliminada.
-rex_forcal_categories_cloned = La categoría ha sido duplicada.
+rex_forcal_categories_deleted = La categoría se ha borrado.
+rex_forcal_categories_cloned = La categoría se ha duplicado.
 
 ### categories list
 forcal_categories_title = Categorías
-forcal_add_category = Crear categoría
+forcal_add_category = Añadir categoría
 
 ### categories form
 forcal_category = Categoría
-forcal_category_delete = Eliminar categoría
-forcal_category_add = Añadir una categoría
+forcal_category_delete = Borrar categoría
+forcal_category_add = Añadir categoría
 forcal_category_edit = Editar categoría
 forcal_category_name = Nombre
 forcal_category_color = Color
-forcal_category_color_not_empty = Por favor seleccione un color
+forcal_category_color_not_empty = Por favor, selecciona un color
 
 ### entry
-rex_forcal_entries_toggle_status_error = El estado de la cita no se pudo cambiar.
-rex_forcal_entries_toggle_status_success = El estado de la cita ha sido cambiado.
-rex_forcal_entries_deleted = La cita ha sido eliminada.
-rex_forcal_entries_cloned = La cita fue duplicada.
+rex_forcal_entries_toggle_status_error = No se pudo cambiar el estado de la entrada.
+rex_forcal_entries_toggle_status_success = El estado de la entrada ha sido cambiado.
+rex_forcal_entries_deleted = La entrada se ha borrado.
+rex_forcal_entries_cloned = La entrada se ha duplicado.
+rex_forcal_entries_copy = Copiar
 
 ### entry list
-forcal_entry_list_view = Eventos
-forcal_add_entry = Crear cita
+forcal_entry_list_view = Entradas
+forcal_add_entry = Añadir entrada
+forcal_filter = Filtrar
+forcal_reset = Restablecer
+forcal_category_filter_title = Filtrar por categoría
+forcal_category_filter_all = Todas las categorías
+forcal_apply_filter = Aplicar filtro
 
 ### entry form
-forcal_entry_delete = Eliminar cita
-forcal_entry_add = Agregar cita
-forcal_entry_edit = Editar cita
+forcal_entry_delete = Borrar
+forcal_entry_add = Añadir entrada
+forcal_entry_edit = Editar entrada
 forcal_entry_date = Fecha
-forcal_from = De
-forcal_to = Para
-forcal_entry_type = Repetición
+forcal_from = Desde
+forcal_to = Hasta
+forcal_entry_type = Repetir
 forcal_radio_one_time = Evento único
 forcal_radio_repeat = Evento recurrente
 forcal_repeat_every = Frecuencia
-forcal_entry_repeats = Repetición
-forcal_entry_everyn = Cada
-forcal_entry_everye = Cada
-forcal_entry_everys = Cada
+forcal_entry_repeats = Repeticiones
+forcal_entry_everyn = cada
+forcal_entry_everye = cada
+forcal_entry_everys = cada
 forcal_select_monthly = Mensual
 forcal_select_weekly = Semanal
-forcal_select_yearly = Anualmente
+forcal_select_yearly = Anual
 forcal_repeat_every_weekly = Semana
 forcal_repeat_every_monthly = Mes
 forcal_repeat_every_yearly = Año
 forcal_repeat_ending = Fecha de finalización
 forcal_entry_name = Título
-forcal_entry_teaser = Teaser / breve descripción
+forcal_entry_teaser = Teaser / Breve descripción
 forcal_entry_text = Descripción
 forcal_entry_category = Categoría
 forcal_entry_venue = Lugar
-forcal_entry_status = Estatus
+forcal_entry_status = Estado
 forcal_entry_full_time = Todo el día
 forcal_checkbox_full_time = Evento de todo el día
 forcal_redactor2 = Redactor 2
+
+forcal_sql_database_min_version = ¡La base de datos {0} {1} está obsoleta, se requiere una versión mínima {2}!
+forcal_select_monthly_day = mensual [día de la semana]
+forcal_select_sun = Domingo
+forcal_select_sat = Sábado
+forcal_select_mon = Lunes
+forcal_select_tue = Martes
+forcal_select_wed = Miércoles
+forcal_select_thu = Jueves
+forcal_select_fri = Viernes
+forcal_select_first_week = Primera
+forcal_select_second_week = Segunda
+forcal_select_third_week = Tercera
+forcal_select_fourth_week = Cuarta
+forcal_select_last_week = Última
+
+forcal_entry_name_validation = Por favor, introduce un título
+
+forcal_quick_navigation_label = Entradas actuales
+
+### multiuser additions
+forcal_user_permissions = Permisos de usuario
+forcal_users = Usuarios
+forcal_assign_categories = Asignar categorías
+forcal_assign_categories_info = Selecciona las categorías que el usuario está autorizado a gestionar.
+forcal_select_all_categories = Seleccionar todas las categorías
+forcal_save_permissions = Guardar permisos
+forcal_user_permissions_saved = Permisos guardados.
+forcal_user_permissions_error = Se produjo un error al guardar los permisos.
+forcal_permission_denied = Acceso denegado. No tienes los permisos suficientes.
+forcal_no_permission_for_category = No tienes permiso para esta categoría.
+forcal_no_permission_categories = No tienes permisos para las categorías del calendario.
+forcal_filter_my_categories = Mostrar solo mis categorías
+forcal_all_categories = Todas las categorías
+forcal_no_categories = Sin categorías
+forcal_select_categories = Seleccionar categorías
+forcal_category_filter = Filtro de categoría
+forcal_category_select = Categorías
