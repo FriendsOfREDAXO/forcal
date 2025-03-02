@@ -1,6 +1,5 @@
 <?php
 /**
- * @author YourName
  * @package redaxo5
  * @license MIT
  */
@@ -26,8 +25,8 @@ class forCalUserPermission
             $user = rex::getUser();
         }
 
-        // Administrator hat immer Zugriff
-        if ($user->isAdmin()) {
+        // Administrator oder User mit forcal[all]-Recht hat immer Zugriff
+        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
             return true;
         }
 
@@ -71,8 +70,8 @@ class forCalUserPermission
             $user = rex::getUser();
         }
 
-        // Administrator hat immer Zugriff
-        if ($user->isAdmin()) {
+        // Administrator oder User mit forcal[all]-Recht hat immer Zugriff
+        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
             return true;
         }
 
@@ -93,8 +92,8 @@ class forCalUserPermission
             $user = rex::getUser();
         }
 
-        // Administrator hat immer Zugriff auf alle Kategorien
-        if ($user->isAdmin()) {
+        // Administrator oder User mit forcal[all]-Recht hat immer Zugriff auf alle Kategorien
+        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
             return '';
         }
 
@@ -148,5 +147,88 @@ class forCalUserPermission
             $sql->rollBack();
             return false;
         }
+    }
+
+    /**
+     * Filtert eine Benutzerliste nach Benutzern mit forcal-Rechten
+     * 
+     * @param array $users Die zu filternde Benutzerliste
+     * @return array Die gefilterte Benutzerliste
+     */
+    public static function filterUsersWithForcalPermission($users)
+    {
+        $filtered_users = [];
+        
+        foreach ($users as $user) {
+            // Administratoren oder Benutzer mit forcal-Rechten hinzufügen
+            if ($user->isAdmin() || 
+                $user->hasPerm('forcal[]') || 
+                $user->hasPerm('forcal[all]') || 
+                $user->hasPerm('forcal[settings]') || 
+                $user->hasPerm('forcal[catspage]') || 
+                $user->hasPerm('forcal[venuespage]') || 
+                $user->hasPerm('forcal[userpermissions]')) {
+                $filtered_users[] = $user;
+            }
+        }
+        
+        return $filtered_users;
+    }
+    
+    /**
+     * Prüft, ob ein Benutzer Bilder hochladen darf
+     * 
+     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
+     * @return bool
+     */
+    public static function canUploadMedia(rex_user $user = null)
+    {
+        if ($user === null) {
+            $user = rex::getUser();
+        }
+        
+        // Administrator kann immer Bilder hochladen
+        if ($user->isAdmin()) {
+            return true;
+        }
+        
+        // Prüfen, ob der Benutzer das Recht zum Hochladen von Bildern hat
+        return $user->hasPerm('forcal[media]');
+    }
+
+    /**
+     * Erstellt eine SQL-Abfrage, die nach einer bestimmten Spalte filtert
+     * 
+     * @param string $table Die Tabelle
+     * @param string $column Die Spalte
+     * @param int $user_id Die Benutzer-ID
+     * @param string $where Zusätzliche WHERE-Bedingung
+     * @return string Die SQL-Abfrage
+     */
+    public static function createFilteredQuery($table, $column, $user_id, $where = '')
+    {
+        $sql = rex_sql::factory();
+        $user = rex_user::get($user_id);
+        
+        // Basisabfrage
+        $query = "SELECT * FROM " . $table;
+        
+        // WHERE-Bedingung hinzufügen (wenn vorhanden)
+        if (!empty($where)) {
+            $query .= " WHERE " . $where;
+        }
+        
+        // Normale Benutzer dürfen nur ihre Einträge sehen
+        if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
+            if (empty($where)) {
+                $query .= " WHERE ";
+            } else {
+                $query .= " AND ";
+            }
+            
+            $query .= $column . " = " . $user_id;
+        }
+        
+        return $query;
     }
 }
