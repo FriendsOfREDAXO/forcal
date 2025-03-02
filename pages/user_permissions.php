@@ -10,12 +10,6 @@
 $addon = rex_addon::get('forcal');
 $content = '';
 
-// Berechtigung prüfen
-if (!rex::getUser()->isAdmin()) {
-    echo rex_view::error($addon->i18n('permission_denied'));
-    return;
-}
-
 // Formular zum Speichern der Berechtigungen
 if (rex_post('btn_save', 'boolean')) {
     $user_id = rex_post('user_id', 'int');
