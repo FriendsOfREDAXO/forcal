@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author mail[at]doerr-softwaredevelopment[dot]com Joachim Doerr
  * @package redaxo5
@@ -6,7 +7,6 @@
  */
 
 namespace forCal\Handler;
-
 
 use rex;
 use rex_addon;
@@ -113,7 +113,7 @@ class forCalHandler
                     $dateBetween = forCalDateTimeHelper::isDateRangeBetweenDateRange($date, $endRepeatDate, $startSearchDate, $endSearchDate);
                 }
 
-                if($dateBetween === false && $iterateBetween === true) {
+                if ($dateBetween === false && $iterateBetween === true) {
                     continue;
                 }
 
@@ -141,16 +141,14 @@ class forCalHandler
 
                     self::$dateList[] = array(
                         'id' => $entry->entry_id,
-                        'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':','', $entry->entry_start_time),
+                        'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':', '', $entry->entry_start_time),
                         'date' => $entryRepeatDate,
                         'entry' => $dataListEntry
                     );
-
                 }
             }
 
             $entry->view_in_range = $between;
-
         } else {
 
             // only one time entry
@@ -166,7 +164,7 @@ class forCalHandler
 
             self::$dateList[] = array(
                 'id' => $entry->entry_id,
-                'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':','', $entry->entry_start_time),
+                'sort_key' => $entryRepeatDate->entry_start_date->format("Ymd") . str_replace(':', '', $entry->entry_start_time),
                 'date' => $entryRepeatDate,
                 'entry' => $dataListEntry
             );
@@ -210,6 +208,8 @@ class forCalHandler
      */
     protected static function decorateEntry(\stdClass $entry, $short = true, $dateFormat = 1, $timeFormat = 1)
     {
+        $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
+
         $start = new \DateTime($entry->entry_start_date->format('Y-m-d') . ' ' . $entry->entry_start_time);
         $end = new \DateTime($entry->entry_end_date->format('Y-m-d') . ' ' . $entry->entry_end_time);
         /** @var \DateInterval $interval */
@@ -223,7 +223,8 @@ class forCalHandler
 
         $endDate = $end->format('Y-m-d\TH:i:s');
 
-        if ($interval->days == 0 && $start->format('His') < $end->format('His')) {} else
+        if ($interval->days == 0 && $start->format('His') < $end->format('His')) {
+        } else
             $end->modify('+1 day');
 
         if ($end->format('H:i:s') == '00:00:00') {
@@ -279,7 +280,17 @@ class forCalHandler
 
             // add all other properties
             foreach ($entry as $key => $values) {
-                if (in_array($key, array('entry_id','entry_name','entry_range', 'view_in_range'))){
+                if (in_array($key, array('entry_id', 'entry_name', 'entry_range', 'view_in_range'))) {
+                    continue;
+                }
+
+                // Wenn Orte deaktiviert sind, überspringen wir alle Eigenschaften, die mit venue beginnen
+                if (!$venuesEnabled && (
+                    $key === 'venue_id' ||
+                    $key === 'venue_name' ||
+                    $key === 'venue_status' ||
+                    strpos($key, 'venues_') === 0
+                )) {
                     continue;
                 }
 
@@ -317,103 +328,103 @@ class forCalHandler
         return $eventDTO;
     }
 
-   /**
- * @return array
- */
-protected static function createSelect()
-{
-    $additional_for_title = \rex_config::get('forcal','forcal_additional_for_title');
-    $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
+    /**
+     * @return array
+     */
+    protected static function createSelect()
+    {
+        $additional_for_title = \rex_config::get('forcal', 'forcal_additional_for_title');
+        $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
 
-    $name = 'en.name_' . rex_clang::getCurrentId() . ' AS entry_name';
-    if ($additional_for_title && \rex::isBackend() && \rex_be_controller::getCurrentPage() == 'forcal' ) {
-        $name = 'CONCAT(en.name_'.\rex_clang::getCurrentId().'," - ",ca.'.$additional_for_title.'_'.\rex_clang::getCurrentId().') entry_name';
-    }
-
-    $select = array(
-        'en.id AS entry_id',
-        $name,
-        'en.start_date AS entry_start_date',
-        'en.end_date AS entry_end_date',
-        'en.start_time AS entry_start_time',
-        'en.end_time AS entry_end_time',
-        'en.end_repeat_date AS end_repeat_date',
-        'en.type AS type',
-        'en.repeat AS repeats',
-        'en.repeat_week AS repeat_weeks',
-        'en.repeat_month AS repeat_months',
-        'en.repeat_year AS repeat_years',
-        'en.repeat_month_week AS repeat_month_week',
-        'en.repeat_day AS repeat_day',
-        'ca.color AS category_color',
-        'en.status AS entry_status',
-        'en.full_time AS full_time',
-        'PERIOD_DIFF(DATE_FORMAT(en.end_date, "%Y%m"), DATE_FORMAT(en.start_date, "%Y%m")) AS entry_month_diff',
-        'IFNULL(ca.status, 1) AS category_status',
-        'en.teaser_' . rex_clang::getCurrentId() . ' AS entry_teaser',
-        'en.text_' . rex_clang::getCurrentId() . ' AS entry_text',
-        'ca.name_' . rex_clang::getCurrentId() . ' AS category_name',
-        'ca.id AS category_id',
-    );
-    
-    // Venue-Felder nur hinzufügen, wenn Venues aktiviert sind
-    if ($venuesEnabled) {
-        $select[] = 'IFNULL(ve.status, 1) AS venue_status';
-        $select[] = 've.name_' . rex_clang::getCurrentId() . ' AS venue_name';
-        $select[] = 've.id AS venue_id';
-    }
-
-    $definitionFields = array();
-
-    foreach (forCalDefinitions::getDefinitions() as $table => $definition) {
-        // Wenn Orte deaktiviert sind und es sich um die Orte-Tabelle handelt, überspringen
-        if (!$venuesEnabled && $table === rex::getTablePrefix() . 'forcal_venues') {
-            continue;
+        $name = 'en.name_' . rex_clang::getCurrentId() . ' AS entry_name';
+        if ($additional_for_title && \rex::isBackend() && \rex_be_controller::getCurrentPage() == 'forcal') {
+            $name = 'CONCAT(en.name_' . \rex_clang::getCurrentId() . '," - ",ca.' . $additional_for_title . '_' . \rex_clang::getCurrentId() . ') entry_name';
         }
-            
-        foreach ($definition['data'] as $fieldsetKey => $fieldset) {
-            switch ($fieldsetKey) {
-                case 'langfields':
-                    $fields = forCalDatabaseFieldsetHandler::handleLangDatabaseFieldset($fieldset, $table);
-                    $definitionFields[] = array($table => $fields['select']);
-                    break;
-                case 'fields':
-                    $fields = forCalDatabaseFieldsetHandler::handleDatabaseFieldset($fieldset, $table);
-                    $definitionFields[] = array($table => $fields['select']);
-                    break;
+
+        $select = array(
+            'en.id AS entry_id',
+            $name,
+            'en.start_date AS entry_start_date',
+            'en.end_date AS entry_end_date',
+            'en.start_time AS entry_start_time',
+            'en.end_time AS entry_end_time',
+            'en.end_repeat_date AS end_repeat_date',
+            'en.type AS type',
+            'en.repeat AS repeats',
+            'en.repeat_week AS repeat_weeks',
+            'en.repeat_month AS repeat_months',
+            'en.repeat_year AS repeat_years',
+            'en.repeat_month_week AS repeat_month_week',
+            'en.repeat_day AS repeat_day',
+            'ca.color AS category_color',
+            'en.status AS entry_status',
+            'en.full_time AS full_time',
+            'PERIOD_DIFF(DATE_FORMAT(en.end_date, "%Y%m"), DATE_FORMAT(en.start_date, "%Y%m")) AS entry_month_diff',
+            'IFNULL(ca.status, 1) AS category_status',
+            'en.teaser_' . rex_clang::getCurrentId() . ' AS entry_teaser',
+            'en.text_' . rex_clang::getCurrentId() . ' AS entry_text',
+            'ca.name_' . rex_clang::getCurrentId() . ' AS category_name',
+            'ca.id AS category_id',
+        );
+
+        // Venue-Felder nur hinzufügen, wenn Venues aktiviert sind
+        if ($venuesEnabled) {
+            $select[] = 'IFNULL(ve.status, 1) AS venue_status';
+            $select[] = 've.name_' . rex_clang::getCurrentId() . ' AS venue_name';
+            $select[] = 've.id AS venue_id';
+        }
+
+        $definitionFields = array();
+
+        foreach (forCalDefinitions::getDefinitions() as $table => $definition) {
+            // Wenn Orte deaktiviert sind und es sich um die Orte-Tabelle handelt, überspringen
+            if (!$venuesEnabled && $table === rex::getTablePrefix() . 'forcal_venues') {
+                continue;
+            }
+
+            foreach ($definition['data'] as $fieldsetKey => $fieldset) {
+                switch ($fieldsetKey) {
+                    case 'langfields':
+                        $fields = forCalDatabaseFieldsetHandler::handleLangDatabaseFieldset($fieldset, $table);
+                        $definitionFields[] = array($table => $fields['select']);
+                        break;
+                    case 'fields':
+                        $fields = forCalDatabaseFieldsetHandler::handleDatabaseFieldset($fieldset, $table);
+                        $definitionFields[] = array($table => $fields['select']);
+                        break;
+                }
             }
         }
-    }
 
-    $fields = array();
+        $fields = array();
 
-    if (sizeof($definitionFields) > 0) {
-        foreach ($definitionFields as $tableDefinitionFields) {
-            foreach ($tableDefinitionFields as $table => $definitionTableFields) {
-                // Wenn Orte deaktiviert sind und es sich um die Orte-Tabelle handelt, überspringen
-                if (!$venuesEnabled && $table === rex::getTablePrefix() . 'forcal_venues') {
-                    continue;
-                }
-                    
-                foreach ($definitionTableFields as $definitionTableField) {
-                    if (is_integer(substr($definitionTableField, -1))) {
-                        if (substr($definitionTableField, -2) == '_' . rex_clang::getCurrentId()) {
-                            $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . substr($definitionTableField, 0, -2);
+        if (sizeof($definitionFields) > 0) {
+            foreach ($definitionFields as $tableDefinitionFields) {
+                foreach ($tableDefinitionFields as $table => $definitionTableFields) {
+                    // Wenn Orte deaktiviert sind und es sich um die Orte-Tabelle handelt, überspringen
+                    if (!$venuesEnabled && $table === rex::getTablePrefix() . 'forcal_venues') {
+                        continue;
+                    }
+
+                    foreach ($definitionTableFields as $definitionTableField) {
+                        if (is_integer(substr($definitionTableField, -1))) {
+                            if (substr($definitionTableField, -2) == '_' . rex_clang::getCurrentId()) {
+                                $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . substr($definitionTableField, 0, -2);
+                            }
+                        } else {
+                            $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . $definitionTableField;
                         }
-                    } else {
-                        $fields[] = forCalTableKey::getTableShortKey($table) . '.' . $definitionTableField . ' AS ' . forCalTableKey::getTableFullKey($table) . '_' . $definitionTableField;
                     }
                 }
             }
         }
-    }
 
-    if (sizeof($fields) > 0) {
-        $select = array_merge($select, $fields);
-    }
+        if (sizeof($fields) > 0) {
+            $select = array_merge($select, $fields);
+        }
 
-    return $select;
-}
+        return $select;
+    }
 
     /**
      * @param \DateTime $startDate
@@ -434,7 +445,7 @@ protected static function createSelect()
         $category = '';
         $userFilter = '';
         $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
-        
+
         // Benutzerrechte-Filter hinzufügen
         if ($useUserPermissions && rex::getUser() && !rex::getUser()->isAdmin()) {
             $userFilter = forCalUserPermission::getCategoryFilter('en');
@@ -446,7 +457,7 @@ protected static function createSelect()
 
         if (!$ignoreStatus) {
             $statusHaving = ' HAVING category_status = 1';
-            
+
             // Wenn Venues aktiviert sind, auch venue_status in HAVING berücksichtigen
             if ($venuesEnabled) {
                 $statusHaving .= ' AND venue_status = 1';
@@ -461,7 +472,7 @@ protected static function createSelect()
                 $category = ' AND en.category = ' . $catId . ' ';
             }
         }
-        
+
         // Venue-Filter nur berücksichtigen, wenn Venues aktiviert sind
         if ($venuesEnabled && !is_null($venueId)) {
             $venue = ' AND en.venue = ' . $venueId . ' ';
@@ -470,7 +481,7 @@ protected static function createSelect()
         $sql = rex_sql::factory();
         $query = '
           SELECT
-            ' .implode(', ', $select). '
+            ' . implode(', ', $select) . '
           FROM
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
@@ -478,7 +489,7 @@ protected static function createSelect()
             ' . rex::getTablePrefix() . 'forcal_categories AS ca 
           ON
             ca.id = en.category';
-            
+
         // Venue-JOIN nur hinzufügen, wenn Venues aktiviert sind
         if ($venuesEnabled) {
             $query .= '
@@ -487,12 +498,12 @@ protected static function createSelect()
           ON
             ve.id = en.venue';
         }
-            
+
         $query .= '  
           WHERE
             en.type = \'one_time\' AND
-            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
-            (en.end_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
+            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
+            (en.end_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
             en.start_date <= \'' . $startDate->format("Y-m-d H:i:s") . '\' AND
             en.end_date >= \'' . $endDate->format("Y-m-d H:i:s") . '\')
             ' . $statusIgnore . $category . $venue . $userFilter . $statusHaving . '
@@ -500,7 +511,7 @@ protected static function createSelect()
           UNION
           
           SELECT
-            ' .implode(', ', $select). '
+            ' . implode(', ', $select) . '
           FROM
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
@@ -508,7 +519,7 @@ protected static function createSelect()
             ' . rex::getTablePrefix() . 'forcal_categories AS ca 
           ON
             ca.id = en.category';
-            
+
         // Venue-JOIN auch in der UNION nur hinzufügen, wenn Venues aktiviert sind
         if ($venuesEnabled) {
             $query .= '
@@ -517,12 +528,12 @@ protected static function createSelect()
           ON
             ve.id = en.venue';
         }
-            
+
         $query .= '  
           WHERE
             en.type = \'repeat\' AND
-            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
-            (en.end_repeat_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \''. $endDate->format("Y-m-d H:i:s") .'\') OR
+            ((en.start_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
+            (en.end_repeat_date BETWEEN \'' . $startDate->format("Y-m-d H:i:s") . '\' AND \'' . $endDate->format("Y-m-d H:i:s") . '\') OR
             en.start_date <= \'' . $startDate->format("Y-m-d H:i:s") . '\' AND
             en.end_repeat_date >= \'' . $endDate->format("Y-m-d H:i:s") . '\')
             ' . $statusIgnore . $category . $venue . $userFilter . $statusHaving . '
@@ -544,10 +555,10 @@ protected static function createSelect()
         $select = self::createSelect();
         $sql = rex_sql::factory();
         $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
-        
+
         $query = '
           SELECT
-            ' .implode(', ', $select). '
+            ' . implode(', ', $select) . '
           FROM
             ' . rex::getTablePrefix() . 'forcal_entries AS en
              
@@ -555,7 +566,7 @@ protected static function createSelect()
             ' . rex::getTablePrefix() . 'forcal_categories AS ca 
           ON
             ca.id = en.category';
-            
+
         // Venue-JOIN nur hinzufügen, wenn Venues aktiviert sind
         if ($venuesEnabled) {
             $query .= '
@@ -564,11 +575,11 @@ protected static function createSelect()
           ON
             ve.id = en.venue';
         }
-            
+
         $query .= '
           WHERE
             en.id = ' . $id;
-            
+
         // Benutzerrechte-Filter hinzufügen
         if (rex::getUser() && !rex::getUser()->isAdmin()) {
             $userFilter = forCalUserPermission::getCategoryFilter('en');
@@ -656,9 +667,9 @@ protected static function createSelect()
 
             $page = min($pageNumber, self::$numberOfPages);
             $offset = ($page - 1) * $pageSize;
-            if( $offset < 0 ) $offset = 0;
+            if ($offset < 0) $offset = 0;
 
-            self::$dateList = array_slice( self::$dateList, $offset, $pageSize );
+            self::$dateList = array_slice(self::$dateList, $offset, $pageSize);
         }
 
         return self::$dateList;
@@ -682,8 +693,15 @@ protected static function createSelect()
 
         return $decoratedEntries;
     }
+
     /**
-    * @param null|int $venueId
+     * @param $start
+     * @param $end
+     * @param bool $short
+     * @param bool $ignoreStatus
+     * @param string $sort [SORT_ASC, SORT_DESC]
+     * @param null|int|array $categoryId
+     * @param null|int $venueId
      * @param int $dateFormat
      * @param int $timeFormat
      * @param array $customFilters
@@ -703,11 +721,11 @@ protected static function createSelect()
         // Wenn benutzerdefinierte Filter vorhanden sind, wenden wir sie an
         if (!empty($customFilters)) {
             $filtered_list = [];
-            
+
             foreach (self::$dateList as $item) {
                 $entry = $item['entry'];
                 $include = true;
-                
+
                 // Jeden benutzerdefinierten Filter prüfen
                 foreach ($customFilters as $field => $value) {
                     // Callback-Funktion als Filter
@@ -719,7 +737,7 @@ protected static function createSelect()
                         }
                         continue;
                     }
-                    
+
                     // Prüfen, ob das Feld existiert (mit oder ohne "entry_" Präfix)
                     $fieldExists = property_exists($entry, $field);
                     if (!$fieldExists) {
@@ -729,24 +747,23 @@ protected static function createSelect()
                             $field = $entryField;
                         }
                     }
-                    
+
                     // Wenn das Feld nicht existiert, diesen Eintrag überspringen
                     if (!$fieldExists) {
                         $include = false;
                         break;
                     }
-                    
+
                     // Prüfen, ob der Feldwert den Filterkriterien entspricht
                     if ($value === true && (empty($entry->$field) || $entry->$field === '0')) {
                         $include = false;
                         break;
                     }
-                    
                     if ($value === false && !empty($entry->$field) && $entry->$field !== '0') {
                         $include = false;
                         break;
                     }
-                    
+
                     if (is_string($value) || is_numeric($value)) {
                         if ($entry->$field != $value) {
                             $include = false;
@@ -754,12 +771,12 @@ protected static function createSelect()
                         }
                     }
                 }
-                
+
                 if ($include) {
                     $filtered_list[] = $item;
                 }
             }
-            
+
             // Gefilterte Liste für die Weiterverarbeitung verwenden
             self::$dateList = $filtered_list;
         }
