@@ -1,0 +1,170 @@
+### defaults
+forcal_title = Koledar
+forcal_help = Pomoč
+forcal_offline = Brez povezave
+forcal_online = Povezan
+forcal_startdate = Datum
+forcal_starttime = Ura
+forcal_config = Nastavitve
+forcal_config_save = Shrani nastavitve
+forcal_config_saved = Nastavitve so shranjene.
+forcal_colors = Barve kategorij Hexadecimalno #ffffff, #000000
+forcal_datepicker = Izbirnik datuma
+forcal_customfield_check = Preverjanje definicijskega polja
+forcal_additional_attributes = Atributi po meri
+forcal_additional_attributes_notice = Prosim, napišite kot JSON. npr. {"class":"my-class","placeholder":"Moj nadomestni znak"}
+forcal_additional_field_for_category = Dodatno polje za identifikacijo kategorije
+forcal_please_select = Izbira je neobvezna
+forcal_only_multilanguage_fields_shown = Prikazana so samo večjezična polja
+forcal_clone = Podvoji
+forcal_status_function = Status/Funkcija
+forcal_shortcut_save = Uporabite bližnjico za shranjevanje termina (Ctrl+S)
+forcal_full_time_preselection = "Dogodek cel dan" vnaprej izbrano
+forcal_start_page = Začetna stran
+forcal_change_message = Podatki so bili prevzeti iz drugega dodatka koledarja. Izvirni dodatek je bil odstranjen.
+forcal_add_new_entry = Dodaj nov vnos
+
+# Novi vnosi za razširjena dovoljenja
+forcal_venues_enabled = Omogoči tabelo prizorišč
+forcal_media_upload_permission = Dovolite nalaganje slik (uporabite polja Media/Medialist)
+forcal_all_categories_access = Neomejen dostop do vseh kategorij (kot skrbnik)
+forcal_users_with_permission = Uporabniki z dovoljenji za forCal
+
+perm_general_forcal[] = Uporabi forCal
+perm_general_forcal[settings] = Uredi nastavitve FORCal
+perm_general_forcal[catspage] = Upravljaj kategorije FORCal
+perm_general_forcal[venuespage] = Upravljaj prizorišča FORCal
+perm_general_forcal[userpermissions] = Upravljaj uporabniška dovoljenja FORCal
+perm_general_forcal[all] = FORCal Dostop do vseh kategorij
+perm_general_forcal[media] = FORCal Naloži slike
+
+### navigation points
+forcal_calendar = Koledar
+forcal_entries = Vnosi
+forcal_categories = Kategorije
+forcal_venues = Prizorišča
+forcal_settings = Nastavitve
+
+### cal view
+forcal_calendar_view = Pregled
+
+### venue
+rex_forcal_venues_toggle_status_error = Stanja prizorišča ni bilo mogoče spremeniti.
+rex_forcal_venues_toggle_status_success = Stanje prizorišča je bilo spremenjeno.
+rex_forcal_venues_deleted = Prizorišče je izbrisano.
+rex_forcal_venues_cloned = Prizorišče je podvojeno.
+
+### venue list
+forcal_venues_title = Prizorišča
+forcal_venue_name = Prizorišče
+forcal_add_venue = Dodaj prizorišče
+forcal_venue_delete = Izbriši prizorišče
+
+### venue form
+forcal_venue_add = Dodaj prizorišče
+forcal_venue_edit = Uredi prizorišče
+
+### categories
+rex_forcal_categories_toggle_status_error = Stanja kategorije ni bilo mogoče spremeniti.
+rex_forcal_categories_toggle_status_success = Stanje kategorije je bilo spremenjeno.
+rex_forcal_categories_deleted = Kategorija je izbrisana.
+rex_forcal_categories_cloned = Kategorija je podvojena.
+
+### categories list
+forcal_categories_title = Kategorije
+forcal_add_category = Dodaj kategorijo
+
+### categories form
+forcal_category = Kategorija
+forcal_category_delete = Izbriši kategorijo
+forcal_category_add = Dodaj kategorijo
+forcal_category_edit = Uredi kategorijo
+forcal_category_name = Ime
+forcal_category_color = Barva
+forcal_category_color_not_empty = Prosim, izberite barvo
+
+### entry
+rex_forcal_entries_toggle_status_error = Stanja vnosa ni bilo mogoče spremeniti.
+rex_forcal_entries_toggle_status_success = Stanje vnosa je bilo spremenjeno.
+rex_forcal_entries_deleted = Vnos je izbrisan.
+rex_forcal_entries_cloned = Vnos je podvojen.
+rex_forcal_entries_copy = Kopiraj
+
+### entry list
+forcal_entry_list_view = Vnosi
+forcal_add_entry = Dodaj vnos
+forcal_filter = Filter
+forcal_reset = Ponastavi
+forcal_category_filter_title = Filtriraj po kategoriji
+forcal_category_filter_all = Vse kategorije
+forcal_apply_filter = Uporabi filter
+
+### entry form
+forcal_entry_delete = Izbriši
+forcal_entry_add = Dodaj vnos
+forcal_entry_edit = Uredi vnos
+forcal_entry_date = Datum
+forcal_from = Od
+forcal_to = Do
+forcal_entry_type = Ponovi
+forcal_radio_one_time = Enkratni dogodek
+forcal_radio_repeat = Ponavljajoči se dogodek
+forcal_repeat_every = Pogostost
+forcal_entry_repeats = Ponavljanja
+forcal_entry_everyn = vsak
+forcal_entry_everye = vsak
+forcal_entry_everys = vsak
+forcal_select_monthly = Mesečno
+forcal_select_weekly = Tedensko
+forcal_select_yearly = Letno
+forcal_repeat_every_weekly = Teden
+forcal_repeat_every_monthly = Mesec
+forcal_repeat_every_yearly = Leto
+forcal_repeat_ending = Datum zaključka
+forcal_entry_name = Naslov
+forcal_entry_teaser = Teaser / Kratek opis
+forcal_entry_text = Opis
+forcal_entry_category = Kategorija
+forcal_entry_venue = Prizorišče
+forcal_entry_status = Status
+forcal_entry_full_time = Cel dan
+forcal_checkbox_full_time = Dogodek cel dan
+forcal_redactor2 = Redactor 2
+
+forcal_sql_database_min_version = Podatkovna baza {0} {1} je zastarela, zahtevana je minimalna različica {2}!
+forcal_select_monthly_day = mesečno [dan v tednu]
+forcal_select_sun = Nedelja
+forcal_select_sat = Sobota
+forcal_select_mon = Ponedeljek
+forcal_select_tue = Torek
+forcal_select_wed = Sreda
+forcal_select_thu = Četrtek
+forcal_select_fri = Petek
+forcal_select_first_week = Prvi
+forcal_select_second_week = Drugi
+forcal_select_third_week = Tretji
+forcal_select_fourth_week = Četrti
+forcal_select_last_week = Zadnji
+
+forcal_entry_name_validation = Prosim, vnesite naslov
+
+forcal_quick_navigation_label = Trenutni vnosi
+
+### multiuser additions
+forcal_user_permissions = Uporabniška dovoljenja
+forcal_users = Uporabniki
+forcal_assign_categories = Dodeli kategorije
+forcal_assign_categories_info = Izberite kategorije, ki jih sme uporabnik upravljati.
+forcal_select_all_categories = Izberi vse kategorije
+forcal_save_permissions = Shrani dovoljenja
+forcal_user_permissions_saved = Dovoljenja shranjena.
+forcal_user_permissions_error = Pri shranjevanju dovoljenj je prišlo do napake.
+forcal_permission_denied = Dostop zavrnjen. Nimate zadostnih dovoljenj.
+forcal_no_permission_for_category = Nimate dovoljenja za to kategorijo.
+forcal_no_permission_categories = Nimate dovoljenj za kategorije koledarjev.
+forcal_filter_my_categories = Prikaži samo moje kategorije
+forcal_all_categories = Vse kategorije
+forcal_no_categories = Ni kategorij
+forcal_select_categories = Izberi kategorije
+forcal_category_filter = Filter kategorije
+forcal_category_select = Kategorije
