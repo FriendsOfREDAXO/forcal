@@ -672,7 +672,7 @@ class forCalHandler
 
         return $decoratedEntries;
     }
-
+    /**
     * @param null|int $venueId
      * @param int $dateFormat
      * @param int $timeFormat
