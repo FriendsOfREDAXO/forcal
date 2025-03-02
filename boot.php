@@ -12,6 +12,15 @@ use forCal\Manager\forCalDatabaseManager;
 if (rex::isBackend() && rex::getUser()) {
     $config = $this->getConfig();
 
+    // Allgemeine Rechte für forCal registrieren
+    rex_perm::register('forcal[]', null, rex_perm::OPTIONS);
+    
+    // Neues Recht für uneingeschränkten Zugriff (wie Admin)
+    rex_perm::register('forcal[all]', null, rex_perm::OPTIONS);
+    
+    // Neues Recht für Upload von Medien
+    rex_perm::register('forcal[media]', null, rex_perm::OPTIONS);
+
     // Multiuser Einstellungen aktivieren, wenn gesetzt
     if (isset($config['forcal_multiuser']) && $config['forcal_multiuser']) {
         // Rechte für Administrations-Seiten setzen
@@ -73,6 +82,10 @@ if (rex::isBackend() && rex::getUser()) {
         forCalDatabaseManager::executeAddLangFields();
     });
     
+    // Einstellung für optionale Orte-Tabelle
+    rex_view::setJsProperty('forcal_venues_enabled', isset($config['forcal_venues_enabled']) ? (bool)$config['forcal_venues_enabled'] : true);
+    
+    // Shortcut-Einstellung
     rex_view::setJsProperty('forcal_shortcut_save', isset($config['forcal_shortcut_save']) && $config['forcal_shortcut_save'] ? $config['forcal_shortcut_save'] : false);
 
     $page = $this->getProperty('page');
@@ -80,6 +93,12 @@ if (rex::isBackend() && rex::getUser()) {
         $entry = $page['subpages'][$config['forcal_start_page']];
         unset($page['subpages'][$config['forcal_start_page']]);
         $page['subpages'] = [$config['forcal_start_page'] => $entry] + $page['subpages'];
+        
+        // Wenn Orte deaktiviert sind, die Seite ausblenden
+        if (isset($config['forcal_venues_enabled']) && !$config['forcal_venues_enabled'] && isset($page['subpages']['venues'])) {
+            unset($page['subpages']['venues']);
+        }
+        
         $this->setProperty('page', $page);
     }
 }
