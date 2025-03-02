@@ -1,234 +1,115 @@
 <?php
 /**
+ * @author mail[at]doerr-softwaredevelopment[dot]com Joachim Doerr
  * @package redaxo5
  * @license MIT
  */
 
-namespace forCal\Utils;
+use forCal\Utils\forCalUserPermission;
 
-use rex;
-use rex_sql;
-use rex_user;
+$addon = rex_addon::get('forcal');
 
-class forCalUserPermission
-{
-    /**
-     * Prüft, ob ein Benutzer Zugriff auf eine bestimmte Kategorie hat
-     *
-     * @param int $category_id Die Kategorie-ID
-     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
-     * @return bool
-     */
-    public static function hasPermission($category_id, rex_user $user = null)
-    {
-        if ($user === null) {
-            $user = rex::getUser();
-        }
-
-        // Administrator oder User mit forcal[all]-Recht hat immer Zugriff
-        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
-            return true;
-        }
-
-        // Die erlaubten Kategorien des Benutzers abrufen
-        $allowed_categories = self::getUserCategories($user->getId());
-
-        // Prüfen, ob die Kategorie-ID in den erlaubten Kategorien ist
-        return in_array($category_id, $allowed_categories);
-    }
-
-    /**
-     * Gibt die IDs der erlaubten Kategorien für einen Benutzer zurück
-     *
-     * @param int $user_id Die Benutzer-ID
-     * @return array
-     */
-    public static function getUserCategories($user_id)
-    {
-        $sql = rex_sql::factory();
-        $sql->setQuery('SELECT category_id FROM ' . rex::getTablePrefix() . 'forcal_user_categories WHERE user_id = :user_id', [
-            ':user_id' => $user_id
-        ]);
-
-        $categories = [];
-        foreach ($sql as $row) {
-            $categories[] = $row->getValue('category_id');
-        }
-
-        return $categories;
-    }
-
-    /**
-     * Prüft, ob ein Benutzer überhaupt Kategorien zugewiesen hat
-     *
-     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
-     * @return bool
-     */
-    public static function hasAnyPermission(rex_user $user = null)
-    {
-        if ($user === null) {
-            $user = rex::getUser();
-        }
-
-        // Administrator oder User mit forcal[all]-Recht hat immer Zugriff
-        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
-            return true;
-        }
-
-        $categories = self::getUserCategories($user->getId());
-        return !empty($categories);
-    }
-
-    /**
-     * Gibt eine WHERE-Bedingung zurück, die nur die erlaubten Kategorien enthält
-     *
-     * @param string $table_alias Der Tabellen-Alias (Standard: 'en')
-     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
-     * @return string
-     */
-    public static function getCategoryFilter($table_alias = 'en', rex_user $user = null)
-    {
-        if ($user === null) {
-            $user = rex::getUser();
-        }
-
-        // Administrator oder User mit forcal[all]-Recht hat immer Zugriff auf alle Kategorien
-        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
-            return '';
-        }
-
-        $categories = self::getUserCategories($user->getId());
-        
-        if (empty($categories)) {
-            // Falls keine Kategorien zugewiesen sind, soll nichts angezeigt werden
-            return ' AND 0 ';
-        }
-
-        return ' AND ' . $table_alias . '.category IN (' . implode(',', $categories) . ') ';
-    }
+// Nur Admins und Benutzer mit den richtigen Rechten dürfen die Berechtigungen verwalten
+if (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('forcal[userpermissions]')) {
     
-    /**
-     * Speichert die Benutzerberechtigungen
-     *
-     * @param int $user_id Die Benutzer-ID
-     * @param array $category_ids Die Kategorie-IDs
-     * @return bool
-     */
-    public static function savePermissions($user_id, array $category_ids)
-    {
-        $sql = rex_sql::factory();
+    $current_user_id = rex_request('user_id', 'int', 0);
+    $message = '';
+    
+    // Berechtigungen speichern
+    if (rex_post('btn_save', 'string') && $current_user_id > 0) {
+        // Kategorien-Berechtigungen speichern
+        $categories = rex_post('categories', 'array', []);
         
-        try {
-            // Transaktion starten
-            $sql->beginTransaction();
+        // Berechtigungen für "forcal[all]" aktualisieren
+        $has_all_perm = rex_post('has_all_perm', 'boolean', false);
+        $can_upload_media = rex_post('can_upload_media', 'boolean', false);
+        
+        // Benutzer abrufen
+        $user = rex_user::get($current_user_id);
+        if ($user) {
+            // forcal[all] Berechtigung setzen oder entfernen
+            $perms = $user->getValue('rights');
+            $perms = preg_replace('/forcal\[all\],?/', '', $perms);
+            $perms = preg_replace('/forcal\[media\],?/', '', $perms);
             
-            // Alte Einträge löschen
-            $sql->setQuery('DELETE FROM ' . rex::getTablePrefix() . 'forcal_user_categories WHERE user_id = :user_id', [
-                ':user_id' => $user_id
-            ]);
+            if ($has_all_perm) {
+                $perms .= ',forcal[all]';
+            }
             
-            // Neue Einträge speichern
-            if (!empty($category_ids)) {
-                foreach ($category_ids as $category_id) {
-                    $insert = rex_sql::factory();
-                    $insert->setTable(rex::getTablePrefix() . 'forcal_user_categories');
-                    $insert->setValue('user_id', $user_id);
-                    $insert->setValue('category_id', $category_id);
-                    $insert->insert();
+            if ($can_upload_media) {
+                $perms .= ',forcal[media]';
+            }
+            
+            // Doppelte Kommas entfernen
+            $perms = preg_replace('/,,+/', ',', $perms);
+            $perms = trim($perms, ',');
+            
+            // Berechtigungen speichern
+            $sql = rex_sql::factory();
+            $sql->setTable(rex::getTable('user'));
+            $sql->setWhere(['id' => $current_user_id]);
+            $sql->setValue('rights', $perms);
+            $sql->update();
+            
+            // Kategorien-Berechtigungen speichern (nur wenn nicht alle Kategorien erlaubt sind)
+            if (!$has_all_perm) {
+                if (forCalUserPermission::savePermissions($current_user_id, $categories)) {
+                    $message = rex_view::success(rex_i18n::msg('forcal_user_permissions_saved'));
+                } else {
+                    $message = rex_view::error(rex_i18n::msg('forcal_user_permissions_error'));
                 }
-            }
-            
-            // Transaktion abschließen
-            $sql->commit();
-            
-            return true;
-        } catch (\Exception $e) {
-            // Bei Fehler: Transaktion zurückrollen
-            $sql->rollBack();
-            return false;
-        }
-    }
-
-    /**
-     * Filtert eine Benutzerliste nach Benutzern mit forcal-Rechten
-     * 
-     * @param array $users Die zu filternde Benutzerliste
-     * @return array Die gefilterte Benutzerliste
-     */
-    public static function filterUsersWithForcalPermission($users)
-    {
-        $filtered_users = [];
-        
-        foreach ($users as $user) {
-            // Administratoren oder Benutzer mit forcal-Rechten hinzufügen
-            if ($user->isAdmin() || 
-                $user->hasPerm('forcal[]') || 
-                $user->hasPerm('forcal[all]') || 
-                $user->hasPerm('forcal[settings]') || 
-                $user->hasPerm('forcal[catspage]') || 
-                $user->hasPerm('forcal[venuespage]') || 
-                $user->hasPerm('forcal[userpermissions]')) {
-                $filtered_users[] = $user;
+            } else {
+                // Bei forcal[all] alle Kategoriezuweisungen löschen
+                forCalUserPermission::savePermissions($current_user_id, []);
+                $message = rex_view::success(rex_i18n::msg('forcal_user_permissions_saved'));
             }
         }
-        
-        return $filtered_users;
     }
     
-    /**
-     * Prüft, ob ein Benutzer Bilder hochladen darf
-     * 
-     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
-     * @return bool
-     */
-    public static function canUploadMedia(rex_user $user = null)
-    {
-        if ($user === null) {
-            $user = rex::getUser();
-        }
-        
-        // Administrator kann immer Bilder hochladen
-        if ($user->isAdmin()) {
-            return true;
-        }
-        
-        // Prüfen, ob der Benutzer das Recht zum Hochladen von Bildern hat
-        return $user->hasPerm('forcal[media]');
+    // Alle Benutzer abrufen
+    $sql = rex_sql::factory();
+    $users = $sql->getArray('SELECT id, name, login FROM ' . rex::getTable('user') . ' ORDER BY name');
+    
+    // In Objekte umwandeln, damit die filterUsersWithForcalPermission-Methode funktioniert
+    $user_objects = [];
+    foreach ($users as $user) {
+        $user_objects[] = rex_user::get($user['id']);
     }
-
-    /**
-     * Erstellt eine SQL-Abfrage, die nach einer bestimmten Spalte filtert
-     * 
-     * @param string $table Die Tabelle
-     * @param string $column Die Spalte
-     * @param int $user_id Die Benutzer-ID
-     * @param string $where Zusätzliche WHERE-Bedingung
-     * @return string Die SQL-Abfrage
-     */
-    public static function createFilteredQuery($table, $column, $user_id, $where = '')
-    {
-        $sql = rex_sql::factory();
-        $user = rex_user::get($user_id);
-        
-        // Basisabfrage
-        $query = "SELECT * FROM " . $table;
-        
-        // WHERE-Bedingung hinzufügen (wenn vorhanden)
-        if (!empty($where)) {
-            $query .= " WHERE " . $where;
-        }
-        
-        // Normale Benutzer dürfen nur ihre Einträge sehen
-        if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
-            if (empty($where)) {
-                $query .= " WHERE ";
-            } else {
-                $query .= " AND ";
-            }
-            
-            $query .= $column . " = " . $user_id;
-        }
-        
-        return $query;
+    
+    // Benutzer filtern, die forcal-Rechte haben
+    $user_objects = forCalUserPermission::filterUsersWithForcalPermission($user_objects);
+    
+    // Kategorien abrufen
+    $sql = rex_sql::factory();
+    $categories = $sql->getArray('SELECT id, name_' . rex_clang::getCurrentId() . ' as name, color FROM ' . rex::getTable('forcal_categories') . ' WHERE status = 1 ORDER BY name_' . rex_clang::getCurrentId());
+    
+    $category_objects = [];
+    foreach ($categories as $category) {
+        $obj = new stdClass();
+        $obj->setValue('id', $category['id']);
+        $obj->setValue('name', $category['name']);
+        $obj->setValue('color', $category['color']);
+        $category_objects[] = $obj;
     }
+    
+    // Zugewiesene Kategorien abrufen
+    $assigned_categories = [];
+    if ($current_user_id > 0) {
+        $assigned_categories = forCalUserPermission::getUserCategories($current_user_id);
+    }
+    
+    // Fragment anzeigen
+    $fragment = new rex_fragment();
+    $fragment->setVar('users', $user_objects);
+    $fragment->setVar('categories', $category_objects);
+    $fragment->setVar('current_user_id', $current_user_id);
+    $fragment->setVar('assigned_categories', $assigned_categories);
+    
+    // Nachricht anzeigen
+    echo $message;
+    
+    // Inhalte ausgeben
+    echo $fragment->parse('forcal_user_permissions.php');
+} else {
+    echo rex_view::error(rex_i18n::msg('forcal_permission_denied'));
 }
