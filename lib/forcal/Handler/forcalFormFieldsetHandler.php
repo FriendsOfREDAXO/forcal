@@ -10,6 +10,7 @@ namespace forCal\Handler;
 
 use rex;
 use rex_clang;
+use rex_addon;
 use rex_form;
 use rex_i18n;
 use forCal\Utils\forCalFormHelper;
