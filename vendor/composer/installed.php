@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => '7.4.0.x-dev',
-        'version' => '7.4.0.9999999-dev',
-        'reference' => '8278ac168d24342c481de76ce5b02a7424dfbf45',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'ccf73a215a14c94dd4dbc3b46feba05932598c6b',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => '7.4.0.x-dev',
-            'version' => '7.4.0.9999999-dev',
-            'reference' => '8278ac168d24342c481de76ce5b02a7424dfbf45',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'ccf73a215a14c94dd4dbc3b46feba05932598c6b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -29,9 +29,9 @@
             'dev_requirement' => false,
         ),
         'spatie/calendar-links' => array(
-            'pretty_version' => '1.8.5',
-            'version' => '1.8.5.0',
-            'reference' => 'd6f6c5e7ff916e2a55e2160d4db4f15875cb6e07',
+            'pretty_version' => '1.11.1',
+            'version' => '1.11.1.0',
+            'reference' => 'bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../spatie/calendar-links',
             'aliases' => array(),

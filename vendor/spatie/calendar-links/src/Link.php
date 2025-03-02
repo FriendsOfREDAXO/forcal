@@ -16,6 +16,10 @@ use Spatie\CalendarLinks\Generators\Yahoo;
  * @property-read string $description
  * @property-read string $address
  * @property-read bool $allDay
+ * @psalm-import-type IcsOptions from \Spatie\CalendarLinks\Generators\Ics
+ * @psalm-import-type GoogleUrlParameters from \Spatie\CalendarLinks\Generators\Google
+ * @psalm-import-type YahooUrlParameters from \Spatie\CalendarLinks\Generators\Yahoo
+ * @psalm-import-type OutlookUrlParameters from \Spatie\CalendarLinks\Generators\BaseOutlook
  */
 class Link
 {
@@ -39,15 +43,20 @@ class Link
 
     public function __construct(string $title, \DateTimeInterface $from, \DateTimeInterface $to, bool $allDay = false)
     {
+        $this->from = clone $from;
+        $this->to = clone $to;
         $this->title = $title;
         $this->allDay = $allDay;
 
-        if ($from > $to) {
-            throw InvalidLink::negativeDateRange($from, $to);
+        // Ensures timezones match.
+        if ($this->from->getTimezone()->getName() !== $this->to->getTimezone()->getName()) {
+            $this->to->setTimezone($from->getTimezone());
         }
 
-        $this->from = clone $from;
-        $this->to = clone $to;
+        // Ensures from date is earlier than to date.
+        if ($this->from > $this->to) {
+            throw InvalidLink::negativeDateRange($from, $to);
+        }
     }
 
     /**
@@ -61,7 +70,15 @@ class Link
      */
     public static function create(string $title, \DateTimeInterface $from, \DateTimeInterface $to, bool $allDay = false)
     {
-        return new static($title, $from, $to, $allDay);
+        $from_date = clone $from;
+        $to_date = clone $to;
+
+        // If all day, we need to add 1 day to end date to get the correct duration.
+        if ($allDay) {
+            $to_date->modify('+1 day');
+        }
+
+        return new static($title, $from_date, $to_date, $allDay);
     }
 
     /**
@@ -74,7 +91,7 @@ class Link
      */
     public static function createAllDay(string $title, \DateTimeInterface $fromDate, int $numberOfDays = 1): self
     {
-        $from = (clone $fromDate)->modify('midnight');
+        $from = (clone $fromDate);
         $to = (clone $from)->modify("+$numberOfDays days");
 
         return new self($title, $from, $to, true);
@@ -109,33 +126,39 @@ class Link
         return $generator->generate($this);
     }
 
-    public function google(): string
+    /** @psalm-param GoogleUrlParameters $urlParameters */
+    public function google(array $urlParameters = []): string
     {
-        return $this->formatWith(new Google());
+        return $this->formatWith(new Google($urlParameters));
     }
 
     /**
-     * @param array<non-empty-string, non-empty-string> $options
+     * @psalm-param IcsOptions $options ICS specific properties and components
+     * @param array<non-empty-string, non-empty-string> $options ICS specific properties and components
+     * @param array{format?: \Spatie\CalendarLinks\Generators\Ics::FORMAT_*} $presentationOptions
      * @return string
      */
-    public function ics(array $options = []): string
+    public function ics(array $options = [], array $presentationOptions = []): string
     {
-        return $this->formatWith(new Ics($options));
+        return $this->formatWith(new Ics($options, $presentationOptions));
     }
 
-    public function yahoo(): string
+    /** @psalm-param YahooUrlParameters $urlParameters */
+    public function yahoo(array $urlParameters = []): string
     {
-        return $this->formatWith(new Yahoo());
+        return $this->formatWith(new Yahoo($urlParameters));
     }
 
-    public function webOutlook(): string
+    /** @psalm-param OutlookUrlParameters $urlParameters */
+    public function webOutlook(array $urlParameters = []): string
     {
-        return $this->formatWith(new WebOutlook());
+        return $this->formatWith(new WebOutlook($urlParameters));
     }
 
-    public function webOffice(): string
+    /** @psalm-param OutlookUrlParameters $urlParameters */
+    public function webOffice(array $urlParameters = []): string
     {
-        return $this->formatWith(new WebOffice());
+        return $this->formatWith(new WebOffice($urlParameters));
     }
 
     public function __get($property)
