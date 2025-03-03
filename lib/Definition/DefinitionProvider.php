@@ -4,18 +4,16 @@
  * @package redaxo5
  * @license MIT
  */
-
 namespace Definition;
 
-
-use Doctrine\Common\Cache\FilesystemCache;
-use Symfony\Component\Yaml\Parser;
+use rex_file;
+use rex_string;
 
 class DefinitionProvider
 {
     const CACHE_TTL = 345600; // 48h
     const CACHE_PATH = '%s/.cache';
-
+    
     /**
      * @param $fileSchema
      * @param $path
@@ -31,36 +29,55 @@ class DefinitionProvider
         if (is_null($cachePath)) {
             $cachePath = $path;
         }
+        
         $cachePath = sprintf(self::CACHE_PATH, $cachePath);
-        $cache = new FilesystemCache($cachePath);
-        // find all files by schema
+        
+        // Stellt sicher, dass das Cache-Verzeichnis existiert
+        if (!is_dir($cachePath)) {
+            mkdir($cachePath, 0777, true);
+        }
+        
+        // Find all files by schema
         $ymlFiles = glob($path . $fileSchema); // find all files
-        // use last modification date for cache key
+        
+        // Use last modification date for cache key
         $lastModifications = array_map(function ($f) {
             return filemtime($f);
         }, $ymlFiles);
-        // set cache keys
+        
+        // Set cache keys
         $cacheKey = md5(sprintf("%s:%s", __CLASS__, $fileSchema)) . '.' . md5(implode('.', $lastModifications));
-        // load from cache
-        if ($definition = $cache->fetch($cacheKey)) {
-            if ($isCached) {
-                return array(
-                    'cached' => true,
-                    'cache_key' => $cacheKey,
-                    'data' => $definition
-                );
+        $cacheFile = $cachePath . '/' . $cacheKey . '.cache';
+        
+        // Load from cache if available and not expired
+        if (file_exists($cacheFile)) {
+            $cacheTime = filemtime($cacheFile);
+            if ((time() - $cacheTime) < $cacheTTL) {
+                $definition = rex_file::getCache($cacheFile);
+                
+                if ($isCached) {
+                    return array(
+                        'cached' => true,
+                        'cache_key' => $cacheKey,
+                        'data' => $definition
+                    );
+                }
+                return $definition;
             }
-            return $definition;
         }
-        // parse yml
-        $parser = new Parser();
-        $parsedContents = array_map(function ($f) use ($parser) {
-            return $parser->parse(file_get_contents($f));
+        
+        // Parse YAML files using rex_string::yamlDecode
+        $parsedContents = array_map(function ($f) {
+            $content = rex_file::get($f);
+            return rex_string::yamlDecode($content);
         }, $ymlFiles);
-        // merge definitions by parsed contents
+        
+        // Merge definitions by parsed contents
         $definition = self::mergeParsedContents($parsedContents, $mergeHandler);
-        // save cache
-        $cache->save($cacheKey, $definition, $cacheTTL);
+        
+        // Save cache
+        rex_file::putCache($cacheFile, $definition);
+        
         if ($isCached) {
             return array(
                 'cached' => false,
@@ -68,9 +85,10 @@ class DefinitionProvider
                 'data' => $definition
             );
         }
+        
         return $definition;
     }
-
+    
     /**
      * @param array $parsedContents
      * @param DefinitionMergeInterface|null $mergeHandler
@@ -82,6 +100,11 @@ class DefinitionProvider
         if ($mergeHandler instanceof DefinitionMergeInterface) {
             return $mergeHandler::merge($parsedContents);
         }
+        
+        if (empty($parsedContents)) {
+            return [];
+        }
+        
         return call_user_func_array('array_merge_recursive', $parsedContents);
     }
 }
