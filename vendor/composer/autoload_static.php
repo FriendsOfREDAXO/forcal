@@ -11,20 +11,12 @@ class ComposerStaticInite3fd5f501174bc03d7902e158dd4081c
         array (
             'Spatie\\CalendarLinks\\' => 21,
         ),
-        'D' => 
-        array (
-            'Doctrine\\Common\\Cache\\' => 22,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'Spatie\\CalendarLinks\\' => 
         array (
             0 => __DIR__ . '/..' . '/spatie/calendar-links/src',
-        ),
-        'Doctrine\\Common\\Cache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
         ),
     );
 
