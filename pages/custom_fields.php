@@ -1,4 +1,10 @@
 <?php
+/**
+ * @author Claude (AI)
+ * @package redaxo5
+ * @license MIT
+ */
+
 use forCal\Utils\forCalDefinitions;
 
 // CSRF-Schutz
@@ -22,33 +28,30 @@ if (rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true)) {
     $tables['venues'] = rex_i18n::msg('forcal_venues');
 }
 
-// Tabellenwechsel-Formular
-$tableSelect = new rex_fragment();
-$formElements = [];
+// Tabellenwechsel-Formular erstellen
+$selectHtml = '<div class="form-group">
+    <label for="forcal-table-select">' . rex_i18n::msg('forcal_select_table') . '</label>
+    <select class="form-control" id="forcal-table-select" name="table">';
 
-$n = [];
-$n['label'] = '<label for="forcal-table-select">' . rex_i18n::msg('forcal_select_table') . '</label>';
-$select = new rex_select();
-$select->setId('forcal-table-select');
-$select->setName('table');
-$select->setAttribute('class', 'form-control');
-$select->addOption(rex_i18n::msg('forcal_entries'), 'entries');
-$select->addOption(rex_i18n::msg('forcal_categories'), 'categories');
-if (rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true)) {
-    $select->addOption(rex_i18n::msg('forcal_venues'), 'venues');
+foreach ($tables as $key => $label) {
+    $selected = ($table === $key) ? ' selected' : '';
+    $selectHtml .= '<option value="' . $key . '"' . $selected . '>' . $label . '</option>';
 }
-$select->setSelected($table);
-$n['field'] = $select->get();
-$formElements[] = $n;
 
-$tableSelect->setVar('elements', $formElements, false);
-$tableForm = $tableSelect->parse('core/form/form.php');
+$selectHtml .= '</select>
+</div>';
 
-$fragment = new rex_fragment();
-$fragment->setVar('class', 'edit', false);
-$fragment->setVar('title', rex_i18n::msg('forcal_custom_fields_editor') . ' - ' . $tables[$table], false);
-$fragment->setVar('body', $tableForm, false);
-echo $fragment->parse('core/page/section.php');
+// Ausgabe des Formulars
+echo '<section class="rex-page-section">
+    <div class="panel panel-edit">
+        <header class="panel-heading">
+            <div class="panel-title">' . rex_i18n::msg('forcal_custom_fields_editor') . ' - ' . $tables[$table] . '</div>
+        </header>
+        <div class="panel-body">
+            ' . $selectHtml . '
+        </div>
+    </div>
+</section>';
 
 // Aktuelle Konfiguration laden
 $definitionFile = forCalDefinitions::definitionPath($table . '.yml');
@@ -76,43 +79,46 @@ if (isset($definition['fields'])) {
 }
 
 // Tab-Formular erstellen
-$typeSelect = new rex_fragment();
-$formElements = [];
-
-$n = [];
-$n['label'] = '';
-$n['field'] = '<div class="nav nav-tabs" id="forcal-field-tabs" role="tablist">
-    <a class="nav-link active" id="normal-fields-tab" data-toggle="tab" href="#normal-fields" role="tab">' . rex_i18n::msg('forcal_normal_fields') . '</a>
-    <a class="nav-link" id="lang-fields-tab" data-toggle="tab" href="#lang-fields" role="tab">' . rex_i18n::msg('forcal_lang_fields') . '</a>
+$tabsHtml = '<div class="nav nav-tabs" id="forcal-field-tabs" role="tablist">
+    <a class="nav-item nav-link active" id="normal-fields-tab" data-toggle="tab" href="#normal-fields" role="tab">' . rex_i18n::msg('forcal_normal_fields') . '</a>
+    <a class="nav-item nav-link" id="lang-fields-tab" data-toggle="tab" href="#lang-fields" role="tab">' . rex_i18n::msg('forcal_lang_fields') . '</a>
 </div>';
-$formElements[] = $n;
 
-$typeSelect->setVar('elements', $formElements, false);
-$typeTabs = $typeSelect->parse('core/form/form.php');
-
-// Tab-Inhalte
-$tabContent = '<div class="tab-content" id="forcal-field-tabContent">
+// Tab-Inhalte starten
+$tabContentHtml = '<div class="tab-content" id="forcal-field-tabContent">
     <div class="tab-pane fade show active" id="normal-fields" role="tabpanel">';
 
-// Fragment für normale Felder
+// Fragment für normale Felder laden
 $normalFieldsFragment = new rex_fragment();
 $normalFieldsFragment->setVar('fields', $normalFields);
 $normalFieldsFragment->setVar('type', 'fields');
 $normalFieldsFragment->setVar('table', $table);
-$tabContent .= $normalFieldsFragment->parse('forcal_custom_fields_editor.php');
+$tabContentHtml .= $normalFieldsFragment->parse('forcal_custom_fields_editor.php');
 
-$tabContent .= '</div>
+$tabContentHtml .= '</div>
     <div class="tab-pane fade" id="lang-fields" role="tabpanel">';
 
-// Fragment für Sprachfelder
+// Fragment für Sprachfelder laden
 $langFieldsFragment = new rex_fragment();
 $langFieldsFragment->setVar('fields', $langFields);
 $langFieldsFragment->setVar('type', 'langfields');
 $langFieldsFragment->setVar('table', $table);
-$tabContent .= $langFieldsFragment->parse('forcal_custom_fields_editor.php');
+$tabContentHtml .= $langFieldsFragment->parse('forcal_custom_fields_editor.php');
 
-$tabContent .= '</div>
+$tabContentHtml .= '</div>
 </div>';
+
+// Ausgabe der Tabs und Inhalte
+echo '<section class="rex-page-section">
+    <div class="panel panel-edit">
+        <header class="panel-heading">
+            <div class="panel-title">' . rex_i18n::msg('forcal_field_types') . '</div>
+        </header>
+        <div class="panel-body">
+            ' . $tabsHtml . $tabContentHtml . '
+        </div>
+    </div>
+</section>';
 
 // AJAX-Handler für Feldoperationen
 if (rex_request::isXmlHttpRequest()) {
@@ -293,21 +299,13 @@ $(document).ready(function() {
         window.location.href = "' . rex_url::currentBackendPage() . '&table=" + $(this).val();
     });
     
-    // Tab-Handling
-    $("#normal-fields-tab, #lang-fields-tab").on("click", function(e) {
+    // Bootstrap 4 Tabs aktivieren
+    $("#normal-fields-tab").tab("show");
+    
+    $(".nav-tabs a").on("click", function(e) {
         e.preventDefault();
         $(this).tab("show");
     });
-    
-    // Sicherstellen, dass der erste Tab aktiv ist
-    $("#normal-fields-tab").tab("show");
 });
 </script>
 ';
-
-// Tabs und Inhalte ausgeben
-$fragment = new rex_fragment();
-$fragment->setVar('class', 'edit', false);
-$fragment->setVar('title', rex_i18n::msg('forcal_field_types'), false);
-$fragment->setVar('body', $typeTabs . $tabContent, false);
-echo $fragment->parse('core/page/section.php');
