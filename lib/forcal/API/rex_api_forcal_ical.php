@@ -1,4 +1,5 @@
 <?php
+
 /**
  * API-Controller für iCal-Export von forCal
  * Generiert eine iCal-Datei für Termine ab heute bis max. 5 Jahre
@@ -13,7 +14,7 @@ class rex_api_forcal_ical extends rex_api_function
      * @var bool
      */
     protected $published = true;
-    
+
     /**
      * Führt den API-Call aus
      *
@@ -23,29 +24,28 @@ class rex_api_forcal_ical extends rex_api_function
     {
         // Laufende Ausgabepuffer leeren
         rex_response::cleanOutputBuffers();
-        
+
         try {
             // Parameter abrufen
             $categoryIds = rex_request('categories', 'array', []);
             $entryId = rex_request('entry', 'int', 0);
             $filename = rex_request('filename', 'string', 'calendar');
-            
-            // Start- und Enddatum festlegen (heute bis 5 Jahre in der Zukunft)
-            $startDate = new DateTime('-10 years');
+
+            // Start- und Enddatum festlegen (-1 Jahr bis 2 Jahre in der Zukunft)
+            $startDate = new DateTime('-1 years');
             $endDate = clone $startDate;
-            $endDate->modify('+10 years');
-            
+            $endDate->modify('+2 years');
+
             // Header für Download setzen
             rex_response::sendContentType('text/calendar');
             rex_response::setHeader('Content-Disposition', 'attachment; filename="' . $filename . '.ics"');
-            
+
             // Generiere iCal Inhalt
             $content = $this->generateIcal($categoryIds, $entryId, $startDate, $endDate);
-            
+
             // Ausgabe
             rex_response::sendContent($content);
             exit;
-            
         } catch (Exception $e) {
             // Bei Fehlern eine Fehlermeldung zurückgeben
             rex_response::setStatus(rex_response::HTTP_INTERNAL_ERROR);
@@ -89,7 +89,13 @@ class rex_api_forcal_ical extends rex_api_function
                 false,
                 false,
                 'SORT_ASC',
-                !empty($categoryIds) ? $categoryIds : null
+                !empty($categoryIds) ? $categoryIds : null,
+                null, // venueId
+                1, // dateFormat
+                1, // timeFormat
+                [], // customFilters
+                10000, // pageSize - sehr großer Wert, um alle Termine zu bekommen
+                1 // pageNumber
             );
         }
 
@@ -112,10 +118,10 @@ class rex_api_forcal_ical extends rex_api_function
                 $ical = array_merge($ical, $vevent);
             }
         }
-        
+
         // iCal abschließen
         $ical[] = 'END:VCALENDAR';
-        
+
         // Als String zurückgeben
         return implode("\r\n", $ical);
     }
@@ -129,25 +135,25 @@ class rex_api_forcal_ical extends rex_api_function
     private function convertEventToVEvent(array $event): array
     {
         $lines = [];
-        
+
         // Basisdaten extrahieren
         $uid = isset($event['id']) ? $event['id'] : uniqid('forcal-');
         $title = isset($event['title']) ? $event['title'] : 'Unbenannter Termin';
         $description = '';
-        
+
         if (isset($event['teaser']) && !empty($event['teaser'])) {
             $description = $event['teaser'];
         } elseif (isset($event['text']) && !empty($event['text'])) {
             $description = $event['text'];
         }
-        
+
         $location = isset($event['venue_name']) ? $event['venue_name'] : '';
         $isFullDay = isset($event['date_time']['full_time']) ? (bool)$event['date_time']['full_time'] : false;
-        
+
         // Datum und Zeit verarbeiten
         $startDate = null;
         $endDate = null;
-        
+
         if (isset($event['start'])) {
             if (is_string($event['start'])) {
                 $startDate = new DateTime($event['start']);
@@ -155,7 +161,7 @@ class rex_api_forcal_ical extends rex_api_function
                 $startDate = $event['start'];
             }
         }
-        
+
         if (isset($event['end'])) {
             if (is_string($event['end'])) {
                 $endDate = new DateTime($event['end']);
@@ -163,39 +169,39 @@ class rex_api_forcal_ical extends rex_api_function
                 $endDate = $event['end'];
             }
         }
-        
+
         if (!$startDate || !$endDate) {
             return $lines; // Keine gültigen Datumsangaben
         }
-        
+
         // Eindeutige UID für jedes Vorkommen
         $eventUID = $uid;
         if (isset($event['occurrence_id'])) {
             $eventUID .= '-' . $event['occurrence_id'];
         }
-        
+
         // VEVENT erstellen
         $lines[] = 'BEGIN:VEVENT';
         $lines[] = 'UID:' . $eventUID . '@' . rex::getServer();
         $lines[] = 'SUMMARY:' . $this->escapeString($title);
-        
+
         if (!empty($description)) {
             $lines[] = 'DESCRIPTION:' . $this->escapeString($description);
         }
-        
+
         if (!empty($location)) {
             $lines[] = 'LOCATION:' . $this->escapeString($location);
         }
-        
+
         // Kategorie hinzufügen, falls vorhanden
         if (isset($event['category_name']) && !empty($event['category_name'])) {
             $lines[] = 'CATEGORIES:' . $this->escapeString($event['category_name']);
         }
-        
+
         // DTSTAMP (aktueller Zeitstempel)
         $lines[] = 'DTSTAMP:' . $this->formatDateTime(new DateTime());
         $lines[] = 'CREATED:' . $this->formatDateTime(new DateTime());
-        
+
         // Wiederholungsregel (RRULE) für wiederkehrende Termine
         // Wir fügen die RRULE nur beim ersten Vorkommen hinzu
         if (!isset($event['occurrence_id']) && isset($event['type']) && $event['type'] == 'repeat') {
@@ -204,12 +210,12 @@ class rex_api_forcal_ical extends rex_api_function
                 $lines[] = $rrule;
             }
         }
-        
+
         // Start- und Endzeit
         if ($isFullDay) {
             // Ganztägiges Event
             $lines[] = 'DTSTART;VALUE=DATE:' . $startDate->format('Ymd');
-            
+
             // Bei ganztägigen Events muss das Enddatum um einen Tag erhöht werden
             $endDateAdjusted = clone $endDate;
             $endDateAdjusted->modify('+1 day');
@@ -219,9 +225,9 @@ class rex_api_forcal_ical extends rex_api_function
             $lines[] = 'DTSTART:' . $this->formatDateTime($startDate);
             $lines[] = 'DTEND:' . $this->formatDateTime($endDate);
         }
-        
+
         $lines[] = 'END:VEVENT';
-        
+
         return $lines;
     }
 
@@ -240,18 +246,18 @@ class rex_api_forcal_ical extends rex_api_function
         } elseif (isset($event['repeats'])) {
             $repeatType = $event['repeats'];
         }
-        
+
         if (empty($repeatType)) {
             return '';
         }
-        
+
         $rrule = 'RRULE:';
         $parts = [];
-        
+
         switch ($repeatType) {
             case 'weekly':
                 $parts[] = 'FREQ=WEEKLY';
-                
+
                 // Intervall hinzufügen (in wiederholten Wochen)
                 $interval = null;
                 if (isset($event['repeat_interval'])) {
@@ -259,15 +265,15 @@ class rex_api_forcal_ical extends rex_api_function
                 } elseif (isset($event['repeat_weeks'])) {
                     $interval = (int)$event['repeat_weeks'];
                 }
-                
+
                 if ($interval && $interval > 1) {
                     $parts[] = 'INTERVAL=' . $interval;
                 }
                 break;
-                
+
             case 'monthly':
                 $parts[] = 'FREQ=MONTHLY';
-                
+
                 // Intervall hinzufügen (in wiederholten Monaten)
                 $interval = null;
                 if (isset($event['repeat_interval'])) {
@@ -275,42 +281,42 @@ class rex_api_forcal_ical extends rex_api_function
                 } elseif (isset($event['repeat_months'])) {
                     $interval = (int)$event['repeat_months'];
                 }
-                
+
                 if ($interval && $interval > 1) {
                     $parts[] = 'INTERVAL=' . $interval;
                 }
                 break;
-                
+
             case 'monthly-week':
                 $parts[] = 'FREQ=MONTHLY';
-                
+
                 // Für monatliche Wiederholungen an bestimmten Wochentagen
                 // (z.B. "erster Montag im Monat")
                 $day = '';
                 $week = '';
-                
+
                 if (isset($event['repeat_day'])) {
                     $day = $this->getDayAbbreviation($event['repeat_day']);
                 }
-                
+
                 if (isset($event['repeat_month_week'])) {
                     $week = $this->getWeekNumber($event['repeat_month_week']);
                 }
-                
+
                 if ($day && $week) {
                     $parts[] = 'BYDAY=' . $week . $day;
                 }
-                
+
                 // Intervall hinzufügen (in wiederholten Monaten)
                 $interval = isset($event['repeat_months']) ? (int)$event['repeat_months'] : 1;
                 if ($interval > 1) {
                     $parts[] = 'INTERVAL=' . $interval;
                 }
                 break;
-                
+
             case 'yearly':
                 $parts[] = 'FREQ=YEARLY';
-                
+
                 // Intervall hinzufügen (in wiederholten Jahren)
                 $interval = null;
                 if (isset($event['repeat_interval'])) {
@@ -318,20 +324,20 @@ class rex_api_forcal_ical extends rex_api_function
                 } elseif (isset($event['repeat_years'])) {
                     $interval = (int)$event['repeat_years'];
                 }
-                
+
                 if ($interval && $interval > 1) {
                     $parts[] = 'INTERVAL=' . $interval;
                 }
                 break;
-                
+
             default:
                 return ''; // Unbekannter Wiederholungstyp
         }
-        
+
         // Enddatum der Wiederholung
         if (isset($event['end_repeat_date'])) {
             $endRepeatDate = $event['end_repeat_date'];
-            
+
             if (is_string($endRepeatDate)) {
                 $endDate = new DateTime($endRepeatDate);
             } elseif ($endRepeatDate instanceof DateTime) {
@@ -339,18 +345,18 @@ class rex_api_forcal_ical extends rex_api_function
             } else {
                 $endDate = null;
             }
-            
+
             if ($endDate) {
                 // Bei UNTIL muss die Zeit auf 23:59:59 gesetzt werden
                 $endDate->setTime(23, 59, 59);
                 $parts[] = 'UNTIL=' . $this->formatDateTime($endDate, true);
             }
         }
-        
+
         if (empty($parts)) {
             return '';
         }
-        
+
         return $rrule . implode(';', $parts);
     }
 
@@ -360,10 +366,15 @@ class rex_api_forcal_ical extends rex_api_function
     private function getDayAbbreviation(string $day): string
     {
         $days = [
-            'mon' => 'MO', 'tue' => 'TU', 'wed' => 'WE', 
-            'thu' => 'TH', 'fri' => 'FR', 'sat' => 'SA', 'sun' => 'SU'
+            'mon' => 'MO',
+            'tue' => 'TU',
+            'wed' => 'WE',
+            'thu' => 'TH',
+            'fri' => 'FR',
+            'sat' => 'SA',
+            'sun' => 'SU'
         ];
-        
+
         return isset($days[$day]) ? $days[$day] : '';
     }
 
@@ -373,10 +384,13 @@ class rex_api_forcal_ical extends rex_api_function
     private function getWeekNumber(string $week): string
     {
         $weeks = [
-            'first_week' => '1', 'second_week' => '2', 'third_week' => '3',
-            'fourth_week' => '4', 'last_week' => '-1'
+            'first_week' => '1',
+            'second_week' => '2',
+            'third_week' => '3',
+            'fourth_week' => '4',
+            'last_week' => '-1'
         ];
-        
+
         return isset($weeks[$week]) ? $weeks[$week] : '';
     }
 
@@ -388,7 +402,7 @@ class rex_api_forcal_ical extends rex_api_function
         if ($withTime) {
             return $dateTime->format('Ymd\THis\Z');
         }
-        
+
         return $dateTime->format('Ymd\THis\Z');
     }
 
@@ -399,19 +413,19 @@ class rex_api_forcal_ical extends rex_api_function
     {
         // HTML-Tags entfernen
         $text = strip_tags($text);
-        
+
         // HTML-Entities dekodieren (z.B. &amp; zu &)
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-        
+
         // Zeilenumbrüche für iCal formatieren
         $text = str_replace(["\r\n", "\n"], "\\n", $text);
-        
+
         // Spezielle Zeichen escapen
         $text = str_replace(["\\", ";", ","], ["\\\\", "\\;", "\\,"], $text);
-        
+
         // Lange Zeilen aufteilen (RFC 5545)
         $text = wordwrap($text, 75, "\r\n ", true);
-        
+
         return $text;
     }
 }
