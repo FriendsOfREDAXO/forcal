@@ -6,15 +6,18 @@ Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssyste
 
 ## Hauptmerkmale
 
+☀️ = Neu ab ForCal 5
+
 *   **Flexibler Kalender**: Erstellung von Terminkalendern, Veranstaltungskalendern und Nachrichten.
 *   **Erweiterbarkeit**: Anpassbare Eingabeformulare durch benutzerdefinierte `.yml`-Dateien.
 *   **Mehrsprachigkeit**: Unterstützung mehrsprachiger REDAXO-Installationen.
 *   **Einfache Datenabfrage**: Abruf der Termine über PHP-Class-Methoden, Rückgabe als Objekte.
 *   **API für JSON-Ausgabe**: Ermöglicht die Ausgabe und Filterung von Events als JSON.
-*   **forCalLink-Klasse**: Generierung von Links für `.ics`-Dateien, Terminübergabe zu Google Calendar und Microsoft Outlook (Web).
 *   **Backend- und Frontend-Integration**: Vollständig kompatibel mit der bestehenden `forCalHandler`-Implementierung.
-*   **Benutzerberechtigungen**: Automatische Berücksichtigung von Benutzerrechten im Backend und Frontend.
-
+*   **Benutzerberechtigungen**: ☀️Benuzterrechte für Backenduser auf Kategorieebene.
+*   **iCal, CaldAv - Export oder Abo möglich via API ☀️**
+*   **forCalLink-Klasse**: Generierung von Links für `.ics`-Dateien, Terminübergabe zu Google Calendar und Microsoft Outlook (Web).
+  
 ![Screenshot](https://github.com/FriendsOfREDAXO/forcal/blob/assets/user.png?raw=true)
 
 
