@@ -6,7 +6,7 @@ Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssyste
 
 ## Hauptmerkmale
 
-☀️ = Neu ab ForCal 5
+☀️ = Neu ab FORCal 5
 
 *   **Flexibler Kalender**: Erstellung von Terminkalendern, Veranstaltungskalendern und Nachrichten.
 *   **Erweiterbarkeit**: Anpassbare Eingabeformulare durch benutzerdefinierte `.yml`-Dateien.
