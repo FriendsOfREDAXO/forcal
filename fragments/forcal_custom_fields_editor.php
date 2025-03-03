@@ -20,64 +20,6 @@ $fieldTypes = [
     'linklist' => 'Linklist'
 ];
 
-// Fragment für den Modal-Dialog
-$modal = new rex_fragment();
-$modal->setVar('id', 'forcal-field-modal');
-$modal->setVar('title', rex_i18n::msg('forcal_custom_field_edit'));
-$content = '
-<div class="form-group">
-    <label for="field-name">' . rex_i18n::msg('forcal_field_name') . '</label>
-    <input type="text" class="form-control" id="field-name" name="field_name" required>
-</div>
-<div class="form-group">
-    <label for="field-type">' . rex_i18n::msg('forcal_field_type') . '</label>
-    <select class="form-control" id="field-type" name="field_type">';
-
-foreach ($fieldTypes as $key => $label) {
-    $content .= '<option value="' . $key . '">' . $label . '</option>';
-}
-
-$content .= '</select>
-</div>
-<div class="form-group">
-    <label for="field-label-de">' . rex_i18n::msg('forcal_field_label_de') . '</label>
-    <input type="text" class="form-control" id="field-label-de" name="field_label_de">
-</div>
-<div class="form-group">
-    <label for="field-label-en">' . rex_i18n::msg('forcal_field_label_en') . '</label>
-    <input type="text" class="form-control" id="field-label-en" name="field_label_en">
-</div>
-<div id="field-options-container" style="display:none;">
-    <div class="form-group">
-        <label>' . rex_i18n::msg('forcal_field_options') . '</label>
-        <div class="field-options">
-            <div class="option-row">
-                <div class="input-group">
-                    <span class="input-group-addon">' . rex_i18n::msg('forcal_field_option_key') . '</span>
-                    <input type="text" class="form-control" name="option_keys[]">
-                    <span class="input-group-addon">' . rex_i18n::msg('forcal_field_option_value') . '</span>
-                    <input type="text" class="form-control" name="option_values[]">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default remove-option" type="button"><i class="fa fa-minus"></i></button>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <button type="button" class="btn btn-default add-option"><i class="fa fa-plus"></i> ' . rex_i18n::msg('forcal_field_add_option') . '</button>
-    </div>
-</div>
-<input type="hidden" id="field-index" name="field_index" value="-1">
-<input type="hidden" id="field-action" name="field_action" value="add">
-';
-
-$modal->setVar('body', $content);
-$buttons = '
-<button type="button" class="btn btn-default" data-dismiss="modal">' . rex_i18n::msg('forcal_cancel') . '</button>
-<button type="button" class="btn btn-primary" id="save-field">' . rex_i18n::msg('forcal_save') . '</button>
-';
-$modal->setVar('footer', $buttons);
-$modal_html = $modal->parse('core/modals/modal.php');
-
 // JS für die Drag & Drop Funktionalität und Feldbearbeitung
 $js = '
 <script>
@@ -206,7 +148,7 @@ $(document).ready(function() {
         
         // AJAX-Anfrage zum Speichern des Feldes
         $.ajax({
-            url: "' . rex_url::backendController(['page' => 'forcal/settings', 'func' => 'save_field']) . '",
+            url: "' . rex_url::backendController(['page' => 'forcal/custom_fields', 'func' => 'save_field']) . '",
             type: "POST",
             data: {
                 field: JSON.stringify(fieldData),
@@ -235,7 +177,7 @@ $(document).ready(function() {
             var index = $(this).data("index");
             
             $.ajax({
-                url: "' . rex_url::backendController(['page' => 'forcal/settings', 'func' => 'delete_field']) . '",
+                url: "' . rex_url::backendController(['page' => 'forcal/custom_fields', 'func' => 'delete_field']) . '",
                 type: "POST",
                 data: {
                     index: index,
@@ -264,7 +206,7 @@ $(document).ready(function() {
         });
         
         $.ajax({
-            url: "' . rex_url::backendController(['page' => 'forcal/settings', 'func' => 'reorder_fields']) . '",
+            url: "' . rex_url::backendController(['page' => 'forcal/custom_fields', 'func' => 'reorder_fields']) . '",
             type: "POST",
             data: {
                 order: JSON.stringify(newOrder),
@@ -364,5 +306,63 @@ $(document).ready(function() {
     </div>
 </div>
 
-<?= $modal_html ?>
+<!-- Modal für Feldbearbeitung -->
+<div class="modal fade" id="forcal-field-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><?= rex_i18n::msg('forcal_custom_field_edit') ?></h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label for="field-name"><?= rex_i18n::msg('forcal_field_name') ?></label>
+            <input type="text" class="form-control" id="field-name" name="field_name" required>
+        </div>
+        <div class="form-group">
+            <label for="field-type"><?= rex_i18n::msg('forcal_field_type') ?></label>
+            <select class="form-control" id="field-type" name="field_type">
+                <?php foreach ($fieldTypes as $key => $label): ?>
+                    <option value="<?= $key ?>"><?= $label ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="field-label-de"><?= rex_i18n::msg('forcal_field_label_de') ?></label>
+            <input type="text" class="form-control" id="field-label-de" name="field_label_de">
+        </div>
+        <div class="form-group">
+            <label for="field-label-en"><?= rex_i18n::msg('forcal_field_label_en') ?></label>
+            <input type="text" class="form-control" id="field-label-en" name="field_label_en">
+        </div>
+        <div id="field-options-container" style="display:none;">
+            <div class="form-group">
+                <label><?= rex_i18n::msg('forcal_field_options') ?></label>
+                <div class="field-options">
+                    <div class="option-row">
+                        <div class="input-group">
+                            <span class="input-group-addon"><?= rex_i18n::msg('forcal_field_option_key') ?></span>
+                            <input type="text" class="form-control" name="option_keys[]">
+                            <span class="input-group-addon"><?= rex_i18n::msg('forcal_field_option_value') ?></span>
+                            <input type="text" class="form-control" name="option_values[]">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default remove-option" type="button"><i class="fa fa-minus"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-default add-option"><i class="fa fa-plus"></i> <?= rex_i18n::msg('forcal_field_add_option') ?></button>
+            </div>
+        </div>
+        <input type="hidden" id="field-index" name="field_index" value="-1">
+        <input type="hidden" id="field-action" name="field_action" value="add">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><?= rex_i18n::msg('forcal_cancel') ?></button>
+        <button type="button" class="btn btn-primary" id="save-field"><?= rex_i18n::msg('forcal_save') ?></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?= $js ?>
