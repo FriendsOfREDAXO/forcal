@@ -1,5 +1,6 @@
 {
     "require": {
+        "doctrine/cache": "^1.3",
         "spatie/calendar-links":"^1.2.4"
     }
 }
