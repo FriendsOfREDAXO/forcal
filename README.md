@@ -23,6 +23,11 @@ Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssyste
 
 ## FORCalEventsFactory
 
+Einbindung 
+```php
+use forCal\Factory\forCalEventsFactory;
+```
+
 Die `forCalEventsFactory`-Klasse bietet eine elegante und flexible Methode, um Termine in forCal abzufragen. Mit einer intuitiven Fluent API ermöglicht sie komplexe Abfragen ohne umständliche Parameter und unterstützt automatisch die korrekte Behandlung von Benutzerberechtigungen im Backend und Frontend.
 
 ### Grundlegende Verwendung
@@ -30,6 +35,7 @@ Die `forCalEventsFactory`-Klasse bietet eine elegante und flexible Methode, um T
 Die Factory-Klasse bietet eine fluide API für das Abrufen von Terminen:
 
 ```php
+use forCal\Factory\forCalEventsFactory;
 // Alle Termine ab heute für die nächsten 6 Monate
 $termine = forCalEventsFactory::create()
     ->from('today')
