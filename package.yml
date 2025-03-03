@@ -6,7 +6,7 @@ supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 page:
     title: 'translate:forcal_title'
     perm: forcal[]
-    icon: rex-icon fa-calendar
+    icon: rex-icon fa-calendar-days
     block: system
     subpages:
         calendar: { title: 'translate:forcal_calendar', icon: rex-icon fa-calendar }
