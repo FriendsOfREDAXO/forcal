@@ -152,15 +152,8 @@ $(document).ready(function() {
         
         $("#field-data").val(JSON.stringify(fieldData));
         
-        // Form via PJAX abschicken
-        var form = $(this);
-        $.pjax({
-            url: form.attr("action"),
-            container: "#rex-js-page-main-content",
-            fragment: "#rex-js-page-main-content",
-            method: "POST",
-            data: form.serialize()
-        });
+        // Form direkt absenden statt PJAX
+        this.submit();
     });
     
     // Feld löschen
@@ -169,11 +162,8 @@ $(document).ready(function() {
             var index = $(this).data("index");
             var url = "' . rex_url::currentBackendPage(['func' => 'delete_field']) . '&type=' . $type . '&table=' . $table . '&index=" + index;
             
-            $.pjax({
-                url: url,
-                container: "#rex-js-page-main-content",
-                fragment: "#rex-js-page-main-content"
-            });
+            // Direkte Weiterleitung statt PJAX
+            window.location.href = url;
         }
     });
     
@@ -185,11 +175,8 @@ $(document).ready(function() {
         
         var url = "' . rex_url::currentBackendPage(['func' => 'reorder_fields']) . '&type=' . $type . '&table=' . $table . '&order=" + JSON.stringify(newOrder);
         
-        $.pjax({
-            url: url,
-            container: "#rex-js-page-main-content",
-            fragment: "#rex-js-page-main-content"
-        });
+        // Direkte Weiterleitung statt PJAX
+        window.location.href = url;
     }
     
     // Feldliste für JS
