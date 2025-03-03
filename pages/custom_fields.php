@@ -209,7 +209,7 @@ echo '<section class="rex-page-section">
             <div class="panel-title">' . rex_i18n::msg('forcal_custom_fields_editor') . ' - ' . $tables[$table] . '</div>
         </header>
         <div class="panel-body">
-            <form action="' . rex_url::currentBackendPage() . '" method="get" class="pjax-form">
+            <form action="' . rex_url::currentBackendPage() . '" method="get">
                 <input type="hidden" name="page" value="forcal/custom_fields">
                 ' . $formContent . '
             </form>
@@ -286,17 +286,6 @@ echo '
 $(document).ready(function() {
     $("#forcal-table-select").on("change", function() {
         $(this).closest("form").submit();
-    });
-    
-    // PJAX für Formulare aktivieren
-    $(".pjax-form").on("submit", function(e) {
-        e.preventDefault();
-        var form = $(this);
-        $.pjax({
-            url: form.attr("action") + "?" + form.serialize(),
-            container: "#rex-js-page-main-content",
-            fragment: "#rex-js-page-main-content"
-        });
     });
 });
 </script>
