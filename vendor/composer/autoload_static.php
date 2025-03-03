@@ -4,16 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInite034fbfb8bb5a86ce64bb949b885792c
+class ComposerStaticInite3fd5f501174bc03d7902e158dd4081c
 {
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
             'Spatie\\CalendarLinks\\' => 21,
-        ),
-        'D' => 
-        array (
-            'Doctrine\\Common\\Cache\\' => 22,
         ),
     );
 
@@ -21,10 +17,6 @@ class ComposerStaticInite034fbfb8bb5a86ce64bb949b885792c
         'Spatie\\CalendarLinks\\' => 
         array (
             0 => __DIR__ . '/..' . '/spatie/calendar-links/src',
-        ),
-        'Doctrine\\Common\\Cache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
         ),
     );
 
@@ -35,9 +27,9 @@ class ComposerStaticInite034fbfb8bb5a86ce64bb949b885792c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInite034fbfb8bb5a86ce64bb949b885792c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInite034fbfb8bb5a86ce64bb949b885792c::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInite034fbfb8bb5a86ce64bb949b885792c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInite3fd5f501174bc03d7902e158dd4081c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInite3fd5f501174bc03d7902e158dd4081c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInite3fd5f501174bc03d7902e158dd4081c::$classMap;
 
         }, null, ClassLoader::class);
     }
