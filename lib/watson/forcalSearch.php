@@ -16,6 +16,7 @@ use Watson\Foundation\Result;
 use Watson\Foundation\ResultEntry;
 use Watson\Foundation\Watson;
 use Watson\Foundation\Workflow;
+use rex;
 
 class forCalSearch extends Workflow
 {
@@ -63,13 +64,36 @@ class forCalSearch extends Workflow
     {
         $result = new Result();
 
-        $fields = ['name_1', 'start_date', 'teaser_1', 'start_time', 'end_time', 'end_time','type', ];
+        // Prüfen, ob der Benutzer überhaupt forcal-Berechtigungen hat
+        $user = rex::getUser();
+        if (!$user || (!$user->isAdmin() && !$user->hasPerm('forcal[]'))) {
+            return $result; // Leeres Ergebnis, wenn keine Berechtigung
+        }
 
+        $fields = ['name_1', 'start_date', 'teaser_1', 'start_time', 'end_time', 'end_time', 'type'];
+
+        // Basisabfrage
         $sql_query = '
        SELECT      * 
        FROM       ' . Watson::getTable('forcal_entries') . ' 
-       WHERE       ' . $command->getSqlWhere($fields) . ' 
-       ORDER BY   start_time DESC';
+       WHERE       ' . $command->getSqlWhere($fields);
+
+        // Benutzerberechtigungen für Kategorien berücksichtigen
+        if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
+            // Kategorien abrufen, für die der Benutzer Berechtigungen hat
+            $allowedCategories = \forCal\Utils\forCalUserPermission::getUserCategories($user->getId());
+            
+            if (empty($allowedCategories)) {
+                // Keine Kategorien zugewiesen, leeres Ergebnis
+                return $result;
+            }
+            
+            // WHERE-Bedingung für erlaubte Kategorien hinzufügen
+            $sql_query .= ' AND category IN (' . implode(',', $allowedCategories) . ')';
+        }
+
+        // Sortierung und Abfrage abschließen
+        $sql_query .= ' ORDER BY start_time DESC';
 
         $items = $this->getDatabaseResults($sql_query);
 
@@ -79,8 +103,15 @@ class forCalSearch extends Workflow
 
             foreach ($items as $item)
             {
+                // Prüfen, ob der Benutzer den Termin bearbeiten darf
+                $canEdit = true;
+                if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
+                    // Prüfen, ob der Benutzer die Berechtigung für die Kategorie hat
+                    $canEdit = \forCal\Utils\forCalUserPermission::hasPermission($item['category']);
+                }
 
-                $url = Watson::getUrl(['page' => 'forcal/entries', 'base_path' => 'forcal/entries', 'id' => $item['id'], 'func' => 'edit']);
+                $func = $canEdit ? 'edit' : 'view';
+                $url = Watson::getUrl(['page' => 'forcal/entries', 'base_path' => 'forcal/entries', 'id' => $item['id'], 'func' => $func]);
 
                 ++$counter;
                 $entry = new ResultEntry();
@@ -91,10 +122,8 @@ class forCalSearch extends Workflow
 
                 if (isset($item['name_1']))
                 {
-
-
                    $date = new \DateTime($item['start_date']);
-                   $forcal_start_date =  $date->format('d.m.Y');
+                   $forcal_start_date = $date->format('d.m.Y');
 
                     $entry->setValue($item['name_1'] . ' | '.$forcal_start_date.' - '.$item['type'], '(' . $item['id'] . ')');
                 }
@@ -111,5 +140,4 @@ class forCalSearch extends Workflow
         }
         return $result;
     }
-
 }
