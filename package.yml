@@ -17,7 +17,7 @@ page:
         settings: { title: 'translate:forcal_settings', icon: rex-icon fa-cog, itemclass: pull-right, perm: forcal[settings] }
 
 requires:
-    redaxo: ^5.8.0
+    redaxo: ^5.18.0
     php:
         version: '>=8.1, <9'
         extensions: [intl]
