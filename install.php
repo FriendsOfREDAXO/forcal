@@ -17,7 +17,9 @@ if (!$addon->hasConfig()) {
         $addon->setConfig('forcal_start_page', 'calendar');
         $addon->setConfig('forcal_multiuser', 1); // Multiuser standardmäßig aktivieren
 }
-
+if (!rex_dir::isWritable(rex_addon::get('forcal')->getDataPath('definitions/'))) {
+    rex_dir::create(rex_addon::get('forcal')->getDataPath('definitions/'));
+}
 use forCal\Manager\forCalDatabaseManager;
 use forCal\Utils\forCalEditorHelper;
 
