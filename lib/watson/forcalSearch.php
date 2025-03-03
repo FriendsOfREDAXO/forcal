@@ -70,65 +70,72 @@ class forCalSearch extends Workflow
             return $result; // Leeres Ergebnis, wenn keine Berechtigung
         }
 
-        $fields = ['name_1', 'start_date', 'teaser_1', 'start_time', 'end_time', 'end_time', 'type'];
-
-        // Basisabfrage
-        $sql_query = '
-       SELECT      * 
-       FROM       ' . Watson::getTable('forcal_entries') . ' 
-       WHERE       ' . $command->getSqlWhere($fields);
-
-        // Benutzerberechtigungen für Kategorien berücksichtigen
+        // Wenn kein Admin und keine vollständigen Rechte, erlaubte Kategorien abrufen
+        $allowedCategoryIds = [];
+        $restrictByCategories = false;
+        
         if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
-            // Kategorien abrufen, für die der Benutzer Berechtigungen hat
-            $allowedCategories = \forCal\Utils\forCalUserPermission::getUserCategories($user->getId());
+            $allowedCategoryIds = \forCal\Utils\forCalUserPermission::getUserCategories($user->getId());
             
-            if (empty($allowedCategories)) {
-                // Keine Kategorien zugewiesen, leeres Ergebnis
+            if (empty($allowedCategoryIds)) {
+                // Keine Kategorien zugewiesen, leeres Ergebnis zurückgeben
                 return $result;
             }
             
-            // WHERE-Bedingung für erlaubte Kategorien hinzufügen
-            $sql_query .= ' AND category IN (' . implode(',', $allowedCategories) . ')';
+            $restrictByCategories = true;
         }
 
-        // Sortierung und Abfrage abschließen
-        $sql_query .= ' ORDER BY start_time DESC';
+        $fields = ['name_1', 'start_date', 'teaser_1', 'start_time', 'end_time', 'end_time', 'type'];
 
-        $items = $this->getDatabaseResults($sql_query);
+        // SQL-Abfrage erstellen
+        $sql_query = '
+       SELECT      * 
+       FROM       ' . Watson::getTable('forcal_entries') . ' AS e
+       WHERE       ' . $command->getSqlWhere($fields, 'e');
 
-        if (count($items))
-        {
+        // Kategoriefilter hinzufügen, wenn nötig
+        if ($restrictByCategories) {
+            $sql_query .= ' AND e.category IN (' . implode(',', $allowedCategoryIds) . ')';
+        }
+
+        // Sortierung hinzufügen
+        $sql_query .= ' ORDER BY e.start_date DESC, e.start_time DESC';
+
+        try {
+            $items = $this->getDatabaseResults($sql_query);
+        } catch (\Exception $e) {
+            // Bei Fehlern leeres Ergebnis zurückgeben
+            return $result;
+        }
+
+        if (count($items)) {
             $counter = 0;
 
-            foreach ($items as $item)
-            {
-                // Prüfen, ob der Benutzer den Termin bearbeiten darf
-                $canEdit = true;
-                if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
-                    // Prüfen, ob der Benutzer die Berechtigung für die Kategorie hat
-                    $canEdit = \forCal\Utils\forCalUserPermission::hasPermission($item['category']);
+            foreach ($items as $item) {
+                // Nochmal explizit prüfen, ob der Benutzer diesen Eintrag sehen darf
+                if ($restrictByCategories && !in_array($item['category'], $allowedCategoryIds)) {
+                    continue;
                 }
+
+                // Prüfen, ob der Benutzer den Termin bearbeiten darf
+                $canEdit = $user->isAdmin() || $user->hasPerm('forcal[all]') || 
+                          \forCal\Utils\forCalUserPermission::hasPermission($item['category']);
 
                 $func = $canEdit ? 'edit' : 'view';
                 $url = Watson::getUrl(['page' => 'forcal/entries', 'base_path' => 'forcal/entries', 'id' => $item['id'], 'func' => $func]);
 
                 ++$counter;
                 $entry = new ResultEntry();
-                if ($counter == 1)
-                {
+                if ($counter == 1) {
                     $entry->setLegend('forCal');
                 }
 
-                if (isset($item['name_1']))
-                {
-                   $date = new \DateTime($item['start_date']);
-                   $forcal_start_date = $date->format('d.m.Y');
+                if (isset($item['name_1'])) {
+                    $date = new \DateTime($item['start_date']);
+                    $forcal_start_date = $date->format('d.m.Y');
 
                     $entry->setValue($item['name_1'] . ' | '.$forcal_start_date.' - '.$item['type'], '(' . $item['id'] . ')');
-                }
-                else
-                {
+                } else {
                     $entry->setValue($item['id']);
                 }
                 $entry->setIcon('fa-calendar-o');
