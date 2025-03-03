@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Spatie\\CalendarLinks\\' => array($vendorDir . '/spatie/calendar-links/src'),
+    'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
 );
