@@ -683,6 +683,31 @@ Es können beliebige weitere Attribute hinzugefügt werden wie `required`, `data
 
 In den Eigenen Feldern können für jedes Feld Attribute angegeben werden, die die Textfelder beeinflussen und so auch Editoren einbinden.
 
+## iCal / CalDav - Export via API
+
+### Verwendung:
+
+Die API kann mit folgenden Parametern verwendet werden:
+
+1. `categories[]` - Eine oder mehrere Kategorie-IDs (optional)
+2. `entry` - ID eines einzelnen Termins (optional)
+3. `filename` - Name der heruntergeladenen Datei (optional, Standard: "calendar")
+
+### Beispiele für Links:
+
+1. Alle Termine exportieren:   `index.php?rex-api-call=forcal_ical`
+
+2. Nur Termine bestimmter Kategorien:   `index.php?rex-api-call=forcal_ical&categories[]=1&categories[]=3`
+
+3. Einen einzelnen Termin exportieren:   `index.php?rex-api-call=forcal_ical&entry=42`
+
+4. Mit angepasstem Dateinamen:   `index.php?rex-api-call=forcal_ical&filename=vereinstermine`
+
+Die Termine werden immer 10 Jahre rückwirkend bis maximal 10 Jahre in die Zukunft exportiert.
+
+Die Datei implementiert auch die korrekte Behandlung von wiederholenden Terminen mit RRULE, sodass Kalender-Programme die Wiederholungen korrekt darstellen können.
+
+
 ## Terminlink erstellen
 
 ```php
