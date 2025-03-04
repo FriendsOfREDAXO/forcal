@@ -32,6 +32,47 @@ if ($func == 'delete') {
 
 if ($func == '') {
 
+    // JavaScript für die Clipboard-Funktionalität hinzufügen
+    echo '<script type="text/javascript">
+    $(document).ready(function() {
+        $(".btn-copy-ical").on("click", function() {
+            var url = $(this).data("url");
+            var tempInput = $("<input>");
+            $("body").append(tempInput);
+            tempInput.val(url).select();
+            document.execCommand("copy");
+            tempInput.remove();
+            
+            // Visuelles Feedback
+            var $icon = $(this).find("i");
+            $icon.removeClass("fa-calendar-days").addClass("fa-check");
+            setTimeout(function() {
+                $icon.removeClass("fa-check").addClass("fa-calendar-days");
+            }, 1500);
+        });
+    });
+    </script>';
+
+    // iCal-Export Infobox für den gesamten Kalender erstellen
+    $fullCalendarUrl = rex::getServer() . '?rex-api-call=forcal_ical&filename=forcal-events';
+    
+    $infobox = '
+    <div class="alert alert-info">
+        <p><strong>' . rex_i18n::msg('forcal_ical_export_info', 'iCal Export') . '</strong><br>
+        ' . rex_i18n::msg('forcal_ical_export_desc', 'Exportieren Sie Termine im iCal-Format für Ihren Kalender.') . '</p>
+        <div class="input-group">
+            <input class="form-control" type="text" value="' . $fullCalendarUrl . '" readonly>
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-copy-ical" type="button" data-url="' . $fullCalendarUrl . '">
+                    <i class="fa fa-calendar-days"></i>
+                </button>
+            </span>
+        </div>
+    </div>';
+    
+    // Infobox vor der Liste anzeigen
+    echo $infobox;
+
     // create group and select by clang
     $group = array(40);
     $select = array('id');
@@ -51,7 +92,7 @@ if ($func == '') {
     $list->addTableAttribute('class', 'table-striped');
 
     // merge group with default
-    $group = array_merge($group, array(180, 80,100,90,120));
+    $group = array_merge($group, array(180, 80, 100, 90, 120));
 
     $list->addTableColumnGroup($group);
 
@@ -72,9 +113,13 @@ if ($func == '') {
         $list->setColumnParams('name_' . $clang->getId(), ['func' => 'edit', 'id' => '###id###', 'start' => $start]);
     }
 
-    // Column 3: Color
+    // Column 3: Color (mit gefülltem Kreis statt Unterstrich)
     $list->setColumnLabel('color', rex_i18n::msg('forcal_category_color'));
-    $list->setColumnLayout('color', ['<th>###VALUE###</th>', '<td data-title="'.rex_i18n::msg('forcal_category_color').'" class="td_aufgaben"><span style="border-bottom: 5px solid ###VALUE###;">###VALUE###</span></td>']);
+    $list->setColumnFormat('color', 'custom', function ($params) {
+        $list = $params['list'];
+        $color = $list->getValue('color');
+        return '<span style="display:inline-flex; align-items:center;"><span style="display:inline-block; width:20px; height:20px; border-radius:50%; background-color:' . $color . '; margin-right:10px;"></span>' . $color . '</span>';
+    });
 
     // Column 4: Status
     $list->setColumnLabel('status', rex_i18n::msg('forcal_status_function'));
@@ -102,6 +147,18 @@ if ($func == '') {
     $list->addColumn('clone', '<i class="rex-icon fa-clone"></i> ' . rex_i18n::msg('forcal_clone'), -1, ['', '<td>###VALUE###</td>']);
     $list->setColumnParams('clone', ['func' => 'clone', 'id' => '###id###', 'start' => $start]);
     $list->addLinkAttribute('clone', 'data-confirm', rex_i18n::msg('forcal_clone') . ' ?');
+    
+    // Column 8: iCal Export (nach Clone, in derselben Funktionsgruppe)
+    $list->addColumn('ical', '', -1, ['', '<td>###VALUE###</td>']);
+    $list->setColumnFormat('ical', 'custom', function ($params) {
+        $list = $params['list'];
+        $id = $list->getValue('id');
+        $url = rex::getServer() . '?rex-api-call=forcal_ical&category=' . $id . '&filename=category-' . $id;
+        
+        return '<button class="btn btn-default btn-xs btn-copy-ical" type="button" data-url="' . $url . '" title="' . rex_i18n::msg('forcal_copy_ical_url', 'iCal-URL kopieren') . '">
+                    <i class="fa fa-calendar-days"></i>
+                </button>';
+    });
 
     // show
     $content = $list->get();
