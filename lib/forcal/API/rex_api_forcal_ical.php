@@ -65,7 +65,9 @@ class rex_api_forcal_ical extends rex_api_function
             // Benutzerdefinierte Zeitzone erlauben
             try {
                 $requestedTz = rex_request('timezone', 'string', 'Europe/Berlin');
-                $this->timezone = new DateTimeZone($requestedTz) ? $requestedTz : 'Europe/Berlin';
+                // Validate timezone by attempting to create a DateTimeZone object
+                new DateTimeZone($requestedTz);
+                $this->timezone = $requestedTz;
             } catch (\Exception $e) {
                 $this->timezone = 'Europe/Berlin';
             }
