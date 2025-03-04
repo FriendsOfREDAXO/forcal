@@ -40,6 +40,11 @@ Egal ob man einen einfachen Kalender oder ein komplexes Event-System benötigt.
 *   **Benutzerrechte verwalten:** Bestimme, wer welche Inhalte bearbeiten darf.
 
 
+## Upgrade von 4.x zu 5
+
+Nach der Installation müssen die Nutzerrechte in den Benutzer-Rollen und die Benutzerberechtigungen im Kalender definiert werden. 
+
+
 ## FORCalEventsFactory
 
 Einbindung 
@@ -48,11 +53,6 @@ use forCal\Factory\forCalEventsFactory;
 ```
 
 Die `forCalEventsFactory`-Klasse bietet eine elegante und flexible Methode, um Termine in forCal abzufragen. Mit einer intuitiven Fluent API ermöglicht sie komplexe Abfragen ohne umständliche Parameter und unterstützt automatisch die korrekte Behandlung von Benutzerberechtigungen im Backend und Frontend.
-
-
-### Upgrade von 4.x zu 5
-
-Nach der Installation müssen die Nutzerrechte in den Benutzer-Rollen und die Benutzerberechtigungen im Kalender definiert werden. 
 
 ### Grundlegende Verwendung
 
