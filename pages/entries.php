@@ -761,8 +761,10 @@ if ($func == '' || $func == 'filter') {
 // Beim Speichern auf Benutzerberechtigungen prüfen
 if (rex_post('btn_save', 'string') && !forCalUserPermission::hasPermission(rex_post('category', 'int', 0))) {
     echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
-    // Weitere Verarbeitung verhindern
-    exit;
+    // Set flag to prevent further processing
+    $skipSave = true;
+    // Return to the form view
+    $func = 'edit'; // or 'add' depending on context
 }
 
 // Initialize selectpicker for the category filter
