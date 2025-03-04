@@ -1,4 +1,4 @@
-# FORCal – Kalender für REDAXO (Devs)
+# FORCal – Kalender für REDAXO
 
 FORCal ist flexibel wie ein Framework und lässt sich die individuellen Anforderungen anpassen. Das AddOn ist skalierbar, unterstützt Multi-Language.
 
