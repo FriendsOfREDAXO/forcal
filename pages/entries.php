@@ -791,7 +791,7 @@ if (rex_post('btn_save', 'string') && !$user->isAdmin()) {
 
 // Initialize selectpicker for the category filter
 echo '
-<script type="text/javascript">
+<script type="text/javascript" nonce="' . rex_response::getNonce() . '">
     $(document).ready(function() {
         if ($.fn.selectpicker) {
             $("#category_filter").selectpicker({
