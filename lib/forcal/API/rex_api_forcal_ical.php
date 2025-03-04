@@ -63,8 +63,12 @@ class rex_api_forcal_ical extends rex_api_function
             $endOffset = rex_request('end_offset', 'string', '+2 years');
             
             // Benutzerdefinierte Zeitzone erlauben
-            $this->timezone = rex_request('timezone', 'string', 'Europe/Berlin');
-
+            try {
+                $requestedTz = rex_request('timezone', 'string', 'Europe/Berlin');
+                $this->timezone = new DateTimeZone($requestedTz) ? $requestedTz : 'Europe/Berlin';
+            } catch (\Exception $e) {
+                $this->timezone = 'Europe/Berlin';
+            }
             // Start- und Enddatum festlegen
             $startDate = new DateTime($startOffset, new DateTimeZone($this->timezone));
             $endDate = new DateTime($endOffset, new DateTimeZone($this->timezone));
