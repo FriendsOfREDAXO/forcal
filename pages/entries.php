@@ -46,15 +46,13 @@ if (!$user->hasPerm('forcal[]')) {
 }
 
 // Check for user permissions when editing or adding
-if (($func == 'add' || $func == 'edit') && !$user->isAdmin()) {
-    if (!forCalUserPermission::hasAnyPermission()) {
-        echo rex_view::warning(rex_i18n::msg('forcal_no_permission_categories'));
-        $func = '';
-    }
+if (($func == 'add' || $func == 'edit') && !forCalUserPermission::hasAnyPermission()) {
+    echo rex_view::warning(rex_i18n::msg('forcal_no_permission_categories'));
+    $func = '';
 }
 
 // Check if user has access to the category of the event when editing
-if ($func == 'edit' && $id > 0 && !$user->isAdmin()) {
+if ($func == 'edit' && $id > 0) {
     $sql = rex_sql::factory();
     $sql->setQuery('
         SELECT category 
@@ -74,83 +72,68 @@ if ($func == 'edit' && $id > 0 && !$user->isAdmin()) {
 }
 
 if ($func == 'status') {
-    if (!$user->isAdmin()) {
-        $sql = rex_sql::factory();
-        $sql->setQuery('
-            SELECT category 
-            FROM ' . $tableEvent . ' 
-            WHERE id = :id', 
-            ['id' => $id]
-        );
+    $sql = rex_sql::factory();
+    $sql->setQuery('
+        SELECT category 
+        FROM ' . $tableEvent . ' 
+        WHERE id = :id', 
+        ['id' => $id]
+    );
+    
+    if ($sql->getRows() > 0) {
+        $categoryId = $sql->getValue('category');
         
-        if ($sql->getRows() > 0) {
-            $categoryId = $sql->getValue('category');
-            
-            if (!empty($categoryId) && !forCalUserPermission::hasPermission($categoryId)) {
-                echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
-                $func = '';
-            } else {
-                $message = \forCal\Utils\forCalListHelper::toggleBoolData($tableEvent, $id, 'status');
-                $func = '';
-            }
+        if (!empty($categoryId) && !forCalUserPermission::hasPermission($categoryId)) {
+            echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
+            $func = '';
+        } else {
+            $message = \forCal\Utils\forCalListHelper::toggleBoolData($tableEvent, $id, 'status');
+            $func = '';
         }
-    } else {
-        $message = \forCal\Utils\forCalListHelper::toggleBoolData($tableEvent, $id, 'status');
-        $func = '';
     }
 }
 
 if ($func == 'clone') {
-    if (!$user->isAdmin()) {
-        $sql = rex_sql::factory();
-        $sql->setQuery('
-            SELECT category 
-            FROM ' . $tableEvent . ' 
-            WHERE id = :id', 
-            ['id' => $id]
-        );
+    $sql = rex_sql::factory();
+    $sql->setQuery('
+        SELECT category 
+        FROM ' . $tableEvent . ' 
+        WHERE id = :id', 
+        ['id' => $id]
+    );
+    
+    if ($sql->getRows() > 0) {
+        $categoryId = $sql->getValue('category');
         
-        if ($sql->getRows() > 0) {
-            $categoryId = $sql->getValue('category');
-            
-            if (!empty($categoryId) && !forCalUserPermission::hasPermission($categoryId)) {
-                echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
-                $func = '';
-            } else {
-                $message = \forCal\Utils\forCalListHelper::cloneData($tableEvent, $id);
-                $func = '';
-            }
+        if (!empty($categoryId) && !forCalUserPermission::hasPermission($categoryId)) {
+            echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
+            $func = '';
+        } else {
+            $message = \forCal\Utils\forCalListHelper::cloneData($tableEvent, $id);
+            $func = '';
         }
-    } else {
-        $message = \forCal\Utils\forCalListHelper::cloneData($tableEvent, $id);
-        $func = '';
     }
 }
 
 if ($func == 'delete') {
-    if (!$user->isAdmin()) {
-        $sql = rex_sql::factory();
-        $sql->setQuery('
-            SELECT category 
-            FROM ' . $tableEvent . ' 
-            WHERE id = :id', 
-            ['id' => $id]
-        );
+    $sql = rex_sql::factory();
+    $sql->setQuery('
+        SELECT category 
+        FROM ' . $tableEvent . ' 
+        WHERE id = :id', 
+        ['id' => $id]
+    );
+    
+    if ($sql->getRows() > 0) {
+        $categoryId = $sql->getValue('category');
         
-        if ($sql->getRows() > 0) {
-            $categoryId = $sql->getValue('category');
-            
-            if (!empty($categoryId) && !forCalUserPermission::hasPermission($categoryId)) {
-                echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
-                $func = '';
-            } else {
-                $message = \forCal\Utils\forCalListHelper::deleteData($tableEvent, $id);
-                $func = '';
-            }
+        if (!empty($categoryId) && !forCalUserPermission::hasPermission($categoryId)) {
+            echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
+            $func = '';
+        } else {
+            $message = \forCal\Utils\forCalListHelper::deleteData($tableEvent, $id);
+            $func = '';
         }
-    } else {
-        $message = \forCal\Utils\forCalListHelper::deleteData($tableEvent, $id);
-        $func = '';
     }
 }
 
@@ -169,7 +152,7 @@ if ($func == '' || $func == 'filter') {
     
     // Abfrage-Bedingung für Kategorien basierend auf Benutzerrechten
     $categoryWhere = '';
-    if (!$user->isAdmin()) {
+    if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
         $allowedCategories = forCalUserPermission::getUserCategories($user->getId());
         if (!empty($allowedCategories)) {
             $categoryWhere = ' WHERE id IN (' . implode(',', $allowedCategories) . ')';
@@ -218,14 +201,10 @@ if ($func == '' || $func == 'filter') {
         $where[] = 'en.category = ' . $categoryFilter;
     }
     
-    // Add user permission filter
-    if (!$user->isAdmin()) {
-        $allowedCategories = forCalUserPermission::getUserCategories($user->getId());
-        if (!empty($allowedCategories)) {
-            $where[] = 'en.category IN (' . implode(',', $allowedCategories) . ')';
-        } else {
-            $where[] = '0'; // No categories allowed = no results
-        }
+    // Add user permission filter using forCalUserPermission
+    $userFilter = forCalUserPermission::getCategoryFilter('en');
+    if (!empty($userFilter)) {
+        $where[] = substr($userFilter, 5); // Remove " AND " prefix
     }
     
     if (count($where) > 0) {
@@ -677,8 +656,16 @@ if ($func == '' || $func == 'filter') {
     $field = $form->addSelectField('category');
     $select = $field->getSelect();
     
-    // Filter categories based on user permissions
-    if (!$user->isAdmin()) {
+    // Kategorien basierend auf Benutzerberechtigungen filtern
+    if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
+        // Admin oder User mit forcal[all] kann alle Kategorien sehen
+        if ($additional_for_title) {
+            $select->addSqlOptions('SELECT CONCAT(name_' . rex_clang::getCurrentId() . '," - ",' . $additional_for_title . '_' . rex_clang::getCurrentId() . ') name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableCategories . ' ORDER BY name_' . rex_clang::getCurrentId());
+        } else {
+            $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableCategories . ' ORDER BY name_' . rex_clang::getCurrentId());
+        }
+    } else {
+        // Normale Benutzer nur erlaubte Kategorien
         $allowedCategories = forCalUserPermission::getUserCategories($user->getId());
         
         if (!empty($allowedCategories)) {
@@ -687,13 +674,6 @@ if ($func == '' || $func == 'filter') {
             } else {
                 $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableCategories . ' WHERE id IN (' . implode(',', $allowedCategories) . ') ORDER BY name_' . rex_clang::getCurrentId());
             }
-        }
-    } else {
-        // Admin can see all categories
-        if ($additional_for_title) {
-            $select->addSqlOptions('SELECT CONCAT(name_' . rex_clang::getCurrentId() . '," - ",' . $additional_for_title . '_' . rex_clang::getCurrentId() . ') name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableCategories . ' ORDER BY name_' . rex_clang::getCurrentId());
-        } else {
-            $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableCategories . ' ORDER BY name_' . rex_clang::getCurrentId());
         }
     }
     
@@ -779,14 +759,10 @@ if ($func == '' || $func == 'filter') {
 }
 
 // Beim Speichern auf Benutzerberechtigungen prüfen
-if (rex_post('btn_save', 'string') && !$user->isAdmin()) {
-    $categoryId = rex_post('category', 'int', 0);
-    
-    if ($categoryId > 0 && !forCalUserPermission::hasPermission($categoryId)) {
-        echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
-        // Weitere Verarbeitung verhindern
-        exit;
-    }
+if (rex_post('btn_save', 'string') && !forCalUserPermission::hasPermission(rex_post('category', 'int', 0))) {
+    echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_category'));
+    // Weitere Verarbeitung verhindern
+    exit;
 }
 
 // Initialize selectpicker for the category filter
