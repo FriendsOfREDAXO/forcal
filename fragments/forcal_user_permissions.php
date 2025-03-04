@@ -82,7 +82,7 @@ $users = forCalUserPermission::filterUsersWithForcalPermission($users);
             </div>
         </form>
         
-        <script>
+        <script nonce="<?=rex_response::getNonce()?>">
             $(document).ready(function() {
                 // Alle Kategorien auswählen/abwählen
                 $('#select-all').change(function() {
