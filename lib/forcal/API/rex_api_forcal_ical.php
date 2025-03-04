@@ -14,6 +14,12 @@ class rex_api_forcal_ical extends rex_api_function
      * @var bool
      */
     protected $published = true;
+    
+    /**
+     * Zeitzone für den Kalender
+     * @var string
+     */
+    private $timezone = 'Europe/Berlin';
 
     /**
      * Führt den API-Call aus
@@ -27,17 +33,50 @@ class rex_api_forcal_ical extends rex_api_function
 
         try {
             // Parameter abrufen
-            $categoryIds = rex_request('categories', 'array', []);
+            // Kategorien können entweder als Array oder kommaseparierte Liste übergeben werden
+            $categoryIds = [];
+            
+            // Erste Option: Als Array (über POST oder GET)
+            $categoriesArray = rex_request('categories', 'array', []);
+            if (!empty($categoriesArray)) {
+                $categoryIds = $categoriesArray;
+            }
+            
+            // Zweite Option: Als kommaseparierte Liste (category_list=1,2,3)
+            $categoryList = rex_request('category_list', 'string', '');
+            if (!empty($categoryList)) {
+                $categoryIds = array_map('intval', explode(',', $categoryList));
+            }
+            
+            // Dritte Option: Als einzelne Kategorie (category=1)
+            $singleCategory = rex_request('category', 'int', 0);
+            if ($singleCategory > 0) {
+                $categoryIds[] = $singleCategory;
+            }
+            
+            // Restliche Parameter
             $entryId = rex_request('entry', 'int', 0);
             $filename = rex_request('filename', 'string', 'calendar');
-
-            // Start- und Enddatum festlegen (-1 Jahr bis 2 Jahre in der Zukunft)
-            $startDate = new DateTime('-1 years');
-            $endDate = clone $startDate;
-            $endDate->modify('+2 years');
+            
+            // Zeitraum: Standardwerte können über Parameter überschrieben werden
+            $startOffset = rex_request('start_offset', 'string', '-1 years');
+            $endOffset = rex_request('end_offset', 'string', '+2 years');
+            
+            // Benutzerdefinierte Zeitzone erlauben
+            try {
+                $requestedTz = rex_request('timezone', 'string', 'Europe/Berlin');
+                // Validate timezone by attempting to create a DateTimeZone object
+                new DateTimeZone($requestedTz);
+                $this->timezone = $requestedTz;
+            } catch (\Exception $e) {
+                $this->timezone = 'Europe/Berlin';
+            }
+            // Start- und Enddatum festlegen
+            $startDate = new DateTime($startOffset, new DateTimeZone($this->timezone));
+            $endDate = new DateTime($endOffset, new DateTimeZone($this->timezone));
 
             // Header für Download setzen
-            rex_response::sendContentType('text/calendar');
+            rex_response::sendContentType('text/calendar; charset=utf-8');
             rex_response::setHeader('Content-Disposition', 'attachment; filename="' . $filename . '.ics"');
 
             // Generiere iCal Inhalt
@@ -74,8 +113,11 @@ class rex_api_forcal_ical extends rex_api_function
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
             'X-WR-CALNAME:forCal Termine',
-            'X-WR-TIMEZONE:Europe/Berlin',
+            'X-WR-TIMEZONE:' . $this->timezone,
         ];
+        
+        // Zeitzone definieren
+        $ical = array_merge($ical, $this->getTimezoneComponent());
 
         // Termine laden
         if ($entryId > 0) {
@@ -125,6 +167,92 @@ class rex_api_forcal_ical extends rex_api_function
         // Als String zurückgeben
         return implode("\r\n", $ical);
     }
+    
+    /**
+     * Erstellt die VTIMEZONE-Komponente für den Kalender
+     * 
+     * @return array VTIMEZONE-Komponente als Array von Zeilen
+     */
+    private function getTimezoneComponent(): array
+    {
+        $timezone = new DateTimeZone($this->timezone);
+        $transitions = $timezone->getTransitions(time(), time() + 31536000); // Ein Jahr vorausschauen
+        
+        if (count($transitions) < 2) {
+            // Wenn keine Übergänge gefunden wurden, vereinfachte Version zurückgeben
+            return [
+                'BEGIN:VTIMEZONE',
+                'TZID:' . $this->timezone,
+                'X-LIC-LOCATION:' . $this->timezone,
+                'END:VTIMEZONE'
+            ];
+        }
+        
+        // Standard- und Sommerzeit-Übergänge finden
+        $standardTransition = null;
+        $daylightTransition = null;
+        
+        foreach ($transitions as $i => $transition) {
+            if ($i === 0) continue; // Ersten Eintrag überspringen
+            
+            if ($transition['isdst']) {
+                $daylightTransition = $transition;
+            } else {
+                $standardTransition = $transition;
+            }
+        }
+        
+        $vtimezone = [
+            'BEGIN:VTIMEZONE',
+            'TZID:' . $this->timezone,
+            'X-LIC-LOCATION:' . $this->timezone,
+        ];
+        
+        // Sommerzeitinformationen hinzufügen
+        if ($daylightTransition) {
+            $dtStart = new DateTime('@' . $daylightTransition['ts']);
+            $dtStart->setTimezone($timezone);
+            
+            $vtimezone[] = 'BEGIN:DAYLIGHT';
+            $vtimezone[] = 'TZOFFSETFROM:' . $this->formatOffset($standardTransition['offset']);
+            $vtimezone[] = 'TZOFFSETTO:' . $this->formatOffset($daylightTransition['offset']);
+            $vtimezone[] = 'TZNAME:' . $daylightTransition['abbr'];
+            $vtimezone[] = 'DTSTART:' . $dtStart->format('Ymd\THis');
+            $vtimezone[] = 'END:DAYLIGHT';
+        }
+        
+        // Standardzeitinformationen hinzufügen
+        if ($standardTransition) {
+            $dtStart = new DateTime('@' . $standardTransition['ts']);
+            $dtStart->setTimezone($timezone);
+            
+            $vtimezone[] = 'BEGIN:STANDARD';
+            $vtimezone[] = 'TZOFFSETFROM:' . $this->formatOffset($daylightTransition ? $daylightTransition['offset'] : 0);
+            $vtimezone[] = 'TZOFFSETTO:' . $this->formatOffset($standardTransition['offset']);
+            $vtimezone[] = 'TZNAME:' . $standardTransition['abbr'];
+            $vtimezone[] = 'DTSTART:' . $dtStart->format('Ymd\THis');
+            $vtimezone[] = 'END:STANDARD';
+        }
+        
+        $vtimezone[] = 'END:VTIMEZONE';
+        
+        return $vtimezone;
+    }
+    
+    /**
+     * Formatiert einen Zeitzonenoffset in das iCal-Format
+     * 
+     * @param int $offset Offset in Sekunden
+     * @return string Formatierter Offset (z.B. +0100 oder -0500)
+     */
+    private function formatOffset(int $offset): string
+    {
+        $hours = abs((int)($offset / 3600));
+        $minutes = abs((int)(($offset % 3600) / 60));
+        $sign = $offset >= 0 ? '+' : '-';
+        
+        return sprintf('%s%02d%02d', $sign, $hours, $minutes);
+    }
 
     /**
      * Konvertiert einen Termin in das VEVENT-Format
@@ -156,17 +284,19 @@ class rex_api_forcal_ical extends rex_api_function
 
         if (isset($event['start'])) {
             if (is_string($event['start'])) {
-                $startDate = new DateTime($event['start']);
+                $startDate = new DateTime($event['start'], new DateTimeZone($this->timezone));
             } elseif ($event['start'] instanceof DateTime) {
-                $startDate = $event['start'];
+                $startDate = clone $event['start'];
+                $startDate->setTimezone(new DateTimeZone($this->timezone));
             }
         }
 
         if (isset($event['end'])) {
             if (is_string($event['end'])) {
-                $endDate = new DateTime($event['end']);
+                $endDate = new DateTime($event['end'], new DateTimeZone($this->timezone));
             } elseif ($event['end'] instanceof DateTime) {
-                $endDate = $event['end'];
+                $endDate = clone $event['end'];
+                $endDate->setTimezone(new DateTimeZone($this->timezone));
             }
         }
 
@@ -199,8 +329,9 @@ class rex_api_forcal_ical extends rex_api_function
         }
 
         // DTSTAMP (aktueller Zeitstempel)
-        $lines[] = 'DTSTAMP:' . $this->formatDateTime(new DateTime());
-        $lines[] = 'CREATED:' . $this->formatDateTime(new DateTime());
+        $now = new DateTime('now', new DateTimeZone($this->timezone));
+        $lines[] = 'DTSTAMP:' . $this->formatDateTime($now);
+        $lines[] = 'CREATED:' . $this->formatDateTime($now);
 
         // Wiederholungsregel (RRULE) für wiederkehrende Termine
         // Wir fügen die RRULE nur beim ersten Vorkommen hinzu
@@ -213,17 +344,17 @@ class rex_api_forcal_ical extends rex_api_function
 
         // Start- und Endzeit
         if ($isFullDay) {
-            // Ganztägiges Event
+            // Ganztägiges Event - ohne Zeitkomponente
             $lines[] = 'DTSTART;VALUE=DATE:' . $startDate->format('Ymd');
-
+            
             // Bei ganztägigen Events muss das Enddatum um einen Tag erhöht werden
             $endDateAdjusted = clone $endDate;
             $endDateAdjusted->modify('+1 day');
             $lines[] = 'DTEND;VALUE=DATE:' . $endDateAdjusted->format('Ymd');
         } else {
-            // Event mit Uhrzeit
-            $lines[] = 'DTSTART:' . $this->formatDateTime($startDate);
-            $lines[] = 'DTEND:' . $this->formatDateTime($endDate);
+            // Event mit Uhrzeit - mit Zeitzone
+            $lines[] = 'DTSTART;TZID=' . $this->timezone . ':' . $startDate->format('Ymd\THis');
+            $lines[] = 'DTEND;TZID=' . $this->timezone . ':' . $endDate->format('Ymd\THis');
         }
 
         $lines[] = 'END:VEVENT';
@@ -339,9 +470,10 @@ class rex_api_forcal_ical extends rex_api_function
             $endRepeatDate = $event['end_repeat_date'];
 
             if (is_string($endRepeatDate)) {
-                $endDate = new DateTime($endRepeatDate);
+                $endDate = new DateTime($endRepeatDate, new DateTimeZone($this->timezone));
             } elseif ($endRepeatDate instanceof DateTime) {
                 $endDate = clone $endRepeatDate;
+                $endDate->setTimezone(new DateTimeZone($this->timezone));
             } else {
                 $endDate = null;
             }
@@ -396,14 +528,20 @@ class rex_api_forcal_ical extends rex_api_function
 
     /**
      * Formatiert ein DateTime-Objekt ins iCal-Format
+     * 
+     * @param DateTime $dateTime Das zu formatierende Datum
+     * @param bool $isUTC Ob das Datum als UTC formatiert werden soll
+     * @return string Formatiertes Datum
      */
-    private function formatDateTime(DateTime $dateTime, bool $withTime = true): string
+    private function formatDateTime(DateTime $dateTime, bool $isUTC = false): string
     {
-        if ($withTime) {
-            return $dateTime->format('Ymd\THis\Z');
+        if ($isUTC) {
+            $dateTimeUTC = clone $dateTime;
+            $dateTimeUTC->setTimezone(new DateTimeZone('UTC'));
+            return $dateTimeUTC->format('Ymd\THis\Z');
         }
-
-        return $dateTime->format('Ymd\THis\Z');
+        
+        return $dateTime->format('Ymd\THis');
     }
 
     /**
