@@ -33,7 +33,7 @@ if ($func == 'delete') {
 if ($func == '') {
 
     // JavaScript für die Clipboard-Funktionalität hinzufügen
-    echo '<script type="text/javascript">
+    echo '<script type="text/javascript" nonce="' . rex_response::getNonce() . '">
     $(document).ready(function() {
         $(".btn-copy-ical").on("click", function() {
             var url = $(this).data("url");
