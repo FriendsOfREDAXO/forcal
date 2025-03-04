@@ -1,24 +1,43 @@
-# REDAXO AddOn: FORCal
+# FORCal – Kalender für REDAXO (Devs)
 
-Das AddOn ist ein variabel einsetzbarer Kalender(-Generator), Skedule, Newssystem, Event- und Terminplaner für REDAXO 5.x. Das AddOn kann nach Belieben angepasst werden. Es können jderzeit zusätzliche Eingabe-Felder hinzugefügt werden. Darüber hinaus unterstützt das AddOn mehrsprachige REDAXO-Installationen.
+FORCal ist flexibel wie ein Framework und lässt sich die individuellen Anforderungen anpassen. Das AddOn ist skalierbar, unterstützt Multi-Language.
 
 ![Screenshot](https://github.com/FriendsOfREDAXO/forcal/blob/assets/screenshot5.png?raw=true)
-
-## Hauptmerkmale
-
-☀️ = Neu ab FORCal 5
-
-*   **Flexibler Kalender**: Erstellung von Terminkalendern, Veranstaltungskalendern und Nachrichten.
-*   **Erweiterbarkeit**: Anpassbare Eingabeformulare durch benutzerdefinierte `.yml`-Dateien.
-*   **Mehrsprachigkeit**: Unterstützung mehrsprachiger REDAXO-Installationen.
-*   **Einfache Datenabfrage**: Abruf der Termine über PHP-Class-Methoden, Rückgabe als Objekte.
-*   **API für JSON-Ausgabe**: Ermöglicht die Ausgabe und Filterung von Events als JSON.
-*   **Backend- und Frontend-Integration**: Vollständig kompatibel mit der bestehenden `forCalHandler`-Implementierung.
-*   **Benutzerberechtigungen**: ☀️Benuzterrechte für Backenduser auf Kategorieebene.
-*   **iCal, CaldAv - Export oder Abo möglich via API ☀️**
-*   **forCalLink-Klasse**: Generierung von Links für `.ics`-Dateien, Terminübergabe zu Google Calendar und Microsoft Outlook (Web).
-  
 ![Screenshot](https://github.com/FriendsOfREDAXO/forcal/blob/assets/user.png?raw=true)
+
+## FORCal – Was steckt drin? (Für Devs)
+
+*   **Kalender-Flexibilität:** Von Terminen über Events bis zu News – alles machbar.
+*   **Custom Fields mit `.yml`:** Definiere deine eigenen Eingabefelder und erweitere die Funktionalität.
+*   **Multi-Language-Support:** Native Unterstützung für mehrsprachige REDAXO-Installationen.
+*   **Einfacher Datenzugriff:** Greife mit PHP-Methoden auf Termine zu, bekommst Objekte zurück.
+*   **JSON API:** Gib deine Events über eine API aus und filtere sie.
+*   **Nahtlose Frontend & Backend Integration:** Passt sich perfekt in dein REDAXO ein.
+*   **Feingliedrige Benutzerrechte:** Kontrolliere, wer was darf.
+*   **iCal/CalDAV Export & Abo:** Exportiere Termine als iCal, CalDAV oder biete Abo-Feeds an.
+*   **Termin-Links für alle:** Google Calendar, Outlook, ICS – alles dabei.
+*   **Optionale Orte-Verwaltung:** Verwalte Veranstaltungsorte, wenn du es brauchst.
+*   **SQL-Filter für Power-User:** Dynamisch gefilterte Auswahlfelder, die sich anpassen.
+*   **Editor-Freedom:** Wähle deinen bevorzugten Editor für Textfelder.
+
+Die folgenden Abschnitte liefern dir die Details, Beispiele und Code-Schnipsel, die du als Dev brauchst, um FORCal in deine Projekte zu integrieren.
+
+## Für Nutzer
+
+Im Handumdrehen Termine, Veranstaltungen und News verwalten 
+
+Egal ob man einen einfachen Kalender oder ein komplexes Event-System benötigt.
+
+### FORCal – Was kann es? (Für Nutzer)
+
+*   **Termine und Events erstellen:** Füge Veranstaltungen, Termine und News einfach hinzu.
+*   **Benutzerfreundliche Oberfläche:** Intuitive Bedienung für schnelles Arbeiten.
+*   **Flexibel anpassbar:** Eigene Felder für deine speziellen Anforderungen.
+*   **Mehrsprachige Unterstützung:** Verwende FORCal in mehreren Sprachen.
+*   **Kalender-Integration:** Zeige deine Termine auf deiner Webseite an.
+*   **Verwaltung von Orten:** Ordne Veranstaltungen einfach Veranstaltungsorten zu.
+*   **Export und Teilen:** Exportiere Termine und teile sie mit anderen.
+*   **Benutzerrechte verwalten:** Bestimme, wer welche Inhalte bearbeiten darf.
 
 
 ## FORCalEventsFactory
