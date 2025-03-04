@@ -69,6 +69,10 @@ rex_forcal_categories_toggle_status_error = Der Status der Kategorie konnte nich
 rex_forcal_categories_toggle_status_success = Der Status der Kategorie wurde geändert.
 rex_forcal_categories_deleted = Die Kategorie wurde gelöscht.
 rex_forcal_categories_cloned = Die Kategorie wurde dupliziert.
+forcal_ical_export_info = iCal Export
+forcal_ical_export_desc = Exportieren Sie Termine im iCal-Format für Ihren Kalender.
+forcal_copy_ical_url = iCal-URL kopieren
+forcal_ical_export = iCal
 
 ### categories list
 forcal_categories_title = Kategorien
