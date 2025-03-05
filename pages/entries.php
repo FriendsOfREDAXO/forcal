@@ -252,7 +252,7 @@ if ($func == '' || $func == 'filter') {
         $addParams['category_filter'] = $categoryFilter;
     }
     $thIcon = '<a href="' . $list->getUrl($addParams) . '" title="' . rex_i18n::msg('forcal_add_entry') . '" accesskey="a"><i class="rex-icon rex-icon-add-action"></i></a>';
-    $tdIcon = '<i class="rex-icon fa-file-o"></i>';
+    $tdIcon = '<i class="rex-icon fa-solid fa-file"></i>';
 
     // thanks to Oliver Kreischer for the cool color idea !
     $list->addColumn($thIcon, $tdIcon, 0, ['<th class="rex-table-icon">###VALUE###</th>', '<td class="rex-table-icon forcal-fa-###type###" style="margin-left:5px;border-left:5px solid ###color###">###VALUE###</td>']);
@@ -284,7 +284,7 @@ if ($func == '' || $func == 'filter') {
     $list->setColumnFormat('status', 'custom', array('\forCal\Utils\forCalListHelper', 'formatStatus'));
 
     // Column 7: edit
-    $list->addColumn('edit', '<i class="rex-icon fa-pencil-square-o"></i> ' . rex_i18n::msg('edit'), -1, ['', '<td>###VALUE###</td>']);
+    $list->addColumn('edit', '<i class="rex-icon fa-solid fa-square-pen"></i> ' . rex_i18n::msg('edit'), -1, ['', '<td>###VALUE###</td>']);
     $list->setColumnParams('edit', ['func' => 'edit', 'id' => '###id###', 'start' => $start]);
 
     // Column 8: Delete
