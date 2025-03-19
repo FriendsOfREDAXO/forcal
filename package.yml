@@ -22,7 +22,7 @@ requires:
         version: '>=8.1, <9'
         extensions: [intl]
     packages:
-        flarpickr: '>=1.1.1'
+        flatpickr: '>=1.1.1'
 
 default_config:
     forcal_multiuser: 1
