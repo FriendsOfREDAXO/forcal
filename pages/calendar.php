@@ -43,6 +43,32 @@ echo $fragment->parse('forcal_category_filter.php');
 <section class="rex-page-section">
     <div class="panel panel-default calendarview">
         <div class="panel-body">
+            <!-- Tui Calendar Container -->
+            <div id="forcal-menu" class="forcal-menu">
+                <span id="menu-navi">
+                    <button type="button" class="btn btn-default btn-sm move-today" data-action="move-today">
+                        <?= rex_i18n::msg('forcal_today') ?>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm move-day" data-action="move-prev">
+                        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm move-day" data-action="move-next">
+                        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </span>
+                <span id="renderRange" class="render-range"></span>
+                <span class="view-switcher">
+                    <button type="button" class="btn btn-default btn-sm" data-action="change-view" data-view-name="month">
+                        <?= rex_i18n::msg('forcal_month') ?>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="change-view" data-view-name="week">
+                        <?= rex_i18n::msg('forcal_week') ?>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-action="change-view" data-view-name="day">
+                        <?= rex_i18n::msg('forcal_day') ?>
+                    </button>
+                </span>
+            </div>
             <div id="forcal" 
                 data-locale="<?= \Locale::getPrimaryLanguage(\Locale::getDefault()) ?>" 
                 data-date="<?= date('Y-m-d') ?>" 
@@ -51,4 +77,3 @@ echo $fragment->parse('forcal_category_filter.php');
         </div>
     </div>
 </section>
-</script>
