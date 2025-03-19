@@ -314,6 +314,13 @@ function forcal_flatpickr_init() {
             $('<div id="time-validation-error" class="alert alert-danger">' + errorMessage + '</div>')
                 .insertBefore('#forcal-submit-btn');
         }
+        
+        // Visuelle Hervorhebung der Felder
+        highlightField(tpd1, 'error');
+        highlightField(tpd2, 'error');
+        
+        // Toast-Nachricht anzeigen
+        showToast(errorMessage, 'error');
     }
 
     // Entfernen der Fehlermeldung
@@ -352,6 +359,17 @@ function forcal_flatpickr_init() {
                     // Wenn das Enddatum vor dem neuen Startdatum liegt, setze es auf das Startdatum
                     if (endPicker.selectedDates[0] && selectedDates[0] > endPicker.selectedDates[0]) {
                         endPicker.setDate(selectedDates[0]);
+                        
+                        // Visuelles Feedback
+                        highlightField(dpd2, 'success');
+                        
+                        // Toast-Nachricht anzeigen
+                        showToast(
+                            currentLang === 'de' 
+                                ? 'Enddatum automatisch angepasst' 
+                                : 'End date automatically adjusted',
+                            'info'
+                        );
                     }
                     
                     // Validiere die Zeiten, wenn Start- und Enddatum gleich sind
@@ -427,8 +445,152 @@ function forcal_flatpickr_init() {
             // Setze die neue Endzeit
             if (timepicker2) {
                 timepicker2.setDate(newEndTime);
+                
+                // Visuelles Feedback hinzufügen
+                highlightField(tpd2, 'success');
+                
+                // Toast-Nachricht anzeigen
+                showToast(
+                    currentLang === 'de' 
+                        ? 'Endzeit automatisch angepasst' 
+                        : 'End time automatically adjusted',
+                    'info'
+                );
             }
         }
+    }
+
+    // Funktion für visuelles Hervorheben eines Feldes
+    function highlightField(field, type) {
+        // Bestehende Highlight-Klassen entfernen
+        field.removeClass('highlight-success highlight-error');
+        
+        // Neue Highlight-Klasse hinzufügen
+        field.addClass('highlight-' + type);
+        
+        // Highlight-Stil per CSS einfügen, falls noch nicht vorhanden
+        if ($('#forcal-highlight-styles').length === 0) {
+            $('<style id="forcal-highlight-styles">')
+                .text(`
+                    .highlight-success { 
+                        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5) !important; 
+                        border-color: #28a745 !important;
+                        transition: box-shadow 0.5s, border-color 0.5s;
+                    }
+                    .highlight-error { 
+                        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.5) !important; 
+                        border-color: #dc3545 !important;
+                        transition: box-shadow 0.5s, border-color 0.5s;
+                    }
+                    #forcal-toast-container {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 9999;
+                    }
+                    .forcal-toast {
+                        min-width: 250px;
+                        margin-bottom: 10px;
+                        padding: 15px;
+                        border-radius: 4px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                        background-color: #fff;
+                        color: #333;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        font-weight: 500;
+                        animation: fadeInRight 0.3s ease forwards;
+                    }
+                    .forcal-toast.info {
+                        background-color: #d1ecf1;
+                        border-left: 4px solid #17a2b8;
+                    }
+                    .forcal-toast.success {
+                        background-color: #d4edda;
+                        border-left: 4px solid #28a745;
+                    }
+                    .forcal-toast.warning {
+                        background-color: #fff3cd;
+                        border-left: 4px solid #ffc107;
+                    }
+                    .forcal-toast.error {
+                        background-color: #f8d7da;
+                        border-left: 4px solid #dc3545;
+                    }
+                    .forcal-toast-close {
+                        cursor: pointer;
+                        opacity: 0.7;
+                        padding: 0 5px;
+                        font-weight: bold;
+                    }
+                    .forcal-toast-close:hover {
+                        opacity: 1;
+                    }
+                    @keyframes fadeInRight {
+                        from {
+                            opacity: 0;
+                            transform: translateX(100px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                    @keyframes fadeOut {
+                        from {
+                            opacity: 1;
+                        }
+                        to {
+                            opacity: 0;
+                        }
+                    }
+                `)
+                .appendTo('head');
+        }
+        
+        // Nach einer Zeit die Hervorhebung entfernen
+        setTimeout(() => {
+            field.removeClass('highlight-' + type);
+        }, 3000);
+    }
+    
+    // Toast-Nachrichten anzeigen
+    function showToast(message, type = 'info') {
+        // Container erstellen, falls noch nicht vorhanden
+        if ($('#forcal-toast-container').length === 0) {
+            $('<div id="forcal-toast-container">').appendTo('body');
+        }
+        
+        // Toast-ID generieren
+        const toastId = 'toast-' + Date.now();
+        
+        // Toast erstellen
+        const $toast = $(`
+            <div id="${toastId}" class="forcal-toast ${type}">
+                <span>${message}</span>
+                <span class="forcal-toast-close">&times;</span>
+            </div>
+        `);
+        
+        // Toast zum Container hinzufügen
+        $('#forcal-toast-container').append($toast);
+        
+        // Schließen-Button aktivieren
+        $toast.find('.forcal-toast-close').on('click', function() {
+            $toast.css('animation', 'fadeOut 0.3s forwards');
+            setTimeout(() => {
+                $toast.remove();
+            }, 300);
+        });
+        
+        // Toast automatisch nach 4 Sekunden ausblenden
+        setTimeout(() => {
+            $toast.css('animation', 'fadeOut 0.3s forwards');
+            setTimeout(() => {
+                $toast.remove();
+            }, 300);
+        }, 4000);
     }
 
     // Zeit-Picker für Startzeit
@@ -443,6 +605,37 @@ function forcal_flatpickr_init() {
             onChange: function(selectedDates, dateStr, instance) {
                 // Entferne Validierungsfehler bei Änderungen
                 removeTimeValidationError();
+                
+                const fullTimeChecked = $('.forcal_fulltime_master_check').is(':checked');
+                if (!fullTimeChecked && tpd2.length && dpd1.val() === dpd2.val()) {
+                    // Wenn Start- und Enddatum identisch sind
+                    const startTime = dateStr;
+                    const endTime = tpd2.val() || '00:00:00';
+                    
+                    if (startTime > endTime) {
+                        // Setze die Endzeit auf die Startzeit + 1 Stunde
+                        const startTimeParts = startTime.split(':');
+                        let newHour = parseInt(startTimeParts[0]) + 1;
+                        if (newHour >= 24) {
+                            newHour = 23;
+                            startTimeParts[1] = "59";
+                        }
+                        const newEndTime = `${newHour.toString().padStart(2, '0')}:${startTimeParts[1]}:${startTimeParts[2] || '00'}`;
+                        
+                        timepicker2.setDate(newEndTime);
+                        
+                        // Visuelles Feedback
+                        highlightField(tpd2, 'success');
+                        
+                        // Toast-Nachricht anzeigen
+                        showToast(
+                            currentLang === 'de' 
+                                ? 'Endzeit automatisch angepasst' 
+                                : 'End time automatically adjusted',
+                            'info'
+                        );
+                    }
+                }
                 
                 // Überprüfen ob Start- und Enddatum identisch sind
                 if (dpd1.val() === dpd2.val()) {
