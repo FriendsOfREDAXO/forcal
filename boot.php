@@ -63,14 +63,17 @@ if (rex::isBackend() && rex::getUser()) {
     forCalDatabaseManager::executeCustomFieldHandle();
     rex_view::setJsProperty('forcal_events_api_url', rex_url::backendController(['rex-api-call' => 'forcal_exchange', '_csrf_token' => \forCal\Handler\forCalApi::getToken()]));
     
-    // add js
-    rex_view::addJSFile($this->getAssetsUrl('vendor/palettecolorpicker/palette-color-picker.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/interaction/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/daygrid/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/timegrid/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/list/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/locales-all.js'));
+   // In boot.php, nach den bisherigen Einbindungen
+// Tui Calendar CDN einbinden (können wir später durch lokale Dateien ersetzen)
+   rex_view::addJSFile('https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js');
+   rex_view::addJSFile('https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.min.js');
+   rex_view::addJSFile('https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.min.js');
+   rex_view::addJSFile('https://uicdn.toast.com/tui-calendar/v1.15.3/tui-calendar.min.js');
+
+   rex_view::addCssFile('https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.min.css');
+   rex_view::addCssFile('https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.min.css');
+   rex_view::addCssFile('https://uicdn.toast.com/tui-calendar/v1.15.3/tui-calendar.min.css');
+    rex_view::addCssFile($this->getAssetsUrl('forcal-tui.css')); // Wir erstellen diese Datei als nächstes
     
      rex_view::addJSFile($this->getAssetsUrl('forcal.js'));
 
