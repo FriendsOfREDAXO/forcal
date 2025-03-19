@@ -533,3 +533,57 @@ div.forcal-form-checkboxes-inline dl + dl {
 .quick_navi_forcal_border {
 	border-left: 5px solid;
 }
+
+/* Safari-spezifische Fixes für flatpickr */
+.flatpickr-monthDropdown-months {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    color: inherit !important;
+    cursor: pointer !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: 300 !important;
+    height: auto !important;
+    line-height: inherit !important;
+    margin: -1px 0 0 0 !important;
+    outline: none !important;
+    padding: 0 0 0 0.5ch !important;
+    position: relative !important;
+    vertical-align: initial !important;
+    width: auto !important;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='white'%3E%E2%96%BE%3C/text%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 5px center !important;
+}
+
+/* Verstecke den Standardpfeil im Safari */
+.flatpickr-monthDropdown-months::-webkit-details-marker {
+    display: none !important;
+}
+
+/* Weitere Safari-Fixes für flatpickr */
+@media not all and (min-resolution:.001dpcm) { 
+    @supports (-webkit-appearance:none) {
+        .flatpickr-monthDropdown-months { 
+            text-indent: 0.01px !important;
+            text-overflow: '' !important;
+            padding-right: 15px !important;
+        }
+    }
+}
+
+/* Andere Browser-Fixes für flatpickr */
+.flatpickr-current-month .flatpickr-monthDropdown-months:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Korrektur für das Dropdown-Menü */
+.flatpickr-months .flatpickr-month {
+    position: relative !important;
+    overflow: visible !important;
+}
