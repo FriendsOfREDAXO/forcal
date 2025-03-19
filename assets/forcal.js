@@ -15,7 +15,7 @@ $(function () {
 function forcal_init() {
     forcal_colorpalette_init();
     forcal_fullcalendar_init();
-    forcal_daterange_init();
+    forcal_flatpickr_init();
     forcal_format_type();
     forcal_fulltime();
     forcal_repeat();
@@ -214,234 +214,294 @@ function forcal_fullcalendar_init() {
     }
 }
 
-function forcal_daterange_init() {
-    let forcal_datePicker = $('.forcaldatepicker'),
-        forcal_tabs = $('.forcal_clangtabs');
+function forcal_flatpickr_init() {
+    let dpd1 = $('#dpd1');
+    let dpd2 = $('#dpd2');
+    let dpd2b = $('#dpd2b');
+    let tpd1 = $('#tpd1');
+    let tpd2 = $('#tpd2');
 
-    if (forcal_datePicker.length) {
-        forcal_datepicker_init(forcal_datePicker);
-    }
-    if (forcal_tabs.length) {
-        forcal_tabs_init(forcal_tabs);
-    }
-}
+    // Benötigte Localisierung für flatpickr (Deutsch)
+    const German = {
+        weekdays: {
+            shorthand: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+            longhand: [
+                "Sonntag",
+                "Montag",
+                "Dienstag",
+                "Mittwoch",
+                "Donnerstag",
+                "Freitag",
+                "Samstag",
+            ],
+        },
+        months: {
+            shorthand: [
+                "Jan",
+                "Feb",
+                "Mär",
+                "Apr",
+                "Mai",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Okt",
+                "Nov",
+                "Dez",
+            ],
+            longhand: [
+                "Januar",
+                "Februar",
+                "März",
+                "April",
+                "Mai",
+                "Juni",
+                "Juli",
+                "August",
+                "September",
+                "Oktober",
+                "November",
+                "Dezember",
+            ],
+        },
+        firstDayOfWeek: 1,
+        weekAbbreviation: "KW",
+        rangeSeparator: " bis ",
+        scrollTitle: "Zum Ändern scrollen",
+        toggleTitle: "Zum Umschalten klicken",
+        time_24hr: true,
+    };
 
-function forcal_tabs_init(element) {
-    element.click(function (e) {
-        e.preventDefault();
-        $(this).tab('show')
+    // Sprache basierend auf der REDAXO-Sprache
+    const currentLang = $('html').attr('lang') || 'de';
+    const localeToUse = currentLang === 'de' ? German : null;
+
+    // Funktion zur Validierung des Zeitraums
+    function validateDateTime() {
+        const fullTimeChecked = $('.forcal_fulltime_master_check').is(':checked');
+        if (fullTimeChecked) {
+            // Bei ganztägigen Terminen nur die Daten vergleichen
+            return true;
+        }
+
+        const startDate = dpd1.val();
+        const endDate = dpd2.val();
+        const startTime = tpd1.val();
+        const endTime = tpd2.val();
+
+        // Wenn eines der Felder leer ist, können wir nicht validieren
+        if (!startDate || !endDate || !startTime || !endTime) {
+            return true;
+        }
+
+        // Erstellen von DateTime-Objekten für Start und Ende
+        const startDateTime = new Date(`${startDate}T${startTime}`);
+        const endDateTime = new Date(`${endDate}T${endTime}`);
+
+        // Validierung: Endzeit muss nach Startzeit sein
+        return endDateTime >= startDateTime;
+    }
+
+    // Fehlermeldung für ungültige Zeitangaben
+    function showTimeValidationError() {
+        const errorMessage = currentLang === 'de' 
+            ? 'Die Endzeit muss nach der Startzeit liegen!' 
+            : 'End time must be after start time!';
+            
+        // Füge die Fehlermeldung hinzu, wenn sie noch nicht existiert
+        if ($('#time-validation-error').length === 0) {
+            $('<div id="time-validation-error" class="alert alert-danger">' + errorMessage + '</div>')
+                .insertBefore('#forcal-submit-btn');
+        }
+    }
+
+    // Entfernen der Fehlermeldung
+    function removeTimeValidationError() {
+        $('#time-validation-error').remove();
+    }
+
+    // Validierungsprüfung bei Formularabsendung
+    $('#rex-page-forcal-entries form').on('submit', function(e) {
+        if (!validateDateTime()) {
+            e.preventDefault();
+            showTimeValidationError();
+            return false;
+        }
+        removeTimeValidationError();
+        return true;
     });
-}
 
-function forcal_datepicker_init(element) {
-    let checkinElement = $('#dpd1'),
-        checkoutElement = $('#dpd2'),
-        stopElement = $('#dpd2b'),
-        checkinClockElement = $('#tpd1').parent(),
-        checkoutClockElement = $('#tpd2').parent();
-
-    if (element.hasClass('lang_de')) {
-        moment.locale('de', {
-                months: "Januar,Februar,März,April,May,Juni,Juli,August,September,Oktober,November,Dezember".split(","),
-                monthsShort: "Jan_Feb_Mrz_Apr_May_Jun_Jul_Aug_Sep_Okt_Nov_Dez".split("_"),
-                weekdays: "Domingo,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado".split(","),
-                weekdaysShort: "dom._lun._mar._mie._jue._vie._sab.".split("_"),
-                weekdaysMin: "So_Mo_Di_Mi_Do_Fr_Sa".split("_")
-            }
-        );
-        var $applyLabel = "Anwenden",
-            $cancelLabel = "Abrechen",
-            $fromLabel = "Von",
-            $toLabel = "bis",
-            $endbefore = "Das Ende des Termins darf nicht vor dessen Begin liegen.";
-    } else {
-        var $applyLabel = "Apply",
-            $cancelLabel = "Cancel",
-            $fromLabel = "From",
-            $toLabel = "To",
-            $endbefore = "Das Ende des Termins darf nicht vor dessen Begin liegen.";
-    }
-
-    if (stopElement.length) {
-        stopElement.daterangepicker({
-            autoUpdateInput: true,
-            singleDatePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: "YYYY-MM-DD",
-                applyLabel: $applyLabel,
-                cancelLabel: $cancelLabel,
-                fromLabel: $fromLabel,
-                toLabel: $toLabel,
-                firstDay: 1,
-                direction: 'forcal',
-            }
-        });
-    }
-
-    if (checkinElement.length && checkoutElement.length) {
-        checkoutClockElement.data('reopend', false);
-        checkinElement.daterangepicker({
-            autoUpdateInput: false,
-            locale: {
-                format: "YYYY-MM-DD",
-                applyLabel: $applyLabel,
-                cancelLabel: $cancelLabel,
-                fromLabel: $fromLabel,
-                toLabel: $toLabel,
-                firstDay: 1,
-                direction: 'forcal',
-            }
-        });
-        if (element.data('only-checkin-range') != 1) {
-            checkoutElement.daterangepicker({
-                autoUpdateInput: false,
-                locale: {
-                    format: "YYYY-MM-DD",
-                    applyLabel: $applyLabel,
-                    cancelLabel: $cancelLabel,
-                    fromLabel: $fromLabel,
-                    toLabel: $toLabel,
-                    firstDay: 1,
-                    direction: 'forcal',
-                }
-            });
-        }
-        if (checkinElement.val() != '') {
-            checkinElement.data('daterangepicker').setStartDate(checkinElement.val());
-            if (element.data('only-checkin-range') != 1) {
-                checkoutElement.data('daterangepicker').setStartDate(checkinElement.val());
-
-            }
-        }
-        if (checkoutElement.val() != '') {
-            checkinElement.data('daterangepicker').setEndDate(checkoutElement.val());
-            if (element.data('only-checkin-range') != 1) {
-                checkoutElement.data('daterangepicker').setEndDate(checkoutElement.val());
-            }
-        }
-
-        checkinClockElement.clockpicker({
-            donetext: $applyLabel,
-            afterDone: function () {
-                if (checkinElement.val() == '') {
-                    checkinElement.val(element.data('today'));
-                }
-                if (checkoutElement.val() == '') {
-                    checkoutElement.val(element.data('today'));
-                }
-
-                checkinClockElement.find('input').val(checkinClockElement.find('input').val() + ':00');
-
-                if (checkinElement.val() == checkoutElement.val()) {
-                    if (checkoutClockElement.find('input').val() == '') {
-                        checkoutClockElement.find('input').val('00:00:00');
+    // Datum-Picker für Start- und Enddatum
+    let startPicker, endPicker, timepicker1, timepicker2;
+    
+    if (dpd1.length && dpd2.length) {
+        // Startdatum-Picker
+        startPicker = flatpickr(dpd1[0], {
+            dateFormat: "Y-m-d",
+            locale: localeToUse,
+            allowInput: true,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Entferne Validierungsfehler bei Änderungen
+                removeTimeValidationError();
+                
+                // Stellen Sie sicher, dass das Enddatum nicht vor dem Startdatum liegt
+                if (selectedDates[0]) {
+                    endPicker.set('minDate', selectedDates[0]);
+                    
+                    // Wenn das Enddatum vor dem neuen Startdatum liegt, setze es auf das Startdatum
+                    if (endPicker.selectedDates[0] && selectedDates[0] > endPicker.selectedDates[0]) {
+                        endPicker.setDate(selectedDates[0]);
                     }
-
-                    var startDate = new Date(checkinElement.val() + 'T' + checkinClockElement.find('input').val());
-                    var endDate = new Date(checkoutElement.val() + 'T' + checkoutClockElement.find('input').val());
-
-                    if (startDate.getTime() > endDate.getTime()) {
-                        checkoutClockElement.find('input').val(checkinClockElement.find('input').val());
+                    
+                    // Validiere die Zeiten, wenn Start- und Enddatum gleich sind
+                    if (dpd2.val() === dateStr) {
+                        validateAndUpdateTimes();
                     }
                 }
-
-                window.setTimeout(function () {
-                    if (checkoutClockElement.data('reopend') === false || startDate.getTime() == endDate.getTime()) {
-                        checkoutClockElement.clockpicker('show');
-                    } else {
-                        checkoutClockElement.data('reopend', false);
-                    }
-                }, 1);
             }
         });
 
-        checkoutClockElement.clockpicker({
-            donetext: $applyLabel,
-            afterDone: function () {
-                if (checkinElement.val() == '') {
-                    checkinElement.val(element.data('today'));
-                }
-                if (checkoutElement.val() == '') {
-                    checkoutElement.val(element.data('today'));
-                }
-
-                checkoutClockElement.find('input').val(checkoutClockElement.find('input').val() + ':00');
-
-                if (checkinElement.val() == checkoutElement.val()) {
-                    if (checkinClockElement.find('input').val() == '') {
-                        checkinClockElement.find('input').val('00:00:00');
-
-                        window.setTimeout(function () {
-                            checkoutClockElement.data('reopend', true);
-                            checkinClockElement.clockpicker('show');
-                        }, 1);
-                    }
-                }
-
-                startDate = new Date(checkinElement.val() + 'T' + checkinClockElement.find('input').val());
-                endDate = new Date(checkoutElement.val() + 'T' + checkoutClockElement.find('input').val());
-
-                if (startDate.getTime() > endDate.getTime()) {
-                    checkoutClockElement.find('input').val(checkinClockElement.find('input').val());
-                    alert($endbefore);
+        // Enddatum-Picker
+        endPicker = flatpickr(dpd2[0], {
+            dateFormat: "Y-m-d",
+            locale: localeToUse,
+            allowInput: true,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Entferne Validierungsfehler bei Änderungen
+                removeTimeValidationError();
+                
+                // Wenn Start- und Enddatum gleich sind, validiere die Zeiten
+                if (dpd1.val() === dateStr) {
+                    validateAndUpdateTimes();
                 }
             }
         });
 
-        checkinElement.parent().parent().parent().parent().find('.input-group-addon.forcal-date-input').unbind().bind('click', function () {
-            checkinElement.focus();
-        });
-        stopElement.parent().parent().parent().parent().find('.input-group-addon.forcal-date-input').unbind().bind('click', function () {
-            stopElement.focus();
-        });
-        checkoutElement.parent().parent().parent().parent().find('.input-group-addon.forcal-date-input').unbind().bind('click', function () {
-            if (element.data('only-checkin-range') == 1) {
-                checkinElement.focus();
-            } else {
-                checkoutElement.focus();
-            }
-        });
-        if (element.data('only-checkin-range') == 1) {
-            checkoutElement.unbind().bind('click', function () {
-                checkinElement.focus();
-            });
-        } else {
-            checkoutElement.on('apply.daterangepicker', function (ev, picker) {
-                daterangepick(element, checkinElement, checkoutElement, checkinClockElement, checkoutClockElement, picker, $endbefore);
-            });
+        // Initialisierung der aktuellen Werte
+        if (dpd1.val()) {
+            startPicker.setDate(dpd1.val());
         }
-        checkinElement.on('apply.daterangepicker', function (ev, picker) {
-            daterangepick(element, checkinElement, checkoutElement, checkinClockElement, checkoutClockElement, picker, $endbefore);
-        });
-    }
-}
-
-function daterangepick(element, checkinElement, checkoutElement, checkinClockElement, checkoutClockElement, picker, $endbefore) {
-    if (checkinClockElement.find('input').val() == '') {
-        checkinClockElement.find('input').val('00:00:00');
-    }
-    if (checkoutClockElement.find('input').val() == '') {
-        checkoutClockElement.find('input').val('00:00:00');
-    }
-
-    let startDate = new Date(picker.startDate.format('YYYY-MM-DD') + 'T' + checkinClockElement.find('input').val()),
-        endDate = new Date(picker.endDate.format('YYYY-MM-DD') + 'T' + checkoutClockElement.find('input').val());
-
-    if (startDate.getTime() > endDate.getTime()) {
-        alert($endbefore);
-    } else {
-
-        checkinElement.val(picker.startDate.format('YYYY-MM-DD'));
-        checkoutElement.val(picker.endDate.format('YYYY-MM-DD'));
-
-        if (element.data('only-checkin-range') != 1) {
-            checkoutElement.data('daterangepicker').setStartDate(picker.startDate.format('YYYY-MM-DD'));
-            checkoutElement.data('daterangepicker').setEndDate(picker.endDate.format('YYYY-MM-DD'));
-            checkinElement.data('daterangepicker').setStartDate(picker.startDate.format('YYYY-MM-DD'));
-            checkinElement.data('daterangepicker').setEndDate(picker.endDate.format('YYYY-MM-DD'));
+        
+        if (dpd2.val()) {
+            endPicker.setDate(dpd2.val());
         }
     }
+
+    // Datum-Picker für Wiederholungs-Enddatum
+    if (dpd2b.length) {
+        flatpickr(dpd2b[0], {
+            dateFormat: "Y-m-d",
+            locale: localeToUse,
+            allowInput: true
+        });
+    }
+
+    // Funktion zur Validierung und Aktualisierung der Zeiten
+    function validateAndUpdateTimes() {
+        const fullTimeChecked = $('.forcal_fulltime_master_check').is(':checked');
+        if (fullTimeChecked) {
+            // Bei ganztägigen Terminen nichts tun
+            return;
+        }
+
+        const startTime = tpd1.val();
+        const endTime = tpd2.val();
+        
+        // Wenn eines der Felder leer ist, können wir nicht validieren
+        if (!startTime || !endTime) {
+            return;
+        }
+        
+        // Vergleichen der Zeiten, wenn Start- und Enddatum identisch sind
+        if (dpd1.val() === dpd2.val() && startTime >= endTime) {
+            // Berechne eine neue Endzeit (eine Stunde nach Startzeit)
+            const startTimeParts = startTime.split(':');
+            let newHour = parseInt(startTimeParts[0]) + 1;
+            if (newHour >= 24) {
+                newHour = 23;
+                startTimeParts[1] = "59";
+            }
+            const newEndTime = `${newHour.toString().padStart(2, '0')}:${startTimeParts[1]}:${startTimeParts[2] || '00'}`;
+            
+            // Setze die neue Endzeit
+            if (timepicker2) {
+                timepicker2.setDate(newEndTime);
+            }
+        }
+    }
+
+    // Zeit-Picker für Startzeit
+    if (tpd1.length) {
+        timepicker1 = flatpickr(tpd1[0], {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i:S",
+            time_24hr: true,
+            locale: localeToUse,
+            allowInput: true,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Entferne Validierungsfehler bei Änderungen
+                removeTimeValidationError();
+                
+                // Überprüfen ob Start- und Enddatum identisch sind
+                if (dpd1.val() === dpd2.val()) {
+                    validateAndUpdateTimes();
+                }
+            }
+        });
+    }
+
+    // Zeit-Picker für Endzeit
+    if (tpd2.length) {
+        timepicker2 = flatpickr(tpd2[0], {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i:S",
+            time_24hr: true,
+            locale: localeToUse,
+            allowInput: true,
+            onChange: function(selectedDates, dateStr, instance) {
+                // Entferne Validierungsfehler bei Änderungen
+                removeTimeValidationError();
+                
+                // Validiere die Zeitangaben bei manueller Eingabe
+                if (dpd1.val() === dpd2.val()) {
+                    const startTime = tpd1.val();
+                    if (startTime && dateStr && startTime >= dateStr) {
+                        // Entferne den Fokus, um die onBlur-Validierung anzustoßen
+                        setTimeout(() => {
+                            validateAndUpdateTimes();
+                        }, 100);
+                    }
+                }
+            }
+        });
+    }
+
+    // Bindet die Datepicker-Trigger an
+    $('.forcal-date-input').off('click').on('click', function() {
+        // Findet das nächste Input-Feld und triggert den Flatpickr
+        const inputField = $(this).closest('.input-group').find('input');
+        if (inputField.length) {
+            inputField[0]._flatpickr.open();
+        }
+    });
+
+    // Bindet die Timepicker-Trigger an
+    $('.forcal-time-input').off('click').on('click', function() {
+        // Findet das nächste Input-Feld und triggert den Flatpickr
+        const inputField = $(this).closest('.input-group').find('input');
+        if (inputField.length) {
+            inputField[0]._flatpickr.open();
+        }
+    });
+    
+    // Event-Handler für den ganztägigen Events-Checker
+    $('.forcal_fulltime_master_check').on('change', function() {
+        // Entferne Validierungsfehler bei Änderungen
+        removeTimeValidationError();
+    });
 }
 
 function forcal_colorpalette_init() {

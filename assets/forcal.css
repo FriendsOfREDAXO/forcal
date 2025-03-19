@@ -534,7 +534,6 @@ div.forcal-form-checkboxes-inline dl + dl {
 	border-left: 5px solid;
 }
 
-
 /* Safari-spezifische Fixes für flatpickr */
 .flatpickr-monthDropdown-months {
     -webkit-appearance: none !important;

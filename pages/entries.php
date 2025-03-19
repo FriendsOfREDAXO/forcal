@@ -433,7 +433,7 @@ if ($func == '' || $func == 'filter') {
 			  </div>
             </td>
             <td class="date-input forcalclock">
-              <div class="input-group forcal-group clockpicker" id="tpd1_wrapper">
+              <div class="input-group forcal-group" id="tpd1_wrapper">
                 <div class="input-group-addon forcal-time-input"><i class="glyphicon glyphicon-time"></i></div>
 			  </div>
             </td>
@@ -455,7 +455,7 @@ if ($func == '' || $func == 'filter') {
 			  </div>
             </td>
             <td class="date-input forcalclock">
-              <div class="input-group forcal-group clockpicker" id="tpd2_wrapper">
+              <div class="input-group forcal-group" id="tpd2_wrapper">
                 <div class="input-group-addon forcal-time-input"><i class="glyphicon glyphicon-time"></i></div>
 			  </div>
             </td>
@@ -706,6 +706,9 @@ if ($func == '' || $func == 'filter') {
     $field->setLabel(rex_i18n::msg('forcal_entry_status'));
     $field->setAttribute('style', 'width:200px');
     $field->setAttribute('class', 'forcal_status_select selectpicker form-control');
+    
+    // Fügt eine versteckte ID für den Submit-Button hinzu, um ihn für die Validierung zu identifizieren
+    $form->addRawField('<div id="forcal-submit-btn"></div>');
 
     $tempform = $form->get();
     // Verwenden von libxml um temporär Fehler zu unterdrücken
