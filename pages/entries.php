@@ -433,7 +433,7 @@ if ($func == '' || $func == 'filter') {
 			  </div>
             </td>
             <td class="date-input forcalclock">
-              <div class="input-group forcal-group clockpicker" id="tpd1_wrapper">
+              <div class="input-group forcal-group" id="tpd1_wrapper">
                 <div class="input-group-addon forcal-time-input"><i class="glyphicon glyphicon-time"></i></div>
 			  </div>
             </td>
@@ -455,7 +455,7 @@ if ($func == '' || $func == 'filter') {
 			  </div>
             </td>
             <td class="date-input forcalclock">
-              <div class="input-group forcal-group clockpicker" id="tpd2_wrapper">
+              <div class="input-group forcal-group" id="tpd2_wrapper">
                 <div class="input-group-addon forcal-time-input"><i class="glyphicon glyphicon-time"></i></div>
 			  </div>
             </td>
