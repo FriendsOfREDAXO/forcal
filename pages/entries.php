@@ -706,6 +706,9 @@ if ($func == '' || $func == 'filter') {
     $field->setLabel(rex_i18n::msg('forcal_entry_status'));
     $field->setAttribute('style', 'width:200px');
     $field->setAttribute('class', 'forcal_status_select selectpicker form-control');
+    
+    // Fügt eine versteckte ID für den Submit-Button hinzu, um ihn für die Validierung zu identifizieren
+    $form->addRawField('<div id="forcal-submit-btn"></div>');
 
     $tempform = $form->get();
     // Verwenden von libxml um temporär Fehler zu unterdrücken
