@@ -32,30 +32,38 @@ $upcoming_events = forCalEventsFactory::create()
     ->to('+7 days')
     ->get();
 
-// Zuletzt hinzugefügte Termine (max. 10)
+// Zuletzt hinzugefügte Termine
+// Statt 'all' zu verwenden, nehmen wir einen deutlich zurückliegenden Zeitpunkt
 $latest_events = forCalEventsFactory::create()
-    ->from('all')
-    ->sortBy('id', 'desc')
+    ->from('-10 years')  // Weit in der Vergangenheit starten
+    ->sortBy('id', 'desc')  // Nach ID absteigend sortieren (neueste zuerst)
     ->get();
-$latest_events = array_slice($latest_events, 0, 10);
+$latest_events = array_slice($latest_events, 0, 10);  // Nur die ersten 10 nehmen
+
+// Gesamtzahl aller Termine ermitteln
+// Statt 'all' zu verwenden, Zeitraum sehr groß wählen
+$total_events_query = rex_sql::factory();
+$total_events_query->setQuery('SELECT COUNT(*) as total FROM ' . rex::getTablePrefix() . 'forcal_entries');
+$total_events = $total_events_query->getValue('total');
+
+// Zukünftige Termine zählen
+$total_future_events = count(forCalEventsFactory::create()
+    ->from('today')
+    ->get());
 
 // Kategorien abrufen
 $sql = rex_sql::factory();
 $categories = $sql->getArray('SELECT id, name_' . rex_clang::getCurrentId() . ' as name, color FROM ' . rex::getTable('forcal_categories') . ' WHERE status = 1');
 
-// Statistiken berechnen
-$total_events = count(forCalEventsFactory::create()->from('all')->get());
-$total_future_events = count(forCalEventsFactory::create()->from('today')->get());
-
 // Das Dashboard-Layout ausgeben
-echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
+echo rex_view::title(rex_i18n::msg('forcal_title') . ' - Dashboard');
 ?>
 
 <div class="row">
     <!-- Quick Actions -->
     <div class="col-md-12 mb-3">
         <div class="panel panel-default">
-            <div class="panel-heading"><i class="fa fa-bolt"></i> <?= rex_i18n::msg('forcal_quick_actions') ?></div>
+            <div class="panel-heading"><i class="fa fa-bolt"></i> Schnellzugriff</div>
             <div class="panel-body">
                 <a href="<?= rex_url::backendPage('forcal/entries', ['func' => 'add']) ?>" class="btn btn-primary">
                     <i class="fa fa-plus"></i> <?= rex_i18n::msg('forcal_add_entry') ?>
@@ -81,24 +89,24 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
     <!-- Statistics -->
     <div class="col-md-4">
         <div class="panel panel-default">
-            <div class="panel-heading"><i class="fa fa-chart-bar"></i> <?= rex_i18n::msg('forcal_statistics') ?></div>
+            <div class="panel-heading"><i class="fa fa-chart-bar"></i> Statistik</div>
             <div class="panel-body">
                 <div class="list-group">
                     <div class="list-group-item">
                         <span class="badge"><?= $total_events ?></span>
-                        <?= rex_i18n::msg('forcal_total_events') ?>
+                        Termine gesamt
                     </div>
                     <div class="list-group-item">
                         <span class="badge"><?= $total_future_events ?></span>
-                        <?= rex_i18n::msg('forcal_future_events') ?>
+                        Zukünftige Termine
                     </div>
                     <div class="list-group-item">
                         <span class="badge"><?= count($today_events) ?></span>
-                        <?= rex_i18n::msg('forcal_today_events') ?>
+                        Termine heute
                     </div>
                     <div class="list-group-item">
                         <span class="badge"><?= count($categories) ?></span>
-                        <?= rex_i18n::msg('forcal_total_categories') ?>
+                        Kategorien
                     </div>
                 </div>
             </div>
@@ -108,7 +116,7 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
     <!-- Today's Events -->
     <div class="col-md-8">
         <div class="panel panel-default">
-            <div class="panel-heading"><i class="fa fa-calendar-day"></i> <?= rex_i18n::msg('forcal_todays_events') ?></div>
+            <div class="panel-heading"><i class="fa fa-calendar-day"></i> Heutige Termine</div>
             <div class="panel-body">
                 <?php if (count($today_events) > 0): ?>
                     <div class="table-responsive">
@@ -116,7 +124,7 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                             <thead>
                                 <tr>
                                     <th><?= rex_i18n::msg('forcal_entry_name') ?></th>
-                                    <th><?= rex_i18n::msg('forcal_time') ?></th>
+                                    <th>Uhrzeit</th>
                                     <th><?= rex_i18n::msg('forcal_category') ?></th>
                                     <th></th>
                                 </tr>
@@ -126,16 +134,18 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                                 <tr>
                                     <td><?= $event['title'] ?></td>
                                     <td>
-                                        <?php if ($event['date_time']['full_time']): ?>
-                                            <span class="label label-default"><?= rex_i18n::msg('forcal_all_day') ?></span>
-                                        <?php else: ?>
+                                        <?php if (isset($event['date_time']['full_time']) && $event['date_time']['full_time']): ?>
+                                            <span class="label label-default">Ganztägig</span>
+                                        <?php elseif (isset($event['date_time']['time'])): ?>
                                             <?= $event['date_time']['time'] ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
+                                        <?php if (isset($event['color']) && isset($event['category_name'])): ?>
                                         <span class="label" style="background-color: <?= $event['color'] ?>">
                                             <?= $event['category_name'] ?>
                                         </span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <a href="<?= rex_url::backendPage('forcal/entries', ['func' => 'edit', 'id' => $event['id']]) ?>" 
@@ -150,7 +160,7 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                     </div>
                 <?php else: ?>
                     <div class="alert alert-info">
-                        <?= rex_i18n::msg('forcal_no_events_today') ?>
+                        Keine Termine für heute
                     </div>
                 <?php endif; ?>
             </div>
@@ -162,7 +172,7 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
     <!-- Upcoming Events -->
     <div class="col-md-6">
         <div class="panel panel-default">
-            <div class="panel-heading"><i class="fa fa-calendar-week"></i> <?= rex_i18n::msg('forcal_upcoming_events') ?></div>
+            <div class="panel-heading"><i class="fa fa-calendar-week"></i> Kommende Termine</div>
             <div class="panel-body">
                 <?php if (count($upcoming_events) > 0): ?>
                     <div class="list-group">
@@ -171,13 +181,21 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                                class="list-group-item">
                                 <h4 class="list-group-item-heading">
                                     <?= $event['title'] ?>
+                                    <?php if (isset($event['color']) && isset($event['category_name'])): ?>
                                     <span class="label" style="background-color: <?= $event['color'] ?>">
                                         <?= $event['category_name'] ?>
                                     </span>
+                                    <?php endif; ?>
                                 </h4>
                                 <p class="list-group-item-text">
+                                    <?php if (isset($event['date_time']['date'])): ?>
                                     <i class="fa fa-calendar-alt"></i> <?= $event['date_time']['date'] ?>
-                                    <?php if (!$event['date_time']['full_time']): ?>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (isset($event['date_time']) && 
+                                              isset($event['date_time']['full_time']) && 
+                                              !$event['date_time']['full_time'] && 
+                                              isset($event['date_time']['time'])): ?>
                                         <i class="fa fa-clock ml-2"></i> <?= $event['date_time']['time'] ?>
                                     <?php endif; ?>
                                 </p>
@@ -186,7 +204,7 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                     </div>
                 <?php else: ?>
                     <div class="alert alert-info">
-                        <?= rex_i18n::msg('forcal_no_upcoming_events') ?>
+                        Keine kommenden Termine
                     </div>
                 <?php endif; ?>
             </div>
@@ -196,7 +214,7 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
     <!-- Latest Events -->
     <div class="col-md-6">
         <div class="panel panel-default">
-            <div class="panel-heading"><i class="fa fa-history"></i> <?= rex_i18n::msg('forcal_latest_events') ?></div>
+            <div class="panel-heading"><i class="fa fa-history"></i> Neueste Termine</div>
             <div class="panel-body">
                 <?php if (count($latest_events) > 0): ?>
                     <div class="list-group">
@@ -205,19 +223,23 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                                class="list-group-item">
                                 <h4 class="list-group-item-heading">
                                     <?= $event['title'] ?>
+                                    <?php if (isset($event['color']) && isset($event['category_name'])): ?>
                                     <span class="label" style="background-color: <?= $event['color'] ?>">
                                         <?= $event['category_name'] ?>
                                     </span>
+                                    <?php endif; ?>
                                 </h4>
                                 <p class="list-group-item-text">
+                                    <?php if (isset($event['date_time']['date'])): ?>
                                     <i class="fa fa-calendar-alt"></i> <?= $event['date_time']['date'] ?>
+                                    <?php endif; ?>
                                 </p>
                             </a>
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
                     <div class="alert alert-info">
-                        <?= rex_i18n::msg('forcal_no_events') ?>
+                        Keine Termine vorhanden
                     </div>
                 <?php endif; ?>
             </div>
@@ -240,6 +262,7 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                                 </div>
                                 <div class="panel-body">
                                     <?php
+                                        // Zähle Termine in dieser Kategorie ab heute
                                         $category_events = forCalEventsFactory::create()
                                             ->from('today')
                                             ->inCategories($category['id'])
@@ -247,11 +270,11 @@ echo rex_view::title(rex_i18n::msg('forcal_dashboard'));
                                     ?>
                                     <p>
                                         <strong><?= count($category_events) ?></strong> 
-                                        <?= rex_i18n::msg('forcal_upcoming_events') ?>
+                                        kommende Termine
                                     </p>
                                     <a href="<?= rex_url::backendPage('forcal/entries', ['category_filter' => $category['id']]) ?>" 
                                        class="btn btn-default btn-sm">
-                                        <i class="fa fa-list"></i> <?= rex_i18n::msg('forcal_show_events') ?>
+                                        <i class="fa fa-list"></i> Termine anzeigen
                                     </a>
                                 </div>
                             </div>
