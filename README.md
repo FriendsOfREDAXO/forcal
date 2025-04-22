@@ -1,67 +1,5 @@
 # ForCal - Calendar AddOn für REDAXO CMS
 
-## Installation und Aktualisierung
-
-### Normale Installation
-
-Das Addon wie gewohnt über den Installer installieren.
-
-### Entwicklungs-Setup
-
-Für die Entwicklung werden Node.js und npm benötigt:
-
-```bash
-# Im Addon-Verzeichnis
-cd redaxo/src/addons/forcal
-
-# Node-Abhängigkeiten installieren
-npm install
-
-# Build-Prozess ausführen
-npm run build
-```
-
-### Build-Optionen
-
-Das Addon bietet verschiedene Build-Optionen:
-
-```bash
-# Vollständiger Build (FullCalendar kopieren + SCSS kompilieren)
-npm run build
-
-# Nur FullCalendar aktualisieren
-npm run copy-fullcalendar
-
-# Nur SCSS kompilieren
-npm run scss-compile
-
-# SCSS im Watch-Modus bearbeiten
-npm run watch
-# oder
-npm run dev
-
-# Production Build (identisch mit npm run build)
-npm run prod
-```
-
-### Aktualisierung des FullCalendar
-
-Der FullCalendar wird jetzt mit npm verwaltet. Um auf eine neuere Version zu aktualisieren:
-
-```bash
-# Im Addon-Verzeichnis
-cd redaxo/src/addons/forcal
-
-# FullCalendar aktualisieren
-npm update fullcalendar
-
-# Oder auf bestimmte Version aktualisieren
-# npm install fullcalendar@X.X.X
-
-# Build-Prozess ausführen, um die aktualisierten Dateien zu kopieren
-npm run build
-```
-
 ## Features
 
 - Kalenderansicht
@@ -842,6 +780,26 @@ echo '<a href="'.$link->yahoo().'">Yahoo</a><br>';
 echo '<a href="'.$link->webOutlook().'">Outlook</a><br>';
 echo '<a href="'.$link->ics().'">ICS</a>';
 ```
+
+
+## Aktualisierung des FullCalendar
+
+Der FullCalendar wird mit npm verwaltet. Um auf eine neuere Version zu aktualisieren:
+
+```bash
+# Im Addon-Verzeichnis
+cd redaxo/src/addons/forcal
+
+# FullCalendar aktualisieren
+npm update fullcalendar
+
+# Oder auf bestimmte Version aktualisieren
+# npm install fullcalendar@X.X.X
+
+# Build-Prozess ausführen, um die aktualisierten Dateien zu kopieren
+npm run build
+```
+
 
 ## Bugtracker
 
