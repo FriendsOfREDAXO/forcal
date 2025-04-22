@@ -63,28 +63,23 @@ if (rex::isBackend() && rex::getUser()) {
     forCalDatabaseManager::executeCustomFieldHandle();
     rex_view::setJsProperty('forcal_events_api_url', rex_url::backendController(['rex-api-call' => 'forcal_exchange', '_csrf_token' => \forCal\Handler\forCalApi::getToken()]));
     
-    // add js
-    rex_view::addJSFile($this->getAssetsUrl('vendor/palettecolorpicker/palette-color-picker.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/interaction/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/daygrid/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/timegrid/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/list/main.js'));
-    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/locales-all.js'));
+    // add js - FullCalendar aus npm - korrigierte Pfade
+    rex_view::addJSFile($this->getAssetsUrl('forcal-colorpicker.js')); // Neuer ColorPicker ohne jQuery-Abhängigkeit
+    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar-6.x/core/index.global.min.js')); // Core
+    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar-6.x/core/locales-all.global.min.js')); // Locales
+    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar-6.x/interaction/index.global.min.js'));
+    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar-6.x/daygrid/index.global.min.js'));
+    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar-6.x/timegrid/index.global.min.js'));
+    rex_view::addJSFile($this->getAssetsUrl('vendor/fullcalendar-6.x/list/index.global.min.js'));
     
-     rex_view::addJSFile($this->getAssetsUrl('forcal.js'));
+    rex_view::addJSFile($this->getAssetsUrl('forcal.js'));
 
-    // add css
-    rex_view::addCssFile($this->getAssetsUrl('vendor/palettecolorpicker/palette-color-picker.css'));
-    rex_view::addCssFile($this->getAssetsUrl('vendor/fullcalendar/packages/core/main.css'));
-    rex_view::addCssFile($this->getAssetsUrl('vendor/fullcalendar/packages/daygrid/main.css'));
-    rex_view::addCssFile($this->getAssetsUrl('vendor/fullcalendar/packages/timegrid/main.css'));
-    rex_view::addCssFile($this->getAssetsUrl('vendor/fullcalendar/packages/list/main.css'));
+    // add css - FullCalendar 6.x CSS ist in den JS-Dateien enthalten
+    rex_view::addCssFile($this->getAssetsUrl('forcal-colorpicker.css')); // CSS für den neuen ColorPicker
+    // Bootstrap 3 Kompatibilität
+    rex_view::addCssFile($this->getAssetsUrl('fc-bootstrap3-compat.css')); 
     rex_view::addCssFile($this->getAssetsUrl('forcal.css'));
-
-    if(rex_string::versionCompare(rex::getVersion(), '5.13.0-dev', '>=')) {
-        rex_view::addCssFile($this->getAssetsUrl('forcal-dark.css'));
-    }
+    rex_view::addCssFile($this->getAssetsUrl('forcal-dark.css'));
 
     // Register clang added event
     rex_extension::register('CLANG_ADDED', function () {

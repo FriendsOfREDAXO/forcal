@@ -1,6 +1,6 @@
 body.modal-open {
-    overflow: visible;
-    /*height: auto;*/
+  overflow: visible;
+  /*height: auto;*/
 }
 
 .panel-default.calendarview {
@@ -8,335 +8,335 @@ body.modal-open {
 }
 
 .panel-default.calendarview .panel-body .fc-center h2 {
-    font-size: 22px;
-    font-weight: bold;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .fc-toolbar {
-    background-color: #f3f6fb;
-    margin: -15px -15px 15px -15px;
-    padding: 20px 15px 15px 15px;
+  background-color: #f3f6fb;
+  margin: -15px -15px 15px -15px;
+  padding: 20px 15px 15px 15px;
 }
 
 .fc-day-header .fa-plus-circle.add,
 .fc-day-top .fa-plus-circle.add {
-    color: #949e97;
-    cursor: pointer;
-    font-size: 20px;
-    line-height: 20px;
-    padding: 2px 8px 2px 4px;
-    opacity: 0.4;
-    z-index: 5;
-    -moz-transition-property: all;
-    -o-transition-property: all;
-    -webkit-transition-property: all;
-    transition-property: all;
-    -moz-transition-duration: 0.3s;
-    -o-transition-duration: 0.3s;
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
-    -moz-transition-timing-function: ease-in-out;
-    -o-transition-timing-function: ease-in-out;
-    -webkit-transition-timing-function: ease-in-out;
-    transition-timing-function: ease-in-out
+  color: #949e97;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 20px;
+  padding: 2px 8px 2px 4px;
+  opacity: 0.4;
+  z-index: 5;
+  -moz-transition-property: all;
+  -o-transition-property: all;
+  -webkit-transition-property: all;
+  transition-property: all;
+  -moz-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out
 }
 
 .fc-day-header .fa-plus-circle.add,
 .fc-day-top .fa-plus-circle.add {
-    font-size: 20px;
-    line-height: 20px;
-    padding: 2px 8px 2px 4px;
+  font-size: 20px;
+  line-height: 20px;
+  padding: 2px 8px 2px 4px;
 }
 
 .fc-day-top:hover .fa-plus-circle.add,
 .fc-day-top .fa-plus-circle.add:hover {
-    color: #008803;
-    opacity: 1;
+  color: #008803;
+  opacity: 1;
 }
 
 #forcal .fc-day-header {
-    position: relative;
+  position: relative;
 }
 
 #forcal .fc-day-header i.add {
-    position: absolute;
-    left: 0;
-    top: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 #forcal .fc-day-header i.add:hover {
-    color: #00e504;
-    opacity: 1;
+  color: #00e504;
+  opacity: 1;
 }
 
 #forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
 #forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover {
-    color: #004f01;
+  color: #004f01;
 }
 
 .fc-event-container a,
 .fc-day-top:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .fc-content-skeleton > table {
-    background: inherit;
+  background: inherit;
 }
 
 .fc-day-header {
-    background-color: #324050;
-    color: #fff;
+  background-color: #324050;
+  color: #fff;
 }
 
 #forcal .fc-day-header {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .fc-day-header.fc-sat {
-    background-color: #ffab91
+  background-color: #ffab91
 }
 
 .fc-day-header.fc-sun {
-    background-color: #ef9a9a
+  background-color: #ef9a9a
 }
 
 .fc-day-top.fc-sat .fc-day-number {
-    color: #ffab91
+  color: #ffab91
 }
 
 .fc-day-top.fc-sun .fc-day-number {
-    color: #ef9a9a
+  color: #ef9a9a
 }
 
 .forcal-group {
-    width: 100%;
+  width: 100%;
 }
 
 .forcal_clangtabs {
-    margin-left: -15px;
-    margin-right: -15px;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 .forcal_clangtabs .nav {
-    padding-left: 5px;
-    border-bottom: 1px solid #bfe0d8;
+  padding-left: 5px;
+  border-bottom: 1px solid #bfe0d8;
 }
 
 .forcal-tabform {
-    padding: 20px 15px 5px 15px;
-    margin-bottom: 10px;
-    background-color: #f1fcfa;
-    border-bottom: 1px solid #bfe0d8;
+  padding: 20px 15px 5px 15px;
+  margin-bottom: 10px;
+  background-color: #f1fcfa;
+  border-bottom: 1px solid #bfe0d8;
 }
 
 .forcal_clangtabs .nav-tabs > li.active > a,
 .forcal_clangtabs .nav-tabs > li.active > a:hover,
 .forcal_clangtabs .nav-tabs > li.active > a:focus {
-    color: #333;
-    background-color: #f1fcfa;
-    border-color: #bfe0d8;
-    border-top: 2px solid #3bb594;
-    border-bottom: 1px solid #f1fcfa;
-    border-radius: 4px 4px 0 0;
+  color: #333;
+  background-color: #f1fcfa;
+  border-color: #bfe0d8;
+  border-top: 2px solid #3bb594;
+  border-bottom: 1px solid #f1fcfa;
+  border-radius: 4px 4px 0 0;
 }
 
 .forcal_clangtabs .nav-tabs > li > a {
-    color: #333;
-    background-color: #e6eaf0;
-    border-color: #f1f6fc;
-    border-radius: 4px 4px 0 0;
+  color: #333;
+  background-color: #e6eaf0;
+  border-color: #f1f6fc;
+  border-radius: 4px 4px 0 0;
 }
 
 .forcal_clangtabs .nav-tabs > li > a:hover {
-    color: #fff;
-    background-color: #3bb594;
-    border-color: #3bb594;
+  color: #fff;
+  background-color: #3bb594;
+  border-color: #3bb594;
 }
 
 .forcal_clangtabs .nav.nav-tabs {
-    background-color: #e1ebe5;
-    padding-top: 12px;
-    /*margin-top: -15px;*/
+  background-color: #e1ebe5;
+  padding-top: 12px;
+  /*margin-top: -15px;*/
 }
 
 dl + .forcal_clangtabs .nav.nav-tabs,
 .forcal-first-group + .forcal_clangtabs .nav.nav-tabs {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .forcal-first-group .form-group-np {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .forcal-first-group {
-    margin-left: -15px;
-    margin-right: -15px;
-    padding: 15px;
-    margin-top: -15px;
-    background: #8ad6bb;
-    color: #fff;
+  margin-left: -15px;
+  margin-right: -15px;
+  padding: 15px;
+  margin-top: -15px;
+  background: #8ad6bb;
+  color: #fff;
 }
 
 /*    overflow-x: hidden;
-    white-space: nowrap;
+  white-space: nowrap;
 */
 
 .forcal-first-group + dl {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .panel-group.forcal-panel + .panel-group.forcal-panel {
-    margin-top: -15px;
+  margin-top: -15px;
 }
 
 .forcal-panel .panel-collapse.collapsing .panel-body,
 .forcal-panel .panel-collapse.collapse .panel-body,
 .forcal-tabform .forcal-panel .panel-collapse.collapse .panel-body {
-    border-color: transparent;
+  border-color: transparent;
 }
 
 .forcal-panel .panel-default {
-    border-color: #d0d4d9;
+  border-color: #d0d4d9;
 }
 
 .forcal-panel .panel-default .panel-body {
-    background-color: #e1ebe5;
+  background-color: #e1ebe5;
 }
 
 .forcal-panel .panel-default > .panel-heading {
-    background-color: #e1ebe5;
+  background-color: #e1ebe5;
 }
 
 .forcal-tabform .forcal-panel .panel-default {
-    border-color: #dfe3e9;
+  border-color: #dfe3e9;
 }
 
 .forcal-tabform .forcal-panel .panel-default .panel-body {
-    background-color: #fefcff;
+  background-color: #fefcff;
 }
 
 .forcal-tabform .forcal-panel .panel-default > .panel-heading {
-    background-color: #fefcff;
+  background-color: #fefcff;
 }
 
 .forcal-panel .panel-heading a:after {
-    font-family: 'Glyphicons Halflings';
-    content: "\2212";
-    float: right;
-    color: grey;
+  font-family: 'Glyphicons Halflings';
+  content: "\2212";
+  float: right;
+  color: grey;
 }
 
 .forcal-panel .panel-heading a.collapsed:after {
-    content: "\002b";
+  content: "\002b";
 }
 
 .forcaldatepicker.forcal .form-control {
-    /*border-radius: 4px;*/
+  /*border-radius: 4px;*/
 }
 
 div.daterangepicker_input,
 .rex-page-forcal-events .daterangepicker .daterangepicker_input {
-    display: none;
+  display: none;
 }
 
 div.daterangepicker.forcal {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .daterangepicker.forcal:before {
-    /*left: 50%;*/
-    /*margin-left: -11px;*/
-    /*border-top-width: 0;*/
-    /*border-bottom-color: #999;*/
-    /*border-bottom-color: rgba(0, 0, 0, 0.25);*/
-    /*top: -11px*/
+  /*left: 50%;*/
+  /*margin-left: -11px;*/
+  /*border-top-width: 0;*/
+  /*border-bottom-color: #999;*/
+  /*border-bottom-color: rgba(0, 0, 0, 0.25);*/
+  /*top: -11px*/
 }
 
 .daterangepicker.forcal:after {
-    /*content: " ";*/
-    /*top: 1px;*/
-    /*margin-left: -10px;*/
-    /*border-top-width: 0;*/
-    /*border-bottom-color: #fff;*/
+  /*content: " ";*/
+  /*top: 1px;*/
+  /*margin-left: -10px;*/
+  /*border-top-width: 0;*/
+  /*border-bottom-color: #fff;*/
 }
 
 div.daterangepicker.forcal .cancelBtn {
-    display: none;
+  display: none;
 }
 
 .daterangepicker.forcal.opensright:before,
 .daterangepicker.forcal.opensright:after {
-    position: absolute;
-    display: inline-block;
-    border-bottom-color: rgba(0, 0, 0, 0.2);
-    content: '';
+  position: absolute;
+  display: inline-block;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  content: '';
 }
 
 .daterangepicker.forcal.opensright:before {
-    top: -11px;
-    border-right: 11px solid transparent;
-    border-left: 11px solid transparent;
-    border-bottom: 11px solid #ccc;
+  top: -11px;
+  border-right: 11px solid transparent;
+  border-left: 11px solid transparent;
+  border-bottom: 11px solid #ccc;
 }
 
 .daterangepicker.forcal.opensright:after {
-    top: -10px;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid #fff;
-    border-left: 10px solid transparent;
+  top: -10px;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #fff;
+  border-left: 10px solid transparent;
 }
 
 div.popover.clockpicker-popover {
-    border: 1px solid rgba(0, 0, 0, .15);
-    border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+  border: 1px solid rgba(0, 0, 0, .15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
 }
 
 .clockpicker-align-left.popover > .arrow {
-    left: 20px;
+  left: 20px;
 }
 
 div.popover.clockpicker-popover .popover-content {
-    background: inherit;
+  background: inherit;
 }
 
 .clockpicker-popover .popover-title {
-    font-size: inherit;
-    font-weight: bold;
-    border-bottom: none;
+  font-size: inherit;
+  font-weight: bold;
+  border-bottom: none;
 }
 
 .clockpicker-popover .popover-content {
-    padding-top: 0;
-    padding-bottom: 9px;
+  padding-top: 0;
+  padding-bottom: 9px;
 }
 
 .btn.clockpicker-button {
-    /*color: #fff;*/
-    /*background-color: #3bb594;*/
-    /*border-color: #35a284;*/
-    /*display: inline-block;*/
-    /*margin-bottom: 0;*/
-    /*font-weight: normal;*/
-    /*text-align: center;*/
-    /*vertical-align: middle;*/
-    /*border-radius: 4px;*/
+  /*color: #fff;*/
+  /*background-color: #3bb594;*/
+  /*border-color: #35a284;*/
+  /*display: inline-block;*/
+  /*margin-bottom: 0;*/
+  /*font-weight: normal;*/
+  /*text-align: center;*/
+  /*vertical-align: middle;*/
+  /*border-radius: 4px;*/
 }
 
 /*.forcal_repeats_show,*/
 .forcal_repeat_show {
-    display: none;
+  display: none;
 }
 
 div.popover.clockpicker-popover {
-    max-width: 228px;
-    width: auto;
+  max-width: 228px;
+  width: auto;
 }
 
 div.popover.clockpicker-popover .pop-wrapper {
-    width: 225px;
-    float: left;
+  width: 225px;
+  float: left;
 }
 
 div.popover.clockpicker-popover .popover-title,
@@ -344,54 +344,54 @@ div.popover.clockpicker-popover .popover-content {
 }
 
 div.popover.clockpicker-popover .range_inputs {
-    padding: 8px;
-    float: left;
+  padding: 8px;
+  float: left;
 }
 
 table.forcaldatepicker.table {
-    margin-bottom: 0;
-    background: inherit;
+  margin-bottom: 0;
+  background: inherit;
 }
 
 table.forcaldatepicker.table > thead > tr > th label {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 table.forcaldatepicker.table > thead > tr > th,
 table.forcaldatepicker.table > thead > tr > td {
-    padding: 0;
+  padding: 0;
 }
 
 table.forcaldatepicker > thead > tr > td.date-input {
-    padding-left: 0;
-    padding-right: 0;
-    border: none;
+  padding-left: 0;
+  padding-right: 0;
+  border: none;
 }
 
 table.forcaldatepicker > thead > tr > td.date-input.only input.form-control {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 table.forcaldatepicker > thead:first-child > tr:first-child > th.date-label,
 table.forcaldatepicker > thead > tr > th.date-label {
-    padding-right: 18px;
-    border: none;
+  padding-right: 18px;
+  border: none;
 }
 
 table.forcaldatepicker > thead > tr > td.date-input:last-child {
-    padding-right: 0;
+  padding-right: 0;
 }
 
 div.forcal-form-input-inline dl,
 div.forcal-form-select-inline dl,
 div.forcal-form-radioboxes-inline dl,
 div.forcal-form-checkboxes-inline dl {
-    display: inline !important;
-    width: inherit !important;
-    table-layout: inherit !important;
-    float: left;
-    margin-bottom: 0 !important;
+  display: inline !important;
+  width: inherit !important;
+  table-layout: inherit !important;
+  float: left;
+  margin-bottom: 0 !important;
 }
 
 div.forcal-form-input-inline dl dt,
@@ -402,8 +402,8 @@ div.forcal-form-input-inline dl dd,
 div.forcal-form-select-inline dl dd,
 div.forcal-form-radioboxes-inline dl dd,
 div.forcal-form-checkboxes-inline dl dd {
-    display: inline !important;
-    padding: 0 !important;
+  display: inline !important;
+  padding: 0 !important;
 }
 
 .forcal-form-inline-description + div dl,
@@ -411,7 +411,7 @@ div.forcal-form-checkboxes-inline dl dd {
 .forcal-form-select-inline + div dl,
 .forcal-form-radioboxes-inline + div dl,
 .forcal-form-checkboxes-inline + div dl {
-    margin-left: 15px !important;
+  margin-left: 15px !important;
 }
 
 .forcal-form-inline-description + div dl dt,
@@ -419,7 +419,7 @@ div.forcal-form-checkboxes-inline dl dd {
 .forcal-form-select-inline + div dl dt,
 .forcal-form-radioboxes-inline + div dl dt,
 .forcal-form-checkboxes-inline + div dl dt {
-    margin-right: 10px !important;
+  margin-right: 10px !important;
 }
 
 div.forcal-form-inline-description dl + dl,
@@ -427,163 +427,163 @@ div.forcal-form-input-inline dl + dl,
 div.forcal-form-select-inline dl + dl,
 div.forcal-form-radioboxes-inline dl + dl,
 div.forcal-form-checkboxes-inline dl + dl {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 
 .forcal_repeats_show:after {
-    content: '';
-    display: block;
-    clear: both;
+  content: '';
+  display: block;
+  clear: both;
 }
 
 .forcal-form-inline-description {
-    float: left;
-    padding-left: 10px;
-    padding-top: 7px;
+  float: left;
+  padding-left: 10px;
+  padding-top: 7px;
 }
 
 .forcal-check-checkstyle .btn-group label,
 .forcal-check-radiostyle .btn-group label {
-    padding-left: 40px;
+  padding-left: 40px;
 }
 
 .forcal-check-checkstyle input:empty,
 .forcal-check-radiostyle input:empty {
-    margin-left: -20px;
-    margin-right: 10px;
+  margin-left: -20px;
+  margin-right: 10px;
 }
 
 .forcal-check-checkstyle input:before,
 .forcal-check-radiostyle input:before {
-    position: absolute;
-    display: block;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    content: '';
-    width: 2.5em;
-    background: #eee;
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  width: 2.5em;
+  background: #eee;
 }
 
 .forcal-check-checkstyle input:before,
 .forcal-check-radiostyle input:before {
-    content: '\2714';
-    color: #C2C2C2;
-    padding-top: 7px;
-    text-align: center;
+  content: '\2714';
+  color: #C2C2C2;
+  padding-top: 7px;
+  text-align: center;
 }
 
 .forcal-check-checkstyle input:checked:before,
 .forcal-check-radiostyle input:checked:before {
-    content: '\2714';
-    color: #fff;
-    background-color: #5cb85c;
+  content: '\2714';
+  color: #fff;
+  background-color: #5cb85c;
 }
 
 .forcal-check-checkstyle .btn-group > .btn:first-child input:before,
 .forcal-check-radiostyle .btn-group > .btn:first-child input:before {
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
 }
 
 .forcal-repeat-type .bootstrap-select {
-    width: 130px !important;
+  width: 130px !important;
 }
 
 .forcal-repeat-ending strong {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 .view-weekly .bootstrap-select,
 .view-yearly .bootstrap-select,
 .view-monthly .bootstrap-select {
-    width: 60px !important;
+  width: 60px !important;
 }
 
 #dpd2b_wrapper {
-    width: 220px;
-    padding-left: 10px;
+  width: 220px;
+  padding-left: 10px;
 }
 
 #dpd2b_wrapper input {
-    -webkit-border-top-right-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    -moz-border-radius-topright: 4px;
-    -moz-border-radius-bottomright: 4px;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+  -webkit-border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  -moz-border-radius-bottomright: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 .forcal_repeats_show .forcal-form-input-inline + .rex-form-group {
-    display: none;
+  display: none;
 }
 
 #rex-page-forcal-entries .rex-page-section .panel-edit .panel-body > .alert {
-    margin-bottom: 35px;
+  margin-bottom: 35px;
 }
 
 .rex-table-icon.forcal-fa-repeat i:before,
 .forcal-fa-repeat i:before {
-    content: "\f363" !important;
+  content: "\f363" !important;
 }
 
 .palette-color-picker-button {
-    z-index: 10000;
+  z-index: 10000;
 }
 .quick_navi_forcal_border {
-	border-left: 5px solid;
+border-left: 5px solid;
 }
 
 /* Safari-spezifische Fixes für flatpickr */
 .flatpickr-monthDropdown-months {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    background-color: transparent !important;
-    border: none !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-    color: inherit !important;
-    cursor: pointer !important;
-    font-size: inherit !important;
-    font-family: inherit !important;
-    font-weight: 300 !important;
-    height: auto !important;
-    line-height: inherit !important;
-    margin: -1px 0 0 0 !important;
-    outline: none !important;
-    padding: 0 0 0 0.5ch !important;
-    position: relative !important;
-    vertical-align: initial !important;
-    width: auto !important;
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='white'%3E%E2%96%BE%3C/text%3E%3C/svg%3E") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 5px center !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  font-weight: 300 !important;
+  height: auto !important;
+  line-height: inherit !important;
+  margin: -1px 0 0 0 !important;
+  outline: none !important;
+  padding: 0 0 0 0.5ch !important;
+  position: relative !important;
+  vertical-align: initial !important;
+  width: auto !important;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='10px' width='15px'%3E%3Ctext x='0' y='10' fill='white'%3E%E2%96%BE%3C/text%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 5px center !important;
 }
 
 /* Verstecke den Standardpfeil im Safari */
 .flatpickr-monthDropdown-months::-webkit-details-marker {
-    display: none !important;
+  display: none !important;
 }
 
 /* Weitere Safari-Fixes für flatpickr */
 @media not all and (min-resolution:.001dpcm) { 
-    @supports (-webkit-appearance:none) {
-        .flatpickr-monthDropdown-months { 
-            text-indent: 0.01px !important;
-            text-overflow: '' !important;
-            padding-right: 15px !important;
-        }
-    }
+  @supports (-webkit-appearance:none) {
+      .flatpickr-monthDropdown-months { 
+          text-indent: 0.01px !important;
+          text-overflow: '' !important;
+          padding-right: 15px !important;
+      }
+  }
 }
 
 /* Andere Browser-Fixes für flatpickr */
 .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
-    background-color: rgba(0, 0, 0, 0.1) !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Korrektur für das Dropdown-Menü */
 .flatpickr-months .flatpickr-month {
-    position: relative !important;
-    overflow: visible !important;
+  position: relative !important;
+  overflow: visible !important;
 }

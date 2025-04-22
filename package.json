@@ -1,0 +1,18 @@
+{
+  "name": "forcal",
+  "version": "1.0.0",
+  "description": "ForCal - Calendar AddOn for REDAXO CMS",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run clean && npm run copy-fullcalendar && npm run scss-compile",
+    "clean": "rm -rf assets/vendor/fullcalendar-6.x",
+    "copy-fullcalendar": "mkdir -p assets/vendor/fullcalendar-6.x && cp -r node_modules/fullcalendar/dist/* assets/vendor/fullcalendar-6.x/",
+    "prod": "npm run build"
+  },
+  "dependencies": {
+    "fullcalendar": "^6.1.10"
+  },
+  "devDependencies": {
+    "node-sass": "^9.0.0"
+  }
+}

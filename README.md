@@ -1,3 +1,16 @@
+# ForCal - Calendar AddOn für REDAXO CMS
+
+## Features
+
+- Kalenderansicht
+- Termin-Verwaltung
+- Kategorien
+- Orte
+- Wiederholende Termine
+- iCal-Import/Export
+- Mehrsprachigkeit
+- Benutzerspezifische Berechtigungen
+
 # FORCal – Kalender für REDAXO
 
 FORCal ist flexibel wie ein Framework und lässt sich an die individuellen Anforderungen anpassen. Das AddOn ist skalierbar, unterstützt Multi-Language.
@@ -768,6 +781,26 @@ echo '<a href="'.$link->webOutlook().'">Outlook</a><br>';
 echo '<a href="'.$link->ics().'">ICS</a>';
 ```
 
+
+## Aktualisierung des FullCalendar
+
+Der FullCalendar wird mit npm verwaltet. Um auf eine neuere Version zu aktualisieren:
+
+```bash
+# Im Addon-Verzeichnis
+cd redaxo/src/addons/forcal
+
+# FullCalendar aktualisieren
+npm update fullcalendar
+
+# Oder auf bestimmte Version aktualisieren
+# npm install fullcalendar@X.X.X
+
+# Build-Prozess ausführen, um die aktualisierten Dateien zu kopieren
+npm run build
+```
+
+
 ## Bugtracker
 
 Du hast einen Fehler gefunden oder ein nettes Feature parat? [Lege ein Issue an](https://github.com/FriendsOfREDAXO/forcal/issues). Bevor du ein neues Issue erstellst, suche bitte ob bereits eines mit deinem Anliegen existiert und lese die [Issue Guidelines (englisch)](https://github.com/necolas/issue-guidelines) von [Nicolas Gallagher](https://github.com/necolas/).
@@ -793,4 +826,3 @@ siehe [LICENSE](https://github.com/FriendsOfREDAXO/forcal/blob/master/LICENCE)
 Mit freundlicher Unterstützung durch:
 
 [Deutsche Fußball-Route NRW e.V.](https://dfr-nrw.de)
-```

@@ -10,6 +10,9 @@ $(function () {
     $(document).on('pjax:end', function () {
         forcal_init();
     });
+    
+    // Das rex:ready-Event entfernen, da es zu doppelten Initialisierungen führt
+    // Der ColorPicker wird bereits über forcal_init() initialisiert
 });
 
 function forcal_init() {
@@ -210,6 +213,82 @@ function forcal_fullcalendar_init() {
     let forcal = $('#forcal');
 
     if (forcal.length) {
+        // CSS-Variablen als globale Farbdefinitionen hinzufügen
+        document.documentElement.style.setProperty('--forcal-primary-color', '#3788d8');
+        document.documentElement.style.setProperty('--forcal-primary-light', 'rgba(55, 136, 216, 0.2)');
+        document.documentElement.style.setProperty('--forcal-primary-dark', '#1c62b3');
+        document.documentElement.style.setProperty('--forcal-text-light', '#ffffff');
+        document.documentElement.style.setProperty('--forcal-text-dark', '#111111'); // Dunkler gemacht (war #333333)
+        
+        // CSS-Variable zum Speichern der Event-Farbe als RGB-Wert hinzufügen
+        document.addEventListener('DOMContentLoaded', function() {
+            // Diese Funktion konvertiert einen HEX-Farbcode in RGB-Format
+            function hexToRgb(hex) {
+                // Kürze #fff zu #ffffff
+                if (hex.length === 4) {
+                    hex = hex.replace(/[^#]/g, function(match) {
+                        return match + match;
+                    });
+                }
+                
+                // Extrahiere die RGB-Komponenten
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                
+                return [r, g, b].join(', ');
+            }
+            
+            // Dark Mode Erkennung
+            function isDarkModeEnabled() {
+                return document.body.classList.contains('rex-theme-dark') || 
+                      (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            }
+            
+            // Aktualisiere die Farbwerte basierend auf dem aktuellen Modus
+            function updateThemeColors() {
+                const darkMode = isDarkModeEnabled();
+                document.documentElement.style.setProperty('--forcal-bg-color', darkMode ? '#1e1e1e' : '#ffffff');
+                document.documentElement.style.setProperty('--forcal-text-color', darkMode ? '#f0f0f0' : '#111111'); // Dunkler gemacht (war #333333)
+            }
+            
+            // Initial setzen
+            updateThemeColors();
+            
+            // Bei Änderung des Modus (falls der Benutzer während der Sitzung wechselt)
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeColors);
+            
+            // Füge Event-Listener für alle Termine hinzu, um RGB-Farben zu extrahieren
+            document.addEventListener('mouseover', function(e) {
+                let target = e.target;
+                
+                // Finde das nächstliegende Event-Element
+                while (target && !target.classList.contains('fc-event')) {
+                    target = target.parentNode;
+                    if (!target || target === document) return;
+                }
+                
+                // Extrahiere die Hintergrund- oder Rahmenfarbe
+                let eventColor = window.getComputedStyle(target).borderColor || 
+                                window.getComputedStyle(target).backgroundColor || 
+                                '#3788d8'; // Standard blau als Fallback
+                
+                // Konvertiere die Farbe zu RGB und setze sie als CSS-Variable
+                if (eventColor) {
+                    // Wenn die Farbe als RGB oder RGBA kommt, extrahiere die RGB-Komponenten
+                    let rgbMatch = eventColor.match(/rgba?\(([^)]+)\)/);
+                    if (rgbMatch && rgbMatch[1]) {
+                        // RGB-Werte bereits im Format "r, g, b"
+                        let rgbValues = rgbMatch[1].split(',').slice(0, 3).join(',');
+                        target.style.setProperty('--event-color-rgb', rgbValues);
+                    } else if (eventColor.startsWith('#')) {
+                        // HEX-Farbe zu RGB konvertieren
+                        target.style.setProperty('--event-color-rgb', hexToRgb(eventColor));
+                    }
+                }
+            }, true);
+        });
+        
         forcal_fullcalendar(forcal);
     }
 }
@@ -508,10 +587,18 @@ function forcal_colorpalette_init() {
     let input = $('.forcal_colorpalette');
 
     if (input.length) {
-        input.paletteColorPicker({
-            clear_btn: 'last'
-        }).unbind().bind('click', function () {
-            $(this).parent().first();
+        // Überprüfen, ob das Element bereits einen ColorPicker hat, um doppelte Instanzen zu vermeiden
+        input.each(function() {
+            // Entferne vorhandene ColorPicker-Instanzen (falls vorhanden)
+            const parent = $(this).parent();
+            if (parent.hasClass('forcal-colorpicker-wrapper') || parent.hasClass('palette-color-picker-button')) {
+                return; // Überspringen, wenn bereits initialisiert
+            }
+            
+            // Initialisiere mit dem jQuery-Adapter
+            $(this).paletteColorPicker({
+                clear_btn: 'last'
+            });
         });
     }
 }
@@ -554,57 +641,256 @@ function forcal_fullcalendar(forcal) {
     // URL-Parameter abrufen
     let urlParams = getUrlParameters();
 
+    // FullCalendar 6.x-Kompatibilität
     let calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ['interaction', 'dayGrid', 'timeGrid'],
-        header: {
+        initialView: 'dayGridMonth', // FullCalendar 6.x verwendet initialView statt defaultView
+        headerToolbar: { // FullCalendar 6.x verwendet headerToolbar statt header
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            right: 'newEvent dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        customButtons: {
+            newEvent: {
+                text: '+',
+                click: function() {
+                    // Bei Klick zur Termin-hinzufügen-Seite mit aktuellem Datum navigieren
+                    const currentDate = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+                    window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + currentDate;
+                }
+            }
         },
         locale: forcal_locale,
         weekNumbers: true,
         weekNumbersWithinDays: true,
         dragScroll: true,
-        defaultDate: forcal_date,
-        eventLimit: true,
+        initialDate: forcal_date, // FullCalendar 6.x verwendet initialDate statt defaultDate
+        dayMaxEvents: true, // FullCalendar 6.x verwendet dayMaxEvents statt eventLimit
+        dateClick: function(info) {
+            // Beim Klick auf einen Tag/Zelle in eine neue Termin-Seite navigieren
+            window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + info.dateStr;
+        },
         eventClick: function (info) {
             window.location.replace('index.php?page=forcal/entries&func=edit&id=' + info.event.id);
         },
-        eventRender: function (info) {
+        // In der Wochen- und Tagesansicht können Slots geklickt werden, um neue Termine anzulegen
+        slotLabelClick: function(info) {
+            // Extrahiere das Datum aus dem aktuell angezeigten Tag
+            const date = calendar.getDate().toISOString().slice(0, 10);
+            // Extrahiere die Uhrzeit aus dem geklickten Slot
+            const time = info.date.toTimeString().slice(0, 8);
+            window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + date + '&itemtime=' + time;
         },
-        datesRender: function (info) {
-            if (info.view.viewSpec.type === 'dayGridMonth') {
+        eventDidMount: function (info) { // FullCalendar 6.x verwendet eventDidMount statt eventRender
+            // Event wurde gerendert
+            // Wenn das Event eine Kategoriefarbe hat, diese verwenden
+            const eventColor = info.event.backgroundColor || info.event.extendedProps.color;
+            if (eventColor) {
+                // Farbe aus Event-Daten verwenden
+                const isAllDay = info.event.allDay;
+                
+                // Utility-Funktionen
+                // Funktion zur Verarbeitung eines Farbwerts in RGB-Komponenten
+                function extractRGB(colorValue) {
+                    let r = 55, g = 136, b = 216; // Standardwerte falls Extraktion fehlschlägt
+                    
+                    if (typeof colorValue === 'string') {
+                        // RGBA-Format prüfen und extrahieren
+                        const rgbaMatch = colorValue.match(/rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,?\s*[0-9.]*\s*\)/i);
+                        if (rgbaMatch) {
+                            r = parseInt(rgbaMatch[1], 10);
+                            g = parseInt(rgbaMatch[2], 10);
+                            b = parseInt(rgbaMatch[3], 10);
+                        } else if (colorValue.startsWith('#')) {
+                            // HEX-Format zu RGB konvertieren
+                            let cleanHex = colorValue;
+                            if (cleanHex.length === 4) {
+                                cleanHex = '#' + cleanHex[1] + cleanHex[1] + cleanHex[2] + cleanHex[2] + cleanHex[3] + cleanHex[3];
+                            }
+                            
+                            r = parseInt(cleanHex.slice(1, 3), 16) || 0;
+                            g = parseInt(cleanHex.slice(3, 5), 16) || 0;
+                            b = parseInt(cleanHex.slice(5, 7), 16) || 0;
+                        }
+                    }
+                    
+                    // Begrenze auf gültige RGB-Werte
+                    return {
+                        r: Math.min(255, Math.max(0, r)),
+                        g: Math.min(255, Math.max(0, g)),
+                        b: Math.min(255, Math.max(0, b))
+                    };
+                }
+                
+                // Funktion zur Erzeugung einer transparenten Pastellversion der Farbe
+                function createPastelColor(colorValue, opacity = 0.2) {
+                    const rgb = extractRGB(colorValue);
+                    
+                    // Erstelle hellere Pastellversion (mische mit Weiß)
+                    const r = Math.floor(rgb.r + (255 - rgb.r) * 0.5);
+                    const g = Math.floor(rgb.g + (255 - rgb.g) * 0.5);
+                    const b = Math.floor(rgb.b + (255 - rgb.b) * 0.5); // Korrigiert: rgb.b statt b
+                    
+                    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+                }
+                
+                // Funktion zur Erzeugung einer dunkleren Version der Farbe für Dark Mode
+                function createDarkerColor(colorValue) {
+                    const rgb = extractRGB(colorValue);
+                    
+                    // Mache die Farbe dunkler (reduziere Helligkeit)
+                    const r = Math.floor(rgb.r * 0.7);
+                    const g = Math.floor(rgb.g * 0.7);
+                    const b = Math.floor(rgb.b * 0.7);
+                    
+                    // Konvertiere zurück zu HEX
+                    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                }
+                
+                // Dark Mode Erkennung
+                const isDarkMode = document.body.classList.contains('rex-theme-dark');
+                const isPreferDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const shouldUseDarkMode = isDarkMode || isPreferDark;
+                
+                // RGB-Komponenten für CSS-Variablen extrahieren
+                const rgb = extractRGB(eventColor);
+                
+                // Setze die RGB-CSS-Variablen am Event-Element
+                // Diese können dann in CSS für verschiedene Eigenschaften verwendet werden
+                info.el.style.setProperty('--event-color-r', rgb.r);
+                info.el.style.setProperty('--event-color-g', rgb.g);
+                info.el.style.setProperty('--event-color-b', rgb.b);
+                info.el.style.setProperty('--event-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                
+                // Hintergrund- und Textfarbe basierend auf Modus und Eventtyp
+                let bgColor, textColor, dotColor;
+                
+                if (isAllDay) {
+                    // Für ganztägige Termine
+                    dotColor = eventColor; // Original Eventfarbe für den Punktindikator
+                    
+                    // Im Dark Mode stärkere Pastellfarben für bessere Sichtbarkeit
+                    bgColor = shouldUseDarkMode ? 
+                              createPastelColor(eventColor, 0.5) : // Höhere Deckkraft im Dark Mode
+                              createPastelColor(eventColor, 0.4);  // Normale Deckkraft im Light Mode
+                              
+                    // Text-Farbe abhängig vom Modus
+                    textColor = shouldUseDarkMode ? "#ffffff" : "#333333";
+                } else {
+                    // Für normale Termine
+                    dotColor = eventColor; // Original Eventfarbe für den Punktindikator
+                    
+                    if (info.el.classList.contains('fc-timegrid-event')) {
+                        // Termine in der Wochen-/Tagesansicht
+                        bgColor = shouldUseDarkMode ? 
+                                  createPastelColor(eventColor, 0.25) : // Dezentere Farbe im Dark Mode
+                                  createPastelColor(eventColor, 0.15);  // Sehr dezent im Light Mode
+                    } else {
+                        // Termine in der Monatsansicht 
+                        bgColor = shouldUseDarkMode ? 
+                                  createPastelColor(eventColor, 0.3) : // Etwas stärker im Dark Mode
+                                  createPastelColor(eventColor, 0.2);  // Dezent im Light Mode
+                    }
+                    
+                    // Text-Farbe abhängig vom Modus
+                    textColor = shouldUseDarkMode ? "#ffffff" : "#333333";
+                }
+                
+                // Wende die Stile auf das Event-Element an
+                info.el.style.backgroundColor = bgColor;
+                info.el.style.borderColor = 'transparent';
+                info.el.style.boxShadow = 'none';
+                
+                // Punktindikator für die Kategorie hinzufügen oder aktualisieren
+                const titleEl = info.el.querySelector('.fc-event-title');
+                if (titleEl) {
+                    titleEl.style.color = textColor;
+                    
+                    // Füge den Kategorie-Punktindikator hinzu, wenn er noch nicht existiert
+                    if (!titleEl.querySelector('.forcal-category-dot')) {
+                        const dot = document.createElement('span');
+                        dot.className = 'forcal-category-dot';
+                        dot.style.backgroundColor = dotColor;
+                        dot.style.display = 'inline-block';
+                        dot.style.width = '8px';
+                        dot.style.height = '8px';
+                        dot.style.borderRadius = '50%';
+                        dot.style.marginRight = '5px';
+                        dot.style.marginBottom = '1px';
+                        titleEl.insertBefore(dot, titleEl.firstChild);
+                    }
+                }
+                
+                // Zeitanzeige anpassen
+                const timeEl = info.el.querySelector('.fc-event-time');
+                if (timeEl) {
+                    timeEl.style.color = textColor;
+                }
+                
+                // Stelle sicher, dass alle sonstigen Text-Elemente die korrekte Farbe haben
+                const allTextElements = info.el.querySelectorAll('.fc-event-title-container, .fc-event-main, .fc-event-title, .fc-sticky');
+                allTextElements.forEach(element => {
+                    element.style.color = textColor;
+                });
+                
+                // Behandlung von Punkt-Events (dot events) in der Monatsansicht
+                const dotEventEl = info.el.querySelector('.fc-daygrid-event-dot');
+                if (dotEventEl) {
+                    dotEventEl.style.borderColor = dotColor;
+                }
+            }
+        },
+        datesSet: function (info) { // FullCalendar 6.x verwendet datesSet statt datesRender
+            if (info.view.type === 'dayGridMonth') {
                 addAddIconMonth(forcal);
             }
-            if (info.view.viewSpec.type === 'timeGridWeek') {
+            if (info.view.type === 'timeGridWeek') {
                 addAddIconWeek(forcal);
             }
-            if (info.view.viewSpec.type === 'timeGridDay') {
+            if (info.view.type === 'timeGridDay') {
                 addAddIconDay(forcal);
             }
         },
-        viewSkeletonRender: function (info) {
+        viewDidMount: function (info) { // FullCalendar 6.x verwendet viewDidMount statt viewSkeletonRender
+            // View wurde gemountet
         },
         events: {
            url: rex.forcal_events_api_url,
            extraParams: function() {
                 let params = {};
                 
-                // Einfache Lösung: Wenn Kategorien ausgewählt sind, übergeben wir sie als kommagetrennte Liste
+                // Wenn Kategorien ausgewählt sind, übergeben wir sie als kommagetrennte Liste
                 if (urlParams.category && urlParams.category.length > 0) {
                     params.category = urlParams.category.join(',');
                 }
                 
                 return params;
             },
-            cache: false, // Cache deaktivieren, um sicherzustellen, dass Änderungen sofort wirken
-            error: function (xhr, type, exception) {
+            failure: function (xhr, type, exception) { // FullCalendar 6.x verwendet failure statt error
                 console.error("Kalender-API Fehler:", xhr, type, exception);
             }
         },
     });
 
+    // Nach dem Rendern des Kalenders Event-Handler für Klicks hinzufügen
     calendar.render();
+    
+    // Füge Klick-Handler für Zeitslots in der Wochenansicht hinzu
+    setTimeout(function() {
+        // Für Zeitslots in der Wochen- und Tagesansicht
+        forcal.find('.fc-timegrid-slot').css('cursor', 'pointer').on('click', function() {
+            // Finde das Datum der entsprechenden Spalte
+            const columnDate = $(this).closest('.fc-timegrid-col').attr('data-date');
+            // Extrahiere die Uhrzeit aus dem Slot
+            const slotTime = $(this).attr('data-time');
+            
+            if (columnDate && slotTime) {
+                window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + columnDate + '&itemtime=' + slotTime;
+            }
+        });
+        
+        // Für Datumszellen in der Monatsansicht (falls dateClick nicht funktioniert)
+        forcal.find('.fc-daygrid-day').css('cursor', 'pointer');
+    }, 500);
 }
 
 function addAddIconDay(forcal) {
@@ -612,10 +898,11 @@ function addAddIconDay(forcal) {
 }
 
 function addAddIconWeek(forcal) {
-    if (forcal.find('.fc-day-header').length) {
+    // FullCalendar 6.x verwendet .fc-col-header-cell statt .fc-day-header
+    if (forcal.find('.fc-col-header-cell').length) {
         forcal.find('.fa-plus-circle').remove();
-        forcal.find('.fc-day-header').prepend('<i class="fa fa-plus-circle add"></i>');
-        forcal.find('.fc-day-header .fa-plus-circle').each(function () {
+        forcal.find('.fc-col-header-cell').prepend('<i class="fa fa-plus-circle add"></i>');
+        forcal.find('.fc-col-header-cell .fa-plus-circle').each(function () {
             let parent = $(this).parent();
             $(this).unbind().bind('click', function () {
                 addEntryHandler(parent);
@@ -626,12 +913,14 @@ function addAddIconWeek(forcal) {
 }
 
 function addAddIconMonth(forcal) {
-    if (forcal.find('.fc-day-top').length) {
+    // FullCalendar 6.x verwendet .fc-daygrid-day statt .fc-day-top
+    if (forcal.find('.fc-daygrid-day').length) {
         forcal.find('.fa-plus-circle').remove();
-        forcal.find('.fc-day-top').prepend('<i class="fa fa-plus-circle add"></i>');
-        forcal.find('.fc-day-top .fa-plus-circle').each(function () {
-            $(this).parent().unbind().bind('click', function () {
-                addEntryHandler($(this));
+        forcal.find('.fc-daygrid-day-top').prepend('<i class="fa fa-plus-circle add"></i>');
+        forcal.find('.fc-daygrid-day-top .fa-plus-circle').each(function () {
+            let parent = $(this).closest('.fc-daygrid-day');
+            $(this).unbind().bind('click', function () {
+                addEntryHandler(parent);
                 return false;
             });
         });
@@ -639,17 +928,22 @@ function addAddIconMonth(forcal) {
 }
 
 function addEntryHandler(item) {
-    window.location.replace('index.php?page=forcal/entries&func=add&itemdate=' + item.data('date'));
+    // Bei FullCalendar 6.x wird das Datum anders gespeichert
+    let date;
+    if (item.data('date')) {
+        // Altes Format
+        date = item.data('date');
+    } else {
+        // Neues Format in FullCalendar 6.x
+        date = item.attr('data-date');
+    }
+    window.location.replace('index.php?page=forcal/entries&func=add&itemdate=' + date);
 }
-
 
 function forcal_save_init(forcal_form) {
     if (rex.forcal_shortcut_save) {
         $(window).bind('keydown', function (event) {
             if ((event.ctrlKey || event.metaKey) && String.fromCharCode(event.which).toLowerCase() === 's') {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-
                 if (forcal_form[0].checkValidity()) {
                     forcal_form.find('button[type=submit]').trigger('click');
                 } else {
