@@ -7,9 +7,6 @@
     "build": "npm run clean && npm run copy-fullcalendar && npm run scss-compile",
     "clean": "rm -rf assets/vendor/fullcalendar-6.x",
     "copy-fullcalendar": "mkdir -p assets/vendor/fullcalendar-6.x && cp -r node_modules/fullcalendar/dist/* assets/vendor/fullcalendar-6.x/",
-    "scss-compile": "node-sass assets/vendor/palettecolorpicker/palette-color-picker.scss assets/vendor/palettecolorpicker/palette-color-picker.css --output-style compressed",
-    "watch": "npm run scss-compile -- --watch",
-    "dev": "npm run watch",
     "prod": "npm run build"
   },
   "dependencies": {
