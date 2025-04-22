@@ -38,6 +38,8 @@ if (!$user->isAdmin() && !$show_all) {
 $fragment = new rex_fragment();
 echo $fragment->parse('forcal_category_filter.php');
 
+// Hinweis: Der zusätzliche Button für "Neuer Termin" wurde entfernt,
+// da er bereits in der FullCalendar-Toolbar integriert ist
 ?>
 
 <section class="rex-page-section">
@@ -51,4 +53,3 @@ echo $fragment->parse('forcal_category_filter.php');
         </div>
     </div>
 </section>
-</script>

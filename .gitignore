@@ -1,4 +1,28 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
+# Development files
+.sass-cache/
+*.map
+*.log
+
+# IDE and editor folders
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
 .DS_Store
-vendor/.DS_Store
-.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Optional: exclude source scss if you don't want to commit it
+# assets/vendor/palettecolorpicker/*.scss

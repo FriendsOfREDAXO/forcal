@@ -1,0 +1,133 @@
+/**
+ * ForCal ColorPicker CSS
+ */
+.forcal-colorpicker-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.forcal-colorpicker-preview {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%; /* Kreisförmiges Farbfeld */
+  border: 1px solid #ccc;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.forcal-colorpicker-preview:hover {
+  transform: scale(1.05);
+}
+
+.forcal-colorpicker-preview.no-color {
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 46%, #ff0000 46%, #ff0000 54%, #ffffff 54%, #ffffff 100%);
+}
+
+.forcal-colorpicker-popup {
+  position: absolute;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  padding: 8px;
+  min-width: 200px;
+  max-height: 300px; /* Maximale Höhe begrenzen */
+  overflow-y: auto; /* Scrollbar bei Bedarf hinzufügen */
+  margin-top: 5px;
+}
+
+.forcal-colorpicker-popup-upside {
+  bottom: 40px;
+}
+
+.forcal-colorpicker-presets {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 6 Spalten für die Farbfelder */
+  gap: 5px;
+}
+
+.forcal-colorpicker-preset {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%; /* Kreisförmige Farbfelder */
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.forcal-colorpicker-preset:hover {
+  transform: scale(1.1);
+}
+
+.forcal-colorpicker-preset.active {
+  box-shadow: 0 0 0 2px #007bff;
+}
+
+.forcal-colorpicker-clear {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%; /* Kreisförmiges Clear-Element */
+  cursor: pointer;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.forcal-colorpicker-clear:hover {
+  background-color: #e9ecef;
+  color: #333;
+  transform: scale(1.1);
+}
+
+/* Mobile-freundliche Anpassungen */
+@media (max-width: 576px) {
+  .forcal-colorpicker-popup {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    top: auto;
+    min-width: unset;
+    max-width: none;
+    width: calc(100% - 20px);
+    margin-top: 0;
+    z-index: 1050;
+  }
+
+  .forcal-colorpicker-popup-upside {
+    bottom: 10px;
+  }
+  
+  .forcal-colorpicker-presets {
+    grid-template-columns: repeat(6, 1fr); /* Auch auf Mobilgeräten 6 Spalten */
+  }
+}
+
+/* Dark Mode Unterstützung */
+.rex-theme-dark .forcal-colorpicker-popup {
+  background-color: #32373c;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.rex-theme-dark .forcal-colorpicker-preview {
+  border-color: #666;
+}
+
+.rex-theme-dark .forcal-colorpicker-clear {
+  background-color: #444;
+  border-color: #555;
+  color: #ccc;
+}
+
+.rex-theme-dark .forcal-colorpicker-clear:hover {
+  background-color: #555;
+  color: #fff;
+}

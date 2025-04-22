@@ -1,0 +1,124 @@
+/* macOS-inspirierte Anpassungen für den Palette Color Picker im Dark Mode */
+
+body.rex-theme-dark .palette-color-picker-button {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23f5c86c" d="M2 2h8v8H2z"/><path fill="%23f56c6c" d="M12 2h8v8h-8z"/><path fill="%23f46ac6" d="M22 2h8v8h-8z"/><path fill="%23c3f167" d="M2 12h8v8H2z"/><path fill="%23333" d="M12 12h8v8h-8z"/><path fill="%23c76cf5" d="M22 12h8v8h-8z"/><path fill="%2369e369" d="M2 22h8v8H2z"/><path fill="%236bc6f4" d="M12 22h8v8h-8z"/><path fill="%236b6bf5" d="M22 22h8v8h-8z"/><path d="M9 3v6H3V3h6m1-1H2v8h8V2zm9 1v6h-6V3h6m1-1h-8v8h8V2zm9 1v6h-6V3h6m1-1h-8v8h8V2zM9 13v6H3v-6h6m1-1H2v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8zM9 23v6H3v-6h6m1-1H2v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8z" opacity=".5"/></svg>') center center no-repeat;
+    background-size: 28px 28px;
+    background-color: #282828;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+body.rex-theme-dark .palette-color-picker-bubble {
+    background-color: #282828;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 12px;
+}
+
+body.rex-theme-dark .palette-color-picker-bubble:after {
+    border-top-color: #282828;
+}
+
+body.rex-theme-dark .palette-color-picker-bubble:before {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+body.rex-theme-dark .palette-color-picker-bubble.downside:after {
+    border-bottom-color: #282828;
+    border-top-color: transparent;
+}
+
+body.rex-theme-dark .palette-color-picker-bubble.downside:before {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    border-top-color: transparent;
+}
+
+body.rex-theme-dark .palette-color-picker-bubble span.swatch,
+body.rex-theme-dark .palette-color-picker-bubble .swatch {
+    outline: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid #282828;
+    border-radius: 6px;
+    transition: transform 0.15s ease;
+}
+
+body.rex-theme-dark .palette-color-picker-bubble .swatch:hover {
+    transform: scale(1.1);
+}
+
+body.rex-theme-dark .palette-color-picker-bubble .swatch.active {
+    outline-color: #0a84ff;
+    box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.5);
+}
+
+body.rex-theme-dark .palette-color-picker-bubble .swatch.clear {
+    background-color: #444;
+}
+
+body.rex-theme-dark .palette-color-picker-bubble .swatch.clear:before {
+    background-color: #ff453a;
+}
+
+/* System Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body:not(.rex-theme-light) .palette-color-picker-button {
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23f5c86c" d="M2 2h8v8H2z"/><path fill="%23f56c6c" d="M12 2h8v8h-8z"/><path fill="%23f46ac6" d="M22 2h8v8h-8z"/><path fill="%23c3f167" d="M2 12h8v8H2z"/><path fill="%23333" d="M12 12h8v8h-8z"/><path fill="%23c76cf5" d="M22 12h8v8h-8z"/><path fill="%2369e369" d="M2 22h8v8H2z"/><path fill="%236bc6f4" d="M12 22h8v8h-8z"/><path fill="%236b6bf5" d="M22 22h8v8h-8z"/><path d="M9 3v6H3V3h6m1-1H2v8h8V2zm9 1v6h-6V3h6m1-1h-8v8h8V2zm9 1v6h-6V3h6m1-1h-8v8h8V2zM9 13v6H3v-6h6m1-1H2v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8zM9 23v6H3v-6h6m1-1H2v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8zm9 1v6h-6v-6h6m1-1h-8v8h8v-8z" opacity=".5"/></svg>') center center no-repeat;
+        background-size: 28px 28px;
+        background-color: #282828;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble {
+        background-color: #282828;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        padding: 12px;
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble:after {
+        border-top-color: #282828;
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble:before {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble.downside:after {
+        border-bottom-color: #282828;
+        border-top-color: transparent;
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble.downside:before {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+        border-top-color: transparent;
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble span.swatch,
+    body:not(.rex-theme-light) .palette-color-picker-bubble .swatch {
+        outline: 1px solid rgba(255, 255, 255, 0.2);
+        border: 2px solid #282828;
+        border-radius: 6px;
+        transition: transform 0.15s ease;
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble .swatch:hover {
+        transform: scale(1.1);
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble .swatch.active {
+        outline-color: #0a84ff;
+        box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.5);
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble .swatch.clear {
+        background-color: #444;
+    }
+
+    body:not(.rex-theme-light) .palette-color-picker-bubble .swatch.clear:before {
+        background-color: #ff453a;
+    }
+}

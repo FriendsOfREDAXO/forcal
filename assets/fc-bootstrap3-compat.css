@@ -1,0 +1,91 @@
+/* FullCalendar 6.x Bootstrap 3 Kompatibilitätsanpassungen */
+
+/* Schriftarten und Grundeinstellungen */
+.fc {
+  font-family: inherit;
+  font-size: 1em;
+}
+
+/* Button-Styling für Bootstrap 3 */
+.fc .fc-button {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+}
+
+.fc .fc-button-primary {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.fc .fc-button-primary:hover {
+  color: #fff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.fc .fc-button-primary:disabled {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  opacity: 0.65;
+}
+
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  color: #fff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+/* Toolbar-Anpassungen */
+.fc .fc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+/* Tabellen-Styling für Bootstrap 3 Kompatibilität */
+.fc .fc-scrollgrid {
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.fc .fc-scrollgrid td, 
+.fc .fc-scrollgrid th {
+  border: 1px solid #ddd;
+}
+
+/* Event-Styling */
+.fc-event {
+  background-color: #337ab7;
+  border: 1px solid #2e6da4;
+  color: #fff;
+}
+
+/* Responsive Anpassungen */
+@media screen and (max-width: 767px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+  }
+  
+  .fc .fc-toolbar-chunk {
+    margin-bottom: 0.5em;
+  }
+}
