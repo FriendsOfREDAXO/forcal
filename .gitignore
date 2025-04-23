@@ -32,3 +32,4 @@ composer.lock
 
 # Optional: exclude source scss if you don't want to commit it
 # assets/vendor/palettecolorpicker/*.scss
+RELEASE.md

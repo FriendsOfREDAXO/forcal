@@ -19,6 +19,11 @@ $start = rex_request::request('start', 'int', NULL);
 $categoryFilter = rex_request::request('category_filter', 'int', NULL);
 $resetSorting = rex_request::request('sort_reset', 'boolean', false);
 
+// Tabellennamen definieren
+$tableEvent = rex::getTablePrefix() . "forcal_entries";
+$tableCategories = rex::getTablePrefix() . "forcal_categories";
+$tableVenues = rex::getTablePrefix() . "forcal_venues";
+
 // Speichern des Kategoriefilters in der Session, falls gesetzt
 if ($categoryFilter !== NULL) {
     $_SESSION['forcal']['category_filter'] = $categoryFilter;
@@ -39,9 +44,6 @@ if ($resetSorting) {
     rex_set_session('rex_list_' . $tableEvent . '_direction', '');
 }
 
-$tableEvent = rex::getTablePrefix() . "forcal_entries";
-$tableCategories = rex::getTablePrefix() . "forcal_categories";
-$tableVenues = rex::getTablePrefix() . "forcal_venues";
 $message = '';
 
 $user = rex::getUser();
