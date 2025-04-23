@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e3fd5f501174bc03d7902e158dd4081c",
+    "content-hash": "cef55518326b98f33d40a08d0bb6b136",
     "packages": [
         {
             "name": "spatie/calendar-links",

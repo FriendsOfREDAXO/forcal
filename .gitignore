@@ -24,5 +24,11 @@ yarn-error.log
 ehthumbs.db
 Thumbs.db
 
+# Composer
+/vendor/*
+!/vendor/.htaccess
+!/vendor/autoload.php
+composer.lock
+
 # Optional: exclude source scss if you don't want to commit it
 # assets/vendor/palettecolorpicker/*.scss
