@@ -95,6 +95,7 @@ forcal_entry_list_view = Entradas
 forcal_add_entry = Añadir entrada
 forcal_filter = Filtrar
 forcal_reset = Restablecer
+forcal_reset_sorting = Ordenación predeterminada
 forcal_category_filter_title = Filtrar por categoría
 forcal_category_filter_all = Todas las categorías
 forcal_apply_filter = Aplicar filtro

@@ -95,6 +95,7 @@ forcal_entry_list_view = Vnosi
 forcal_add_entry = Dodaj vnos
 forcal_filter = Filter
 forcal_reset = Ponastavi
+forcal_reset_sorting = Privzeto razvrščanje
 forcal_category_filter_title = Filtriraj po kategoriji
 forcal_category_filter_all = Vse kategorije
 forcal_apply_filter = Uporabi filter

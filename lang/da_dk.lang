@@ -95,6 +95,7 @@ forcal_entry_list_view = Poster
 forcal_add_entry = Tilføj post
 forcal_filter = Filter
 forcal_reset = Nulstil
+forcal_reset_sorting = Standard sortering
 forcal_category_filter_title = Filtrér efter kategori
 forcal_category_filter_all = Alle kategorier
 forcal_apply_filter = Anvend filter
