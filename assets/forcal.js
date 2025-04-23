@@ -800,24 +800,27 @@ function forcal_fullcalendar(forcal) {
                 info.el.style.borderColor = 'transparent';
                 info.el.style.boxShadow = 'none';
                 
-                // Punktindikator für die Kategorie hinzufügen oder aktualisieren
+                // Entferne zuerst alle existierenden Kategorie-Punkte (um Duplikate zu vermeiden)
+                const existingDots = info.el.querySelectorAll('.forcal-category-dot');
+                existingDots.forEach(dot => dot.remove());
+                
+                // Füge einen einzigen Kategorie-Punktindikator hinzu
+                // Zuerst im Titelelement, wenn vorhanden
                 const titleEl = info.el.querySelector('.fc-event-title');
                 if (titleEl) {
                     titleEl.style.color = textColor;
                     
-                    // Füge den Kategorie-Punktindikator hinzu, wenn er noch nicht existiert
-                    if (!titleEl.querySelector('.forcal-category-dot')) {
-                        const dot = document.createElement('span');
-                        dot.className = 'forcal-category-dot';
-                        dot.style.backgroundColor = dotColor;
-                        dot.style.display = 'inline-block';
-                        dot.style.width = '8px';
-                        dot.style.height = '8px';
-                        dot.style.borderRadius = '50%';
-                        dot.style.marginRight = '5px';
-                        dot.style.marginBottom = '1px';
-                        titleEl.insertBefore(dot, titleEl.firstChild);
-                    }
+                    // Füge den Kategorie-Punktindikator im Titelelement hinzu
+                    const dot = document.createElement('span');
+                    dot.className = 'forcal-category-dot';
+                    dot.style.backgroundColor = dotColor;
+                    dot.style.display = 'inline-block';
+                    dot.style.width = '8px';
+                    dot.style.height = '8px';
+                    dot.style.borderRadius = '50%';
+                    dot.style.marginRight = '5px';
+                    dot.style.marginBottom = '1px';
+                    titleEl.insertBefore(dot, titleEl.firstChild);
                 }
                 
                 // Zeitanzeige anpassen
