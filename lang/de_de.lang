@@ -99,6 +99,7 @@ forcal_entry_list_view = Termine
 forcal_add_entry = Termin anlegen
 forcal_filter = Filtern
 forcal_reset = Zurücksetzen
+forcal_reset_sorting = Standardsortierung
 forcal_category_filter_title = Nach Kategorie filtern
 forcal_category_filter_all = Alle Kategorien
 forcal_apply_filter = Filter anwenden

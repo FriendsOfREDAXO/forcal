@@ -150,6 +150,38 @@
         --fc-clockpicker-tick: rgba(255, 255, 255, 0.75);
         --fc-clockpicker-canvas-bg: #1867a6;
     }
+    
+    /* Popup für "Weitere Termine" im automatischen Dark Mode */
+    body:not(.rex-theme-light) #forcal .fc-popover {
+        background-color: var(--fc-panel-bg);
+        border-color: var(--fc-border);
+    }
+    
+    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header {
+        background-color: var(--fc-day-header-bg);
+        color: var(--fc-day-header-text);
+    }
+    
+    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-title {
+        color: var(--fc-day-header-text);
+    }
+    
+    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close {
+        color: var(--fc-day-header-text);
+        opacity: 0.7;
+    }
+    
+    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close:hover {
+        opacity: 1;
+    }
+    
+    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-body {
+        color: var(--fc-text);
+    }
+    
+    body:not(.rex-theme-light) #forcal .fc-popover .fc-event-main-frame {
+        color: var(--fc-text);
+    }
 }
 
 /* Anwendung der Variablen im Kalenderdesign */
@@ -452,4 +484,43 @@ body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .popover-
 body.rex-theme-dark[id^="rex-page-forcal"] .clockpicker-popover .popover-content .clockpicker-plate .clockpicker-canvas-bg,
 body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .popover-content .clockpicker-plate .clockpicker-canvas-bg {
     fill: var(--fc-clockpicker-canvas-bg);
+}
+
+/* Popup für "Weitere Termine" im Dark Mode */
+body.rex-theme-dark #forcal .fc-popover,
+body:not(.rex-theme-light) #forcal .fc-popover {
+    background-color: var(--fc-panel-bg);
+    border-color: var(--fc-border);
+}
+
+body.rex-theme-dark #forcal .fc-popover .fc-popover-header,
+body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header {
+    background-color: var(--fc-day-header-bg);
+    color: var(--fc-day-header-text);
+}
+
+body.rex-theme-dark #forcal .fc-popover .fc-popover-header .fc-popover-title,
+body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-title {
+    color: var(--fc-day-header-text);
+}
+
+body.rex-theme-dark #forcal .fc-popover .fc-popover-header .fc-popover-close,
+body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close {
+    color: var(--fc-day-header-text);
+    opacity: 0.7;
+}
+
+body.rex-theme-dark #forcal .fc-popover .fc-popover-header .fc-popover-close:hover,
+body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close:hover {
+    opacity: 1;
+}
+
+body.rex-theme-dark #forcal .fc-popover .fc-popover-body,
+body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-body {
+    color: var(--fc-text);
+}
+
+body.rex-theme-dark #forcal .fc-popover .fc-event-main-frame,
+body:not(.rex-theme-light) #forcal .fc-popover .fc-event-main-frame {
+    color: var(--fc-text);
 }

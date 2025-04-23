@@ -640,6 +640,53 @@ function forcal_fullcalendar(forcal) {
     
     // URL-Parameter abrufen
     let urlParams = getUrlParameters();
+    
+    // Fix für das "Weitere Termine"-Popover hinzufügen
+    $(document).on('click', '.fc-more-link', function(e) {
+        // Speichere die Position des angeklickten Elements
+        const clickPosition = {
+            left: e.pageX,
+            top: e.pageY
+        };
+        
+        // Verzögerung hinzufügen, um das Popover zu erfassen, nachdem es gerendert wurde
+        setTimeout(function() {
+            const popover = document.querySelector('.fc-popover.fc-more-popover');
+            if (popover) {
+                // Feste obere linke Ecke verhindern
+                if (popover.style.top === '0px' && popover.style.left === '0px') {
+                    // Positioniere das Popup nahe dem Klick, mit leichtem Versatz
+                    popover.style.top = (clickPosition.top - 10) + 'px';
+                    popover.style.left = (clickPosition.left - 20) + 'px';
+                }
+                
+                // Prüfe, ob das Popover außerhalb des sichtbaren Bereichs liegt
+                const rect = popover.getBoundingClientRect();
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                
+                // Horizontale Position korrigieren
+                if (rect.right > windowWidth) {
+                    const overflow = rect.right - windowWidth;
+                    popover.style.left = (parseInt(popover.style.left) - overflow - 10) + 'px';
+                }
+                
+                // Vertikale Position korrigieren (falls nötig)
+                if (rect.bottom > windowHeight) {
+                    const overflow = rect.bottom - windowHeight;
+                    popover.style.top = (parseInt(popover.style.top) - overflow - 10) + 'px';
+                }
+                
+                // Verhindern, dass das Popover links oder oben aus dem Bildschirm herausragt
+                if (rect.left < 0) {
+                    popover.style.left = '10px';
+                }
+                if (rect.top < 0) {
+                    popover.style.top = '10px';
+                }
+            }
+        }, 0);
+    });
 
     // FullCalendar 6.x-Kompatibilität
     let calendar = new FullCalendar.Calendar(calendarEl, {

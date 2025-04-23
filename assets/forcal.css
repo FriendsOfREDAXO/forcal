@@ -48,10 +48,33 @@ body.modal-open {
   padding: 2px 8px 2px 4px;
 }
 
+/* Plus-Symbole unsichtbar machen, aber klickbar halten */
+.fc-day-header .fa-plus-circle.add,
+.fc-day-top .fa-plus-circle.add,
+.fc-daygrid-day-top .fa-plus-circle.add {
+  color: transparent !important;
+  opacity: 0 !important;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
 .fc-day-top:hover .fa-plus-circle.add,
 .fc-day-top .fa-plus-circle.add:hover {
   color: #008803;
   opacity: 1;
+}
+
+/* Ursprüngliche Hover-Effekte beibehalten */
+.fc-day-top:hover .fa-plus-circle.add,
+.fc-day-top .fa-plus-circle.add:hover, 
+.fc-daygrid-day-top:hover .fa-plus-circle.add,
+.fc-daygrid-day-top .fa-plus-circle.add:hover {
+  color: transparent !important;
 }
 
 #forcal .fc-day-header {
@@ -69,9 +92,19 @@ body.modal-open {
   opacity: 1;
 }
 
+#forcal .fc-day-header i.add:hover {
+  color: transparent !important;
+  opacity: 0 !important;
+}
+
 #forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
 #forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover {
   color: #004f01;
+}
+
+#forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
+#forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover {
+  color: transparent !important;
 }
 
 .fc-event-container a,
@@ -586,4 +619,119 @@ border-left: 5px solid;
 .flatpickr-months .flatpickr-month {
   position: relative !important;
   overflow: visible !important;
+}
+
+/* Klickbare Kalendertage */
+.forcal-clickable-cell,
+.forcal-clickable-day {
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Hover-Effekt für Tagesheader */
+.forcal-clickable-cell:hover {
+    background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.1) !important;
+}
+
+/* Hover-Effekt für normale Tage in der Monatsansicht */
+.forcal-clickable-day:hover:not(.fc-day-today) {
+    background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.1) !important;
+}
+
+/* Hover-Effekt für den heutigen Tag (mit anderem Hintergrund) */
+.forcal-clickable-day.fc-day-today:hover {
+    background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.15) !important;
+}
+
+/* Hover-Effekt für Wochenendtage */
+.fc-day-sat.forcal-clickable-day:hover,
+.fc-day-sun.forcal-clickable-day:hover {
+    background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.15) !important;
+}
+
+/* Darstellung des Cursor als 'Hinzufügen' */
+.forcal-clickable-cell:hover,
+.forcal-clickable-day:hover {
+    position: relative;
+}
+
+/* Effekt für Dark Mode */
+body.rex-theme-dark .forcal-clickable-cell:hover,
+body.rex-theme-dark .forcal-clickable-day:hover:not(.fc-day-today) {
+    background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.2) !important;
+}
+
+body.rex-theme-dark .forcal-clickable-day.fc-day-today:hover {
+    background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.25) !important;
+}
+
+body.rex-theme-dark .fc-day-sat.forcal-clickable-day:hover,
+body.rex-theme-dark .fc-day-sun.forcal-clickable-day:hover {
+    background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.25) !important;
+}
+
+/* Verbesserte und spezifischere Selektoren für Hover-Effekte */
+.fc-daygrid-day.forcal-clickable-day:hover:not(.fc-day-today):not(.fc-popover):not(.fc-more-popover),
+.fc-col-header-cell.forcal-clickable-cell:hover:not(.fc-popover):not(.fc-more-popover) {
+  background-color: rgba(var(--event-color-rgb, 55, 136, 216), 0.1) !important;
+}
+
+/* "Weitere Termine"-Link deutlicher hervorheben */
+.fc-daygrid-more-link {
+  font-weight: bold;
+  text-decoration: none !important;
+  padding: 2px 5px !important;
+  border-radius: 10px;
+  color: #1867a6 !important;
+}
+
+.fc-daygrid-more-link:hover {
+  background-color: rgba(24, 103, 166, 0.15) !important;
+  color: #0a4f8d !important;
+  cursor: pointer;
+}
+
+/* Im Dark Mode */
+body.rex-theme-dark .fc-daygrid-more-link,
+body:not(.rex-theme-light) .fc-daygrid-more-link {
+  color: #52a8ff !important;
+}
+
+body.rex-theme-dark .fc-daygrid-more-link:hover,
+body:not(.rex-theme-light) .fc-daygrid-more-link:hover {
+  background-color: rgba(82, 168, 255, 0.2) !important;
+  color: #78bcff !important;
+}
+
+/* Weitere Termine-Popover korrekte Positionierung */
+body #forcal .fc-popover.fc-more-popover {
+  position: absolute !important;
+  z-index: 100 !important;
+  /* Verhindern, dass das Popup immer oben links erscheint */
+  
+  margin-top: 1px;
+  max-width: 300px;
+}
+
+/* Verbesserte Positionierung für verschiedene Bildschirmgrößen */
+@media (max-width: 768px) {
+  body #forcal .fc-popover.fc-more-popover {
+    max-width: 280px;
+  }
+}
+
+/* Sicherstellen, dass der Popover die richtige Hintergrundfarbe hat */
+body #forcal .fc-popover.fc-more-popover,
+body.rex-theme-dark #forcal .fc-popover.fc-more-popover,
+body:not(.rex-theme-light) #forcal .fc-popover.fc-more-popover {
+  background-color: var(--fc-panel-bg, #fff);
+  border: 1px solid var(--fc-border, #ddd);
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Verbesserte Dark Mode Anpassungen */
+body.rex-theme-dark #forcal .fc-popover.fc-more-popover .fc-event,
+body:not(.rex-theme-light) #forcal .fc-popover.fc-more-popover .fc-event {
+  background-color: transparent;
 }

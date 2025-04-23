@@ -17,6 +17,7 @@ $itemDate = rex_request::request('itemdate', 'string', null);
 $id = rex_request::request('id', 'int');
 $start = rex_request::request('start', 'int', NULL);
 $categoryFilter = rex_request::request('category_filter', 'int', NULL);
+$resetSorting = rex_request::request('sort_reset', 'boolean', false);
 
 // Speichern des Kategoriefilters in der Session, falls gesetzt
 if ($categoryFilter !== NULL) {
@@ -29,6 +30,13 @@ elseif (rex_request::request('reset_filter', 'boolean', false)) {
 // Wiederherstellen des Filters aus der Session, falls vorhanden
 elseif (isset($_SESSION['forcal']['category_filter'])) {
     $categoryFilter = $_SESSION['forcal']['category_filter'];
+}
+
+// Zurücksetzen der Sortierung, falls angefordert
+if ($resetSorting) {
+    // Alle Sortierparameter entfernen
+    rex_set_session('rex_list_' . $tableEvent . '_sort', '');
+    rex_set_session('rex_list_' . $tableEvent . '_direction', '');
 }
 
 $tableEvent = rex::getTablePrefix() . "forcal_entries";
@@ -174,6 +182,7 @@ if ($func == '' || $func == 'filter') {
     $categoryFilterForm .= '<div class="form-group" style="margin-left: 10px;">';
     $categoryFilterForm .= '<button type="submit" class="btn btn-primary">' . rex_i18n::msg('forcal_filter') . '</button>';
     $categoryFilterForm .= '<a href="' . rex_url::currentBackendPage(['reset_filter' => true]) . '" class="btn btn-default" style="margin-left: 5px;">' . rex_i18n::msg('forcal_reset') . '</a>';
+    $categoryFilterForm .= '<a href="' . rex_url::currentBackendPage(['sort_reset' => true]) . '" class="btn btn-default" style="margin-left: 5px;">' . rex_i18n::msg('forcal_reset_sorting') . '</a>';
     $categoryFilterForm .= '</div>';
     
     $categoryFilterForm .= '</form>';
@@ -244,7 +253,11 @@ if ($func == '' || $func == 'filter') {
 
     $list->setColumnSortable('start_date');
     $list->setColumnSortable('category');
-    //    $list->setColumnSortable('venue');
+    
+    // Alle Sprachen-Titel sortierbar machen
+    foreach (rex_clang::getAll() as $clang) {
+        $list->setColumnSortable('name_' . $clang->getId());
+    }
 
     // Column 1: Action (add/edit button)
     $addParams = ['func' => 'add', 'itemdate' => date('Y-m-d')];
