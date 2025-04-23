@@ -800,6 +800,253 @@ npm update fullcalendar
 npm run build
 ```
 
+## FullCalendar im Frontend einbinden
+
+ForCal bietet die Möglichkeit, den FullCalendar direkt im Frontend einzubinden. Hierfür steht eine Helfer-Klasse zur Verfügung, die alle benötigten Assets und Initialisierungsscripts zur Verfügung stellt.
+
+### Einfache Einbindung mit Helper-Klasse
+
+```php
+use forCal\Utils\forcalAssetHelper;
+
+// 1. Assets einbinden (CSS und JS)
+echo forcalAssetHelper::getFullCalendarAssets();
+
+// 2. Container für den Kalender definieren
+echo '<div id="calendar" style="max-width: 1000px; margin: 0 auto;"></div>';
+
+// 3. Initialisierungs-Script ausgeben
+echo forcalAssetHelper::getFullCalendarInitScript('calendar', 'de');
+```
+
+### Anpassung des Kalenders
+
+Die Helfer-Klasse bietet umfangreiche Anpassungsmöglichkeiten:
+
+```php
+use forCal\Utils\forcalAssetHelper;
+
+// Assets mit jQuery und ausgewählten Plugins einbinden
+echo forcalAssetHelper::getFullCalendarAssets(
+    true, // jQuery einbinden
+    ['daygrid', 'timegrid', 'list'] // Plugins auswählen
+);
+
+// Container für den Kalender
+echo '<div id="mein-kalender" style="max-width: 1200px; margin: 0 auto;"></div>';
+
+// Erweiterte Initialisierung mit benutzerdefinierten Optionen
+$options = [
+    'initialView' => 'timeGridWeek',
+    'headerToolbar' => [
+        'left' => 'prev,next today',
+        'center' => 'title',
+        'right' => 'dayGridMonth,timeGridWeek,listMonth'
+    ],
+    'weekends' => false,
+    'businessHours' => [
+        'start' => '09:00',
+        'end' => '17:30',
+        'daysOfWeek' => [1, 2, 3, 4, 5] // Mo-Fr
+    ],
+    'slotMinTime' => '08:00:00',
+    'slotMaxTime' => '20:00:00'
+];
+
+// Eigenen API-Endpoint für gefilterte Daten verwenden
+$apiEndpoint = rex_url::frontendController([
+    'rex-api-call' => 'forcal_exchange', 
+    'categories' => [1, 3] // Nur Kategorien 1 und 3 anzeigen
+]);
+
+echo forcalAssetHelper::getFullCalendarInitScript(
+    'mein-kalender',  // ID des Containers
+    'de',             // Sprache
+    $apiEndpoint,     // API-Endpoint
+    $options          // Benutzerdefinierte Optionen
+);
+```
+
+### Manuelle Einbindung der Assets
+
+Alternativ können die Assets auch manuell eingebunden werden:
+
+```html
+<!-- FullCalendar CSS -->
+<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/core/index.global.min.css') ?>">
+<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/daygrid/index.global.min.css') ?>">
+<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/timegrid/index.global.min.css') ?>">
+<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/list/index.global.min.css') ?>">
+<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'forcal.css') ?>">
+
+<!-- FullCalendar JS -->
+<script src="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/core/index.global.min.js') ?>"></script>
+<script src="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/daygrid/index.global.min.js') ?>"></script>
+<script src="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/timegrid/index.global.min.js') ?>"></script>
+<script src="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/list/index.global.min.js') ?>"></script>
+<script src="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/interaction/index.global.min.js') ?>"></script>
+```
+
+### Manuelles Initialisierungsscript
+
+```html
+<div id="calendar"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      locale: 'de',
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,listWeek'
+      },
+      navLinks: true,
+      editable: false,
+      dayMaxEvents: true,
+      events: '<?= rex_url::frontendController(['rex-api-call' => 'forcal_exchange']) ?>'
+    });
+    
+    calendar.render();
+  });
+</script>
+```
+
+### Ereignisbehandlung und Interaktion
+
+Um auf Ereignisse im Kalender zu reagieren:
+
+```javascript
+var calendarEl = document.getElementById('calendar');
+var calendar = new FullCalendar.Calendar(calendarEl, {
+  // ... andere Optionen ...
+  
+  // Klick auf ein Ereignis
+  eventClick: function(info) {
+    console.log('Event: ' + info.event.title);
+    console.log('ID: ' + info.event.id);
+    
+    // Link zu einer Detailseite
+    window.location.href = 'event-details.html?id=' + info.event.id;
+  },
+  
+  // Mauszeiger über Ereignis
+  eventMouseEnter: function(mouseEnterInfo) {
+    // Tooltip anzeigen
+  },
+  
+  // Datumsauswahl (benötigt interaction-Plugin)
+  dateClick: function(info) {
+    console.log('Clicked on: ' + info.dateStr);
+  }
+});
+```
+
+### Kategoriefilter im Frontend
+
+Ein häufiger Anwendungsfall ist das Filtern nach Kategorien:
+
+```php
+// HTML für Filter-Buttons
+$categorySql = rex_sql::factory();
+$categorySql->setQuery('SELECT id, name_' . rex_clang::getCurrentId() . ' AS name, color FROM ' . rex::getTablePrefix() . 'forcal_categories WHERE status = 1');
+
+echo '<div class="category-filter">';
+echo '<button class="cat-filter active" data-cat-id="all">Alle</button>';
+
+foreach($categorySql as $cat) {
+    echo '<button class="cat-filter" data-cat-id="' . $cat->getValue('id') . '" style="border-left: 4px solid ' . $cat->getValue('color') . '">';
+    echo $cat->getValue('name');
+    echo '</button>';
+}
+echo '</div>';
+
+// JavaScript für die Filter-Funktionalität
+?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        // ... Kalender-Konfiguration ...
+        events: '<?= rex_url::frontendController(['rex-api-call' => 'forcal_exchange']) ?>'
+    });
+    
+    calendar.render();
+    
+    // Event-Handler für Filter-Buttons
+    document.querySelectorAll('.cat-filter').forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Aktiven Button markieren
+            document.querySelectorAll('.cat-filter').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            var catId = this.getAttribute('data-cat-id');
+            
+            // Alle Events anzeigen oder filtern
+            if (catId === 'all') {
+                calendar.getEvents().forEach(function(event) {
+                    event.setProp('display', 'auto');
+                });
+            } else {
+                calendar.getEvents().forEach(function(event) {
+                    if (event.extendedProps.category_id == catId) {
+                        event.setProp('display', 'auto');
+                    } else {
+                        event.setProp('display', 'none');
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+```
+
+### API-Parameter für die Ereignisdaten
+
+Die ForCal-API unterstützt verschiedene Parameter zum Filtern und Steuern der zurückgegebenen Ereignisse:
+
+- `from`: Startdatum (YYYY-MM-DD) oder 'all'
+- `to`: Enddatum (YYYY-MM-DD)
+- `categories[]`: Eine oder mehrere Kategorie-IDs
+- `venues[]`: Eine oder mehrere Veranstaltungsort-IDs
+- `limit`: Maximale Anzahl zurückgegebener Ereignisse
+
+Beispiel:
+```
+<?= rex_url::frontendController([
+    'rex-api-call' => 'forcal_exchange',
+    'from' => 'all',
+    'categories' => [1, 3],
+    'limit' => 50
+]) ?>
+```
+
+### Responsives Design
+
+FullCalendar passt sich automatisch an verschiedene Bildschirmgrößen an. Mit Media Queries können Sie das Verhalten weiter anpassen:
+
+```css
+/* Beispiel für eigene CSS-Anpassungen */
+@media (max-width: 768px) {
+    .fc-toolbar.fc-header-toolbar {
+        flex-direction: column;
+    }
+    
+    .fc-toolbar-chunk {
+        margin-bottom: 1em;
+    }
+    
+    .fc .fc-toolbar-title {
+        font-size: 1.2em;
+    }
+}
+```
 
 ## Bugtracker
 
