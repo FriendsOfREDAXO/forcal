@@ -9,7 +9,7 @@ namespace forCal\Utils;
 
 use rex_url;
 use rex;
-
+use rex_path;
 /**
  * Hilfsklasse zum Einbinden der FullCalendar-Assets im Frontend
  */
@@ -86,7 +86,9 @@ class forcalAssetHelper
         
         // JSON für die JavaScript-Optionen erzeugen
         $optionsJson = json_encode($calendarOptions, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        
+
+        $optionsJs = self::convertOptionsToJS($optionsJson); 
+  
         // JavaScript-Code für die Initialisierung
         $script = <<<EOD
 <script>
@@ -96,7 +98,7 @@ class forcalAssetHelper
     var calendar = new FullCalendar.Calendar(calendarEl, {
       locale: '$locale',
       events: '$apiEndpoint',
-      {$this->convertOptionsToJS($optionsJson)}
+      $optionsJs  
     });
     
     calendar.render();
