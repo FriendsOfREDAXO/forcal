@@ -873,10 +873,6 @@ Alternativ können die Assets auch manuell eingebunden werden:
 
 ```html
 <!-- FullCalendar CSS -->
-<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/core/index.global.min.css') ?>">
-<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/daygrid/index.global.min.css') ?>">
-<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/timegrid/index.global.min.css') ?>">
-<link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'vendor/fullcalendar-6.x/list/index.global.min.css') ?>">
 <link rel="stylesheet" href="<?= rex_url::addonAssets('forcal', 'forcal.css') ?>">
 
 <!-- FullCalendar JS -->
