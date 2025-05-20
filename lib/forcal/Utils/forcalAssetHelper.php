@@ -41,9 +41,6 @@ class forcalAssetHelper
             if (file_exists(rex_path::addon('forcal', 'assets/vendor/fullcalendar-6.x/' . $plugin . '/index.global.min.js'))) {
                 $output .= '<script src="' . $assetPath . '/vendor/fullcalendar-6.x/' . $plugin . '/index.global.min.js"></script>' . PHP_EOL;
             }
-            if (file_exists(rex_path::addon('forcal', 'assets/vendor/fullcalendar-6.x/' . $plugin . '/index.global.min.css'))) {
-                $output .= '<link rel="stylesheet" href="' . $assetPath . '/vendor/fullcalendar-6.x/' . $plugin . '/index.global.min.css">' . PHP_EOL;
-            }
         }
         
         // ForCal CSS einbinden
