@@ -69,4 +69,4 @@ Once these steps are completed, the forcal repository will automatically use the
 
 - Installer Action Repository: https://github.com/FriendsOfREDAXO/installer-action
 - Fix Branch: `fix/handle-undefined-files-property`
-- Related Issue: Filed in FriendsOfREDAXO/forcal
+- This fix resolves the error reported when publishing releases from the forcal repository
