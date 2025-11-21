@@ -29,6 +29,3 @@ default_config:
     forcal_shortcut_save: 1
     forcal_full_time_preselection: 1
     forcal_start_page: 'calendar'
-
-console_commands:
-    forcal:list: forCal\Command\ListCommand
