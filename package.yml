@@ -1,5 +1,5 @@
 package: forcal
-version: '6.0.6'
+version: '6.0.7'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 page:
@@ -25,12 +25,12 @@ page:
         user_permissions: 
             title: 'translate:forcal_user_permissions'
             icon: rex-icon fa-users
-            itemclass: pull-right
+            itemClass: pull-right
             perm: 'forcal[userpermissions]'
         settings: 
             title: 'translate:forcal_settings'
             icon: rex-icon fa-cog
-            itemclass: pull-right
+            itemClass: pull-right
             perm: 'forcal[settings]'
 requires:
     redaxo: ^5.18.0
