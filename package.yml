@@ -1,11 +1,11 @@
 package: forcal
-version: '6.0.6'
+version: '6.0.7'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 
 page:
     title: 'translate:forcal_title'
-    perm: forcal[]
+    perm: 'forcal[]'
     icon: rex-icon fa-calendar
     block: system
     subpages:
