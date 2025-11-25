@@ -1,6 +1,7 @@
 package: forcal
 version: '6.0.5'
 author: 'Friends Of REDAXO'
+files: {}
 supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 page:
     title: 'translate:forcal_title'
