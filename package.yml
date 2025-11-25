@@ -19,7 +19,7 @@ page:
 requires:
     redaxo: ^5.18.0
     php:
-        version: '>=8.1, <9'
+        version: '>=8.1'
         extensions: [intl]
     packages:
         flatpickr: '>=1.1.1'
