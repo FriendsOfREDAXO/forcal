@@ -17,9 +17,9 @@ page:
         settings: { title: 'translate:forcal_settings', icon: rex-icon fa-cog, itemclass: pull-right, perm: forcal[settings] }
 
 requires:
-    redaxo: '^5.18.0'
+    redaxo: ^5.18.0
     php:
-        version: '>=8.1'
+        version: '>=8.1, <9'
         extensions: [intl]
     packages:
         flatpickr: '>=1.1.1'
