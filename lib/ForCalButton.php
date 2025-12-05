@@ -20,12 +20,22 @@ class ForCalButton implements ButtonInterface
         $listItems = $this->getRecentEntries();
 
         if (empty($listItems)) {
-            $listItems[] = '<div style="padding: 10px; text-align: center;">' . rex_i18n::msg('forcal_no_recent_entries') . '</div>';
+            $newEntryUrl = rex_url::backendPage('forcal/entries', ['func' => 'add']);
+            $listItems[] = '<div style="padding: 10px; text-align: center;">
+                <p style="margin-bottom: 10px;">' . rex_i18n::msg('forcal_no_recent_entries') . '</p>
+                <a href="' . $newEntryUrl . '" class="btn btn-primary btn-sm">
+                    <i class="fa fa-plus"></i> ' . rex_i18n::msg('forcal_add_new_entry') . '
+                </a>
+            </div>';
         }
 
+        // Aktueller Tag des Monats
+        $currentDay = date('j');
+        
         $fragment = new rex_fragment([
             'label' => rex_i18n::msg('forcal_title'),
             'icon' => 'rex-icon fa-calendar',
+            'iconBadge' => $currentDay,
             'listItems' => $listItems,
         ]);
         
