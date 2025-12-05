@@ -46,7 +46,6 @@ if (rex::isBackend() && rex::getUser()) {
     if (rex_addon::get('quick_navigation')->isAvailable()) {
         // Moderne Button-Registrierung über ButtonRegistry
         if (class_exists('FriendsOfRedaxo\\QuickNavigation\\Button\\ButtonRegistry')) {
-            require_once __DIR__ . '/lib/ForCalButton.php';
             FriendsOfRedaxo\QuickNavigation\Button\ButtonRegistry::registerButton(
                 new ForCalButton(),
                 45, // Priority zwischen ArticleHistory (40) und YForm (50)
