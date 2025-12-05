@@ -44,7 +44,19 @@ if (rex::isBackend() && rex::getUser()) {
     }
     
     if (rex_addon::get('quick_navigation')->isAvailable()) {
-        rex_extension::register('QUICK_NAVI_CUSTOM', ['forCalQn','getCalHistory'], rex_extension::LATE);
+        // Moderne Button-Registrierung über ButtonRegistry
+        if (class_exists('FriendsOfRedaxo\\QuickNavigation\\Button\\ButtonRegistry')) {
+            require_once __DIR__ . '/lib/ForCalButton.php';
+            FriendsOfRedaxo\QuickNavigation\Button\ButtonRegistry::registerButton(
+                new ForCalButton(),
+                45, // Priority zwischen ArticleHistory (40) und YForm (50)
+                'forcal',
+                rex_i18n::msg('forcal_title')
+            );
+        } else {
+            // Legacy Support für ältere Quick Navigation Versionen
+            rex_extension::register('QUICK_NAVI_CUSTOM', ['forCalQn','getCalHistory'], rex_extension::LATE);
+        }
     }
 
     // Tabelle für Medienberechtigungen erstellen, falls sie noch nicht existiert

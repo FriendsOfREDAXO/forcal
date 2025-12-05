@@ -173,3 +173,6 @@ forcal_no_categories = Keine Kategorien
 forcal_select_categories = Kategorien auswählen
 forcal_category_filter = Kategorien-Filter
 forcal_category_select = Kategorien
+
+# Quick Navigation
+forcal_no_recent_entries = Keine aktuellen Einträge
