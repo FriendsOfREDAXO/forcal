@@ -20,7 +20,7 @@ class ForCalButton implements ButtonInterface
         $listItems = $this->getRecentEntries();
 
         if (empty($listItems)) {
-            $newEntryUrl = rex_url::backendPage('forcal/entries', ['func' => 'add']);
+            $newEntryUrl = rex_url::backendPage('forcal/entries', ['func' => 'add', 'itemdate' => date('Y-m-d')]);
             $listItems[] = '<div style="padding: 10px; text-align: center;">
                 <p style="margin-bottom: 10px;">' . rex_i18n::msg('forcal_no_recent_entries') . '</p>
                 <a href="' . $newEntryUrl . '" class="btn btn-default btn-sm">
