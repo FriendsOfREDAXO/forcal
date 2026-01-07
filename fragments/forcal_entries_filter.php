@@ -176,7 +176,20 @@ foreach ($_GET as $param => $value) {
             <label style="font-size: 12px; margin-bottom: 5px; display: inline-block; margin-right: 10px;"><?= $addon->i18n('forcal_saved_filters') ?>:</label>
             <div class="btn-group btn-group-xs" role="group" style="display: inline-block;">
                 <?php foreach ($savedFilters as $filter): ?>
-                    <a href="<?= rex_url::currentBackendPage(array_merge($currentParams, $filter['filter_data'], ['load_filter' => $filter['id']])) ?>" 
+                    <?php
+                    // Filter-Daten auf korrekte URL-Parameter mappen
+                    $filterUrlParams = [];
+                    $filterData = $filter['filter_data'];
+                    if (isset($filterData['category'])) $filterUrlParams['category_filter'] = $filterData['category'];
+                    if (isset($filterData['venue'])) $filterUrlParams['venue_filter'] = $filterData['venue'];
+                    if (isset($filterData['status'])) $filterUrlParams['status_filter'] = $filterData['status'];
+                    if (isset($filterData['search'])) $filterUrlParams['search'] = $filterData['search'];
+                    if (isset($filterData['creator'])) $filterUrlParams['creator_filter'] = $filterData['creator'];
+                    if (isset($filterData['date_from'])) $filterUrlParams['date_from'] = $filterData['date_from'];
+                    if (isset($filterData['date_to'])) $filterUrlParams['date_to'] = $filterData['date_to'];
+                    $filterUrlParams['load_filter'] = $filter['id'];
+                    ?>
+                    <a href="<?= rex_url::currentBackendPage(array_merge($currentParams, $filterUrlParams)) ?>" 
                        class="btn btn-default <?= $filter['is_default'] ? 'btn-info' : '' ?>" 
                        title="<?= $filter['is_default'] ? $addon->i18n('forcal_default_filter') : '' ?>">
                         <?= rex_escape($filter['name']) ?>
