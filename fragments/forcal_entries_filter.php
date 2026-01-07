@@ -28,13 +28,27 @@ $currentSortDirection = rex_session('rex_list_' . $tableEvent . '_direction', 's
 // Gespeicherte Filter laden
 $savedFilters = forcalFilterService::getUserFilters($userId);
 
+// Benutzer-Kategorien für nicht-Admins vorbereiten
+$user_categories = [];
+if (!$user->isAdmin()) {
+    $user_categories = forCalUserPermission::getUserCategories($userId);
+}
+
 // Standard-Filter laden, falls kein Filter aktiv ist
 $defaultFilter = null;
 if (empty($currentCategory) && empty($currentVenue) && empty($currentStatus) && empty($currentSearch) && empty($currentCreator) && empty($currentDateFrom)) {
     $defaultFilter = forcalFilterService::getDefaultFilter($userId);
     if ($defaultFilter) {
         $filterData = $defaultFilter['filter_data'];
+        
+        // Sicherheitsprüfung: Kategorie-Zugriff für nicht-Admins
         $currentCategory = $filterData['category'] ?? null;
+        if ($currentCategory && !$user->isAdmin()) {
+            if (!in_array($currentCategory, $user_categories)) {
+                $currentCategory = null; // Kategorie nicht mehr erlaubt
+            }
+        }
+        
         $currentVenue = $filterData['venue'] ?? null;
         $currentStatus = $filterData['status'] ?? null;
         $currentSearch = $filterData['search'] ?? '';
@@ -59,6 +73,13 @@ if (rex_request('load_filter', 'int', 0) > 0) {
     $loadedFilter = forcalFilterService::getFilter(rex_request('load_filter', 'int'), $userId);
     if ($loadedFilter) {
         $filterData = $loadedFilter['filter_data'];
+        
+        // Sicherheitsprüfung: Kategorie-Zugriff für nicht-Admins
+        if (isset($filterData['category']) && $filterData['category'] && !$user->isAdmin()) {
+            if (!in_array($filterData['category'], $user_categories)) {
+                unset($filterData['category']); // Kategorie nicht mehr erlaubt
+            }
+        }
         
         // Sortierung wiederherstellen
         if (isset($filterData['sort']) && !empty($filterData['sort'])) {
@@ -118,13 +139,17 @@ $all_categories = rex_sql::factory()->getArray(
      ORDER BY name_' . rex_clang::getCurrentId()
 );
 
-// Venues laden
-$all_venues = rex_sql::factory()->getArray(
-    'SELECT id, name_' . rex_clang::getCurrentId() . ' as name 
-     FROM ' . rex::getTable('forcal_venues') . ' 
-     WHERE status = 1 
-     ORDER BY name_' . rex_clang::getCurrentId()
-);
+// Venues laden (nur wenn aktiviert)
+$all_venues = [];
+$venuesEnabled = $addon->getConfig('forcal_venues_enabled', true);
+if ($venuesEnabled) {
+    $all_venues = rex_sql::factory()->getArray(
+        'SELECT id, name_' . rex_clang::getCurrentId() . ' as name 
+         FROM ' . rex::getTable('forcal_venues') . ' 
+         WHERE status = 1 
+         ORDER BY name_' . rex_clang::getCurrentId()
+    );
+}
 
 // Benutzer laden (für Ersteller-Filter)
 $creators = rex_sql::factory()->getArray(
@@ -133,12 +158,6 @@ $creators = rex_sql::factory()->getArray(
      INNER JOIN ' . rex::getTable('forcal_entries') . ' e ON u.login = e.createuser
      ORDER BY u.name'
 );
-
-// Benutzer-Kategorien für nicht-Admins
-$user_categories = [];
-if (!$user->isAdmin()) {
-    $user_categories = forCalUserPermission::getUserCategories($userId);
-}
 
 // Aktuelle URL ohne Filter-Parameter
 $baseUrl = rex_url::currentBackendPage();
@@ -237,6 +256,7 @@ foreach ($_GET as $param => $value) {
                         </div>
                     </div>
                     
+                    <?php if ($venuesEnabled): ?>
                     <div class="col-sm-2">
                         <div class="form-group" style="margin-bottom: 10px;">
                             <select name="venue_filter" class="form-control input-sm selectpicker" data-live-search="true" data-size="8">
@@ -249,6 +269,7 @@ foreach ($_GET as $param => $value) {
                             </select>
                         </div>
                     </div>
+                    <?php endif; ?>
                     
                     <div class="col-sm-2">
                         <div class="form-group" style="margin-bottom: 10px;">
