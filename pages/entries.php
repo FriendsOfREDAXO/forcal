@@ -148,48 +148,18 @@ if ($func == 'delete') {
 }
 
 if ($func == '' || $func == 'filter') {
-    // Kategorie-Filter Formular
-    $categoryFilterForm = '<form action="' . rex_url::currentBackendPage() . '" method="get" class="form-inline" style="margin-bottom: 20px;">';
-    $categoryFilterForm .= '<input type="hidden" name="page" value="' . rex_request('page', 'string') . '">';
+    // Erweitertes Filter-Fragment anzeigen
+    $fragment = new rex_fragment();
+    echo $fragment->parse('forcal_entries_filter.php');
     
-    $categoryFilterForm .= '<div class="form-group">';
-    $categoryFilterForm .= '<label for="category_filter" style="margin-right: 10px;">' . rex_i18n::msg('forcal_category') . ':</label>';
-    $categoryFilterForm .= '<select id="category_filter" name="category_filter" class="form-control selectpicker" data-live-search="true">';
-    $categoryFilterForm .= '<option value="">' . rex_i18n::msg('forcal_please_select') . '</option>';
-    
-    // Kategorien holen
-    $categorySql = rex_sql::factory();
-    
-    // Abfrage-Bedingung für Kategorien basierend auf Benutzerrechten
-    $categoryWhere = '';
-    if (!$user->isAdmin() && !$user->hasPerm('forcal[all]')) {
-        $allowedCategories = forCalUserPermission::getUserCategories($user->getId());
-        if (!empty($allowedCategories)) {
-            $categoryWhere = ' WHERE id IN (' . implode(',', $allowedCategories) . ')';
-        } else {
-            $categoryWhere = ' WHERE 0'; // Keine Kategorien erlaubt = keine Ergebnisse
-        }
-    }
-    
-    $categorySql->setQuery('SELECT id, name_' . rex_clang::getCurrentId() . ' as name FROM ' . $tableCategories . $categoryWhere . ' ORDER BY name');
-    
-    foreach ($categorySql as $category) {
-        $selected = ($categoryFilter == $category->getValue('id')) ? 'selected' : '';
-        $categoryFilterForm .= '<option value="' . $category->getValue('id') . '" ' . $selected . '>' . $category->getValue('name') . '</option>';
-    }
-    
-    $categoryFilterForm .= '</select>';
-    $categoryFilterForm .= '</div>';
-    
-    $categoryFilterForm .= '<div class="form-group" style="margin-left: 10px;">';
-    $categoryFilterForm .= '<button type="submit" class="btn btn-primary">' . rex_i18n::msg('forcal_filter') . '</button>';
-    $categoryFilterForm .= '<a href="' . rex_url::currentBackendPage(['reset_filter' => true]) . '" class="btn btn-default" style="margin-left: 5px;">' . rex_i18n::msg('forcal_reset') . '</a>';
-    $categoryFilterForm .= '<a href="' . rex_url::currentBackendPage(['sort_reset' => true]) . '" class="btn btn-default" style="margin-left: 5px;">' . rex_i18n::msg('forcal_reset_sorting') . '</a>';
-    $categoryFilterForm .= '</div>';
-    
-    $categoryFilterForm .= '</form>';
-    
-    echo $categoryFilterForm;
+    // Aktuelle Filter aus URL oder Fragment übernehmen
+    $categoryFilter = rex_request('category_filter', 'int', null);
+    $venueFilter = rex_request('venue_filter', 'int', null);
+    $statusFilter = rex_request('status_filter', 'string', ''); // String, um zwischen leer, '0' und '1' zu unterscheiden
+    $searchQuery = rex_request('search', 'string', '');
+    $creatorFilter = rex_request('creator_filter', 'int', null);
+    $dateFrom = rex_request('date_from', 'string', '');
+    $dateTo = rex_request('date_to', 'string', '');
 
     $select = array('en.id');
     $group = array(40);
@@ -208,14 +178,55 @@ if ($func == '' || $func == 'filter') {
 
     // where statements
     $where = array();
-    if (!is_null($categoryFilter)) {
-        $where[] = 'en.category = ' . $categoryFilter;
+    
+    // Kategorie-Filter
+    if (!is_null($categoryFilter) && $categoryFilter > 0) {
+        $where[] = 'en.category = ' . (int) $categoryFilter;
     }
     
-    // Add user permission filter using forCalUserPermission
-    $userFilter = forCalUserPermission::getCategoryFilter('en');
-    if (!empty($userFilter)) {
-        $where[] = substr($userFilter, 5); // Remove " AND " prefix
+    // Venue-Filter
+    if (!is_null($venueFilter) && $venueFilter > 0) {
+        $where[] = 'en.venue = ' . (int) $venueFilter;
+    }
+    
+    // Status-Filter - Wichtig: 0 und 1 sind beide valide Werte!
+    if ($statusFilter !== null && $statusFilter !== '') {
+        $where[] = 'en.status = ' . (int) $statusFilter;
+    }
+    
+    // Ersteller-Filter
+    if (!is_null($creatorFilter) && $creatorFilter > 0) {
+        $creatorSql = rex_sql::factory();
+        $creatorSql->setQuery('SELECT login FROM ' . rex::getTable('user') . ' WHERE id = :id', ['id' => $creatorFilter]);
+        if ($creatorSql->getRows() > 0) {
+            $where[] = 'en.createuser = ' . $creatorSql->escape($creatorSql->getValue('login'));
+        }
+    }
+    
+    // Datumsbereich-Filter
+    if (!empty($dateFrom)) {
+        $where[] = 'en.start_date >= ' . rex_sql::factory()->escape($dateFrom);
+    }
+    if (!empty($dateTo)) {
+        $where[] = 'en.start_date <= ' . rex_sql::factory()->escape($dateTo);
+    }
+    
+    // Suche in Titel und Teaser
+    if (!empty($searchQuery)) {
+        $searchParts = [];
+        foreach (rex_clang::getAll() as $clang) {
+            $searchParts[] = 'en.name_' . $clang->getId() . ' LIKE ' . rex_sql::factory()->escape('%' . $searchQuery . '%');
+            $searchParts[] = 'en.teaser_' . $clang->getId() . ' LIKE ' . rex_sql::factory()->escape('%' . $searchQuery . '%');
+        }
+        $where[] = '(' . implode(' OR ', $searchParts) . ')';
+    }
+    
+    // Add user permission filter using forCalUserPermission - NUR wenn kein Admin
+    if (!$user->isAdmin()) {
+        $userFilter = forCalUserPermission::getCategoryFilter('en');
+        if (!empty($userFilter)) {
+            $where[] = substr($userFilter, 5); // Remove " AND " prefix
+        }
     }
     
     if (count($where) > 0) {
@@ -234,6 +245,24 @@ if ($func == '' || $func == 'filter') {
     // Diese Parameter werden bei allen Listenlinks erhalten
     if (!is_null($categoryFilter)) {
         $list->addParam('category_filter', $categoryFilter);
+    }
+    if (!is_null($venueFilter)) {
+        $list->addParam('venue_filter', $venueFilter);
+    }
+    if ($statusFilter !== null && $statusFilter !== '') {
+        $list->addParam('status_filter', $statusFilter);
+    }
+    if (!empty($searchQuery)) {
+        $list->addParam('search', $searchQuery);
+    }
+    if (!is_null($creatorFilter)) {
+        $list->addParam('creator_filter', $creatorFilter);
+    }
+    if (!empty($dateFrom)) {
+        $list->addParam('date_from', $dateFrom);
+    }
+    if (!empty($dateTo)) {
+        $list->addParam('date_to', $dateTo);
     }
 
     // merge group with default

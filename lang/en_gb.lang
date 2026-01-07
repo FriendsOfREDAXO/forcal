@@ -43,6 +43,8 @@ forcal_calendar = Calendar
 forcal_entries = Entries
 forcal_categories = Categories
 forcal_venues = Venues
+forcal_venue = Venue
+forcal_status = Status
 forcal_settings = Settings
 
 ### cal view
@@ -172,3 +174,35 @@ forcal_category_select = Categories
 
 # Quick Navigation
 forcal_no_recent_entries = No recent entries
+
+# Advanced Filter and Search
+forcal_filter_search = Filter & Search
+forcal_search = Search
+forcal_search_placeholder = Search title or description...
+forcal_saved_filters = Saved Filters
+forcal_save_filter = Save Filter
+forcal_filter_name = Filter Name
+forcal_set_as_default = Set as Default Filter
+forcal_set_as_default_filter = Use as default filter on page load
+forcal_default_filter = Default Filter
+forcal_delete_filter_confirm = Do you really want to delete this filter?
+forcal_apply_filter = Apply Filter
+forcal_reset_filter = Reset Filter
+forcal_all_venues = All Venues
+forcal_all_statuses = All Statuses
+forcal_all_creators = All Creators
+forcal_active = Active
+forcal_inactive = Inactive
+forcal_creator = Creator
+forcal_date_range = Date Range
+forcal_from = From
+forcal_to = To
+forcal_cancel = Cancel
+forcal_save = Save
+forcal_delete = Delete
+forcal_filter_settings = Filter Settings
+forcal_no_filters_active = No filters active
+forcal_no_filters_to_save = No filters to save
+forcal_sorting = Sorting
+forcal_ascending = Ascending
+forcal_descending = Descending

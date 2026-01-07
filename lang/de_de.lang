@@ -43,6 +43,8 @@ forcal_calendar = Kalender
 forcal_entries = Termine
 forcal_categories = Kategorien
 forcal_venues = Orte
+forcal_venue = Ort
+forcal_status = Status
 forcal_settings = Einstellungen
 
 ### cal view
@@ -176,3 +178,35 @@ forcal_category_select = Kategorien
 
 # Quick Navigation
 forcal_no_recent_entries = Keine aktuellen Einträge
+
+# Erweiterte Filter und Suche
+forcal_filter_search = Filter & Suche
+forcal_search = Suche
+forcal_search_placeholder = Titel oder Beschreibung durchsuchen...
+forcal_saved_filters = Gespeicherte Filter
+forcal_save_filter = Filter speichern
+forcal_filter_name = Filter-Name
+forcal_set_as_default = Als Standard-Filter setzen
+forcal_set_as_default_filter = Als Standard-Filter beim Seitenaufruf verwenden
+forcal_default_filter = Standard-Filter
+forcal_delete_filter_confirm = Möchten Sie diesen Filter wirklich löschen?
+forcal_apply_filter = Filter anwenden
+forcal_reset_filter = Filter zurücksetzen
+forcal_all_venues = Alle Orte
+forcal_all_statuses = Alle Status
+forcal_all_creators = Alle Ersteller
+forcal_active = Aktiv
+forcal_inactive = Inaktiv
+forcal_creator = Ersteller
+forcal_date_range = Zeitraum
+forcal_from = Von
+forcal_to = Bis
+forcal_cancel = Abbrechen
+forcal_save = Speichern
+forcal_delete = Löschen
+forcal_filter_settings = Filtereinstellungen
+forcal_no_filters_active = Keine Filter aktiv
+forcal_no_filters_to_save = Keine Filter zum Speichern vorhanden
+forcal_sorting = Sortierung
+forcal_ascending = Aufsteigend
+forcal_descending = Absteigend

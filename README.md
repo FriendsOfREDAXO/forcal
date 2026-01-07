@@ -10,6 +10,7 @@
 - iCal-Import/Export
 - Mehrsprachigkeit
 - Benutzerspezifische Berechtigungen
+- Speicherbare Filter (benutzerspezifisch)
 
 # FORCal – Kalender für REDAXO
 
@@ -27,6 +28,7 @@ FORCal ist flexibel wie ein Framework und lässt sich an die individuellen Anfor
 *   **JSON API:** Gib deine Events über eine API aus und filtere sie.
 *   **Nahtlose Frontend & Backend Integration:** Passt sich perfekt in dein REDAXO ein.
 *   **Feingliedrige Benutzerrechte:** Kontrolliere, wer was darf.
+*   **Speicherbare Filter:** Erstelle und speichere individuelle Filteransichten für schnellen Zugriff.
 *   **iCal/CalDAV Export & Abo:** Exportiere Termine als iCal, CalDAV oder biete Abo-Feeds an.
 *   **Termin-Links für alle:** Google Calendar, Outlook, ICS – alles dabei.
 *   **Optionale Orte-Verwaltung:** Verwalte Veranstaltungsorte, wenn du es brauchst.
@@ -49,6 +51,7 @@ Egal ob man einen einfachen Kalender oder ein komplexes Event-System benötigt.
 *   **Mehrsprachige Unterstützung:** Verwende FORCal in mehreren Sprachen.
 *   **Kalender-Integration:** Zeige deine Termine auf deiner Webseite an.
 *   **Verwaltung von Orten:** Ordne Veranstaltungen einfach Veranstaltungsorten zu.
+*   **Gespeicherte Filter:** Speichere häufig verwendete Filtereinstellungen für schnellen Zugriff.
 *   **Export und Teilen:** Exportiere Termine und teile sie mit anderen.
 *   **Benutzerrechte verwalten:** Bestimme, wer welche Inhalte bearbeiten darf.
 

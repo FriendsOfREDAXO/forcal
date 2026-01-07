@@ -113,6 +113,19 @@ rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_media_permissions')
     ->setPrimaryKey('id')
     ->ensure();
 
+// Tabelle für gespeicherte Filter erstellen
+rex_sql_table::get(rex::getTablePrefix() . 'forcal_saved_filters')
+    ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
+    ->ensureColumn(new rex_sql_column('user_id', 'int(11)', false))
+    ->ensureColumn(new rex_sql_column('name', 'varchar(100)', false))
+    ->ensureColumn(new rex_sql_column('filter_data', 'text', false))
+    ->ensureColumn(new rex_sql_column('is_default', 'tinyint(1)', false, '0'))
+    ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
+    ->ensureColumn(new rex_sql_column('updatedate', 'datetime', false, 'CURRENT_TIMESTAMP', 'on update CURRENT_TIMESTAMP'))
+    ->setPrimaryKey('id')
+    ->ensureIndex(new rex_sql_index('user_id', ['user_id']))
+    ->ensure();
+
     // copy default definitions to data
     rex_dir::copy($this->getPath('data'), $this->getDataPath());
 
