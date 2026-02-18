@@ -22,10 +22,6 @@ if ($func == 'save') {
         
         rex_file::put($customFile, $content);
         $msg = rex_view::success(rex_i18n::msg('forcal_custom_field_saved'));
-
-        // Sync with database for compatibility
-        $sql = rex_sql::factory();
-        $sql->setQuery('DELETE FROM ' . rex::getTable('forcal_custom_fields') . ' WHERE type = ?', [$type]);
         
         $data = rex_string::yamlDecode($content);
         if (!empty($data)) {
@@ -36,6 +32,14 @@ if ($func == 'save') {
     } catch (rex_yaml_parse_exception $e) {
         $msg = rex_view::error(rex_i18n::msg('forcal_custom_field_error_yaml') . ': ' . $e->getMessage());
     }
+} elseif ($func == 'reset') {
+    if (file_exists($customFile)) {
+        rex_file::delete($customFile);
+        $msg = rex_view::success(rex_i18n::msg('forcal_custom_field_reset_success'));
+        
+        // Sync with database (using default definition)
+        $sql = rex_sql::factory();
+        $sql->setQuery('DELETE FROM ' . rex::getTable('forcal_custom_fields') . ' WHERE type = ?', [$type]);
 }
 
 // Load Content
@@ -58,7 +62,8 @@ echo '<div class="nav-rex">' . $tabs . '</div>';
 
 echo $msg;
 
-// Form
+/n['field'] .= ' <button class="btn btn-delete" type="submit" name="func" value="reset" onclick="return confirm(\'' . rex_i18n::msg('forcal_custom_field_reset_confirm') . '\')">' . rex_i18n::msg('forcal_custom_field_reset') . '</button>';
+$/ Form
 $formContent = '<div class="rex-form-group form-group">
     <label for="code-editor" class="control-label">' . rex_i18n::msg('forcal_custom_field_yaml_definition') . '</label>
     <div>
