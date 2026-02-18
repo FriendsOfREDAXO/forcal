@@ -210,3 +210,12 @@ forcal_no_filters_to_save = Keine Filter zum Speichern vorhanden
 forcal_sorting = Sortierung
 forcal_ascending = Aufsteigend
 forcal_descending = Absteigend
+
+### custom fields
+forcal_custom_fields = Eigene Felder
+forcal_custom_fields_title = Eigene Felder verwalten
+forcal_custom_field_saved = Definition erfolgreich gespeichert
+forcal_custom_field_error_yaml = Fehler beim Parsen der YAML-Datei
+forcal_custom_field_yaml_definition = YAML-Definition
+forcal_custom_field_help_intro = Definieren Sie hier Ihre eigenen Felder im YAML-Format.
+perm_general_forcal[custom_fields] = FORCal Eigene Felder verwalten

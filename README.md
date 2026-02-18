@@ -596,118 +596,37 @@ Ein Selectfeld mit mehrfacher Auswahlmöglichkeit und einer Höhe von 5 Elemente
       size: 5
 ```
 
-## Benutzerdefinierte Felder mit gefiltertem SQL
+## Text-Editor definieren
 
-forCal bietet jetzt die Möglichkeit, benutzerdefinierte Felder mit dynamisch gefilterten SQL-Abfragen zu erstellen. Dies ermöglicht eine berechtigungsabhängige Darstellung von Daten in Auswahlfeldern.
+forCal erlaubt es, einen beliebigen Editor für die Eingabe in den Textfeldern zu wählen. Die Standard Textfelder können über JSON-Definitionen eingestellt werden. Das Verfahren entspricht der Lösung in yForm.
 
-### Einfaches Beispiel: Benutzerauswahl mit Filterung
+### Felder mit dynamischen Optionen via Callback
 
-Um ein SQL-gefiltertes Auswahlfeld zu erstellen, nutze die `.yml`-Datei im `data/definitions/`-Verzeichnis:
+Anstatt SQL direkt in die YAML-Datei zu schreiben, können Optionen auch über eine statische PHP-Methode (Callback) geladen werden. Dies erlaubt komplexe Logik (z.B. Berechtigungsprüfungen) sauber in PHP-Klassen auszulagern.
 
-```yaml
-fields:
-  - name: 'assigned_user'
-    type: 'selectsql'
-    label_de: 'Zuständiger Benutzer'
-    label_en: 'Assigned User'
-    qry: 'SELECT id, name FROM rex_user WHERE id = ###user_id### OR (SELECT LENGTH(rights) FROM rex_user WHERE id = ###user_id###) > 0 ORDER BY name'
-```
+Der Callback muss ein Array von Arrays zurückgeben, wobei jedes innere Array die Schlüssel `id` (Wert) und `name` (Label) enthalten muss.
 
-Die `###user_id###`-Platzhalter werden automatisch durch die ID des aktuellen Benutzers ersetzt.
-
-### Verwendung der forCalSqlHelper-Klasse
-
-Für komplexere Filterungen bietet die neue `forCalSqlHelper`-Klasse nützliche Methoden:
-
-```yaml
-fields:
-  - name: 'assigned_user'
-    type: 'selectsql'
-    label_de: 'Zuständiger Benutzer'
-    label_en: 'Assigned User'
-    qry: '<?php echo \forCal\Utils\forCalSqlHelper::getFilteredQueryString(rex::getTable("user"), "id", "name", "id", rex::getUser()->getId(), "status = 1"); ?>'
-```
-
-Die Methode `getFilteredQueryString` erzeugt eine SQL-Abfrage, die automatisch Benutzerberechtigungen berücksichtigt.
-
-### Fortgeschrittenes Beispiel: Dynamisch gefiltertes Auswahlfeld
-
-Hier ist ein Beispiel für ein Auswahlfeld, das basierend auf Benutzerberechtigungen unterschiedliche Optionen anzeigt:
-
-```yaml
-fields:
-  - name: 'assigned_user'
-    type: 'selectsql'
-    label_de: 'Zuständiger Benutzer'
-    label_en: 'Assigned User'
-    qry: '<?php 
-      $userId = rex::getUser()->getId();
-      $user = rex_user::get($userId);
-      
-      if ($user->isAdmin() || $user->hasPerm("forcal[all]")) {
-        echo "SELECT id, CONCAT(name, \' (\', login, \')\') as name FROM " . rex::getTable("user") . " WHERE status = 1 ORDER BY name";
-      } else {
-        echo "SELECT id, CONCAT(name, \' (\', login, \')\') as name FROM " . rex::getTable("user") . " WHERE id = " . $userId . " OR id IN (SELECT user_id FROM " . rex::getTablePrefix() . "forcal_user_categories WHERE category_id IN (SELECT category_id FROM " . rex::getTablePrefix() . "forcal_user_categories WHERE user_id = " . $userId . ")) ORDER BY name";
-      }
-    ?>'
-```
-
-Dieses Beispiel zeigt:
-- Für Administratoren oder Benutzer mit `forcal[all]`-Recht: Alle Benutzer
-- Für eingeschränkte Benutzer: Nur der eigene Benutzer plus Benutzer mit gemeinsamen Kategoriezuweisungen
-
-### Eigene Hilfsfunktionen erstellen
-
-Du kannst auch eigene Hilfsfunktionen für komplexe Filterungen definieren:
-
-1. Erstelle eine PHP-Datei in deinem `lib/`-Verzeichnis:
+**Beispiel PHP-Klasse (`lib/MyOptions.php`):**
 
 ```php
-<?php
-namespace forCal\Custom;
-
-use rex;
-use rex_user;
-
-class CustomFields
-{
-    public static function getFilteredUserOptions($user_id) 
-    {
-        // Prüfen, ob der aktuelle Benutzer Admin oder forcal[all]-Rechte hat
-        $user = rex_user::get($user_id);
-        $hasFullAccess = $user->isAdmin() || $user->hasPerm('forcal[all]');
-        
-        // SQL-Abfrage erstellen
-        $table = rex::getTable('user');
-        
-        if ($hasFullAccess) {
-            // Alle Benutzer anzeigen
-            return "SELECT id, name FROM $table ORDER BY name";
-        } else {
-            // Nur den eigenen Benutzer und Benutzer mit bestimmten Rechten anzeigen
-            return "SELECT id, name FROM $table WHERE id = $user_id OR rights LIKE '%forcal%' ORDER BY name";
-        }
+class MyOptions {
+    public static function getUserOptions() {
+        // Beispiel: Nur aktive Nutzer laden
+        // Hier kann beliebige PHP-Logik stehen
+        return rex_sql::factory()->getArray('SELECT id, name FROM rex_user WHERE status = 1 ORDER BY name');
     }
 }
 ```
 
-2. Verwende diese Funktion in deiner `.yml`-Datei:
+**YAML-Definition:**
 
 ```yaml
 fields:
   - name: 'assigned_user'
-    type: 'selectsql'
-    label_de: 'Zuständiger Benutzer'
-    label_en: 'Assigned User'
-    qry: '<?php echo \forCal\Custom\CustomFields::getFilteredUserOptions(rex::getUser()->getId()); ?>'
+    type: 'select'
+    label_de: 'Benutzer'
+    callback: 'MyOptions::getUserOptions'
 ```
-
-Mit diesem Ansatz kannst du komplexe, dynamisch gefilterte Auswahlfelder erstellen, die Benutzerberechtigungen berücksichtigen und nur relevante Optionen anzeigen.
-
-
-## Text-Editor definieren
-
-forCal erlaubt es, einen beliebigen Editor für die Eingabe in den Textfeldern zu wählen. Die Standard Textfelder können über JSON-Definitionen eingestellt werden. Das Verfahren entspricht der Lösung in yForm.
 
 ### Teaser und Beschreibung
 

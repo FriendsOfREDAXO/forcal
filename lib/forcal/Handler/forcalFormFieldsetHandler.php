@@ -249,7 +249,11 @@ class forCalFormFieldsetHandler
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
                     $formField->setSuffix(self::getSuffix($field));
-                    $options = \rex_sql::factory()->getArray($field['qry']);
+                    if (array_key_exists('callback', $field) && is_callable($field['callback'])) {
+                        $options = call_user_func($field['callback']);
+                    } else {
+                        $options = \rex_sql::factory()->getArray($field['qry']);
+                    }
                     foreach ($options as $v) {
                         $formField->addOption($v['name'], $v['id']);
                     }
@@ -260,6 +264,12 @@ class forCalFormFieldsetHandler
                     $formField->setLabel(self::getLabel($field));
                     $formField->setPrefix(self::getPrefix($field));
                     $formField->setSuffix(self::getSuffix($field));
+                    if (array_key_exists('callback', $field) && is_callable($field['callback'])) {
+                        $options = call_user_func($field['callback']);
+                        foreach ($options as $v) {
+                            $formField->addOption($v['name'], $v['id']);
+                        }
+                    }
                     if (array_key_exists('options', $field)) {
                         foreach ($field['options'] as $k => $v) {
                             $formField->addOption($v, $k);
@@ -284,6 +294,14 @@ class forCalFormFieldsetHandler
                     $formField->setPrefix(self::getPrefix($field));
                     $formField->setSuffix(self::getSuffix($field));
                     $formField->setAttribute('class', 'selectpicker form-control');
+
+                    if (array_key_exists('callback', $field) && is_callable($field['callback'])) {
+                        $options = call_user_func($field['callback']);
+                        $select = $formField->getSelect();
+                        foreach ($options as $v) {
+                            $select->addOption($v['name'], $v['id']);
+                        }
+                    }
                     if (array_key_exists('options', $field)) {
                         $select = $formField->getSelect();
                         foreach ($field['options'] as $key => $val) {

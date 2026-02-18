@@ -447,9 +447,9 @@ if ($func == '' || $func == 'filter') {
     }
 
 
-    $form->addRawField('<div class="forcal-first-group"><dl class="rex-form-group form-group">
-        <dt><label class="control-label">' . rex_i18n::msg('forcal_entry_full_time') . '</label></dt>
-        <dd><div class="forcal-form-checkboxes-inline forcal-check-checkstyle">');
+    $form->addRawField('<div class="forcal-first-group"><div class="rex-form-group form-group">
+        <label class="control-label">' . rex_i18n::msg('forcal_entry_full_time') . '</label>
+        <div class="forcal-form-checkboxes-inline forcal-check-checkstyle">');
 
     $field = $form->addCheckboxField('full_time');
     $field->addOption(rex_i18n::msg('forcal_checkbox_full_time'), 1);
@@ -458,10 +458,10 @@ if ($func == '' || $func == 'filter') {
         $field->setAttribute('checked', 'checked');
     }
 
-    $form->addRawField('</div></dd></dl>
-    <dl class="rex-form-group form-group form-group-np">
-    <dt><label class="control-label">' . rex_i18n::msg('forcal_entry_date') . '</label></dt>
-    <dd>
+    $form->addRawField('</div></div>
+    <div class="rex-form-group form-group form-group-np">
+    <label class="control-label">' . rex_i18n::msg('forcal_entry_date') . '</label>
+    <div>
 
     <div class="row"><div class="col-md-6">
 
@@ -509,7 +509,7 @@ if ($func == '' || $func == 'filter') {
 
     </div></div>
 
-    </dd></dl>
+    </div></div>
     </div>
     ');
 
@@ -517,9 +517,9 @@ if ($func == '' || $func == 'filter') {
 
     ## MASTER SELECT
     ## REPEAT or ONE TIME
-    $form->addRawField('<dl class="rex-form-group form-group forcal_repeat_fields">
-        <dt><label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">' . rex_i18n::msg('forcal_entry_type') . '</label></dt>
-        <dd><div class="forcal-form-radioboxes-inline forcal-check-radiostyle">');
+    $form->addRawField('<div class="rex-form-group form-group forcal_repeat_fields">
+        <label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">' . rex_i18n::msg('forcal_entry_type') . '</label>
+        <div class="forcal-form-radioboxes-inline forcal-check-radiostyle">');
 
     $field = $form->addRadioField('type');
     $field->addOption(rex_i18n::msg('forcal_radio_one_time'), 'one_time');
@@ -527,16 +527,16 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('class', 'radio-btn forcal_repeat_master_radio');
     if ($func == 'add') $field->setValue('one_time');
 
-    $form->addRawField('</div></dd></dl>');
+    $form->addRawField('</div></div>');
 
 
 
     ## REPEAT TYPE
     $form->addRawField('<div class="forcal_repeats_show panel-collapse collapse">');
 
-    $form->addRawField('<dl class="rex-form-group form-group">
-            <dt><label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">' . rex_i18n::msg('forcal_entry_repeats') . '</label></dt>
-            <dd><div class="forcal-form-select-inline forcal-repeat-type">');
+    $form->addRawField('<div class="rex-form-group form-group">
+            <label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">' . rex_i18n::msg('forcal_entry_repeats') . '</label>
+            <div class="forcal-form-select-inline forcal-repeat-type">');
 
     $field = $form->addSelectField('repeat');
     $select = $field->getSelect();
@@ -620,14 +620,14 @@ if ($func == '' || $func == 'filter') {
                     </div>
                 ');
 
-    $form->addRawField('</dd></dl></div>');
+    $form->addRawField('</div></div>');
 
     ## TODO bring it to live
     ## DAYS for WEEKLY
     /*
-    $form->addRawField('<dl class="rex-form-group form-group forcal_repeat_view_element view-weekly">
-        <dt><label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">'.rex_i18n::msg('forcal_check_days').'</label></dt>
-        <dd><div class="forcal-form-checkboxes-inline">');
+    $form->addRawField('<div class="rex-form-group form-group forcal_repeat_view_element view-weekly">
+        <label class="control-label" for="rex-forcal-entries-28f06d8c55ea171dcc6a38ea996b4b1b-repeats">'.rex_i18n::msg('forcal_check_days').'</label>
+        <div class="forcal-form-checkboxes-inline">');
 
         $field = $form->addCheckboxField('repeat_sun', 0);
         $field->addOption(rex_i18n::msg('sun'), '1');
@@ -650,7 +650,7 @@ if ($func == '' || $func == 'filter') {
         $field = $form->addCheckboxField('repeat_sat', 0);
         $field->addOption(rex_i18n::msg('sat'), '1');
 
-    $form->addRawField('</div></dd></dl>');
+    $form->addRawField('</div></div></div>');
     */
 
     // start lang tabs

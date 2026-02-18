@@ -1,5 +1,5 @@
 package: forcal
-version: '6.2.0'
+version: '6.3.0'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 page:
@@ -22,7 +22,12 @@ page:
             title: 'translate:forcal_venues'
             icon: rex-icon fa-map-marker
             perm: 'forcal[venuespage]'
-        user_permissions: 
+        custom_fields: 
+            title: 'translate:forcal_custom_fields'
+            icon: rex-icon fa-server
+            perm: admin[]
+            itemClass: pull-right
+        user_permissions:  
             title: 'translate:forcal_user_permissions'
             icon: rex-icon fa-users
             itemClass: pull-right
