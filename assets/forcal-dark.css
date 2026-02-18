@@ -261,9 +261,12 @@ body:not(.rex-theme-light) #forcal td.fc-today {
 }
 
 body.rex-theme-dark #forcal .fc-week-number,
-body:not(.rex-theme-light) #forcal .fc-week-number {
+body.rex-theme-dark #forcal .fc-daygrid-week-number,
+body:not(.rex-theme-light) #forcal .fc-week-number,
+body:not(.rex-theme-light) #forcal .fc-daygrid-week-number {
     background-color: var(--fc-week-number-bg);
-    color: var(--fc-text);
+    color: var(--fc-text) !important;
+    text-decoration: none;
 }
 
 body.rex-theme-dark #forcal .fc-day-top.fc-sat .fc-day-number,
