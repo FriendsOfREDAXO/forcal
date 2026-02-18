@@ -62,8 +62,7 @@ echo '<div class="nav-rex">' . $tabs . '</div>';
 
 echo $msg;
 
-/n['field'] .= ' <button class="btn btn-delete" type="submit" name="func" value="reset" onclick="return confirm(\'' . rex_i18n::msg('forcal_custom_field_reset_confirm') . '\')">' . rex_i18n::msg('forcal_custom_field_reset') . '</button>';
-$/ Form
+// Form
 $formContent = '<div class="rex-form-group form-group">
     <label for="code-editor" class="control-label">' . rex_i18n::msg('forcal_custom_field_yaml_definition') . '</label>
     <div>
@@ -143,6 +142,8 @@ fields:
     type: "media"
     label_de: "Event Bild"
     label_en: "Event Image"
+    notice_de: "Bitte wählen Sie hier das Hauptbild aus."
+    notice_en: "Please select the main image here."
 
   - name: "is_featured"
     type: "checkbox"

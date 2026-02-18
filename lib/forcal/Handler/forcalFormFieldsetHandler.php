@@ -164,6 +164,29 @@ class forCalFormFieldsetHandler
     }
 
     /**
+     * @param $field
+     * @return string
+     * @author Joachim Doerr
+     */
+    private static function getNotice($field)
+    {
+        if (array_key_exists('notice_all', $field)) {
+            return $field['notice_all'];
+        }
+
+        $lang = explode('_', rex_i18n::getLocale());
+
+        foreach ($lang as $value) {
+            $property = 'notice_' . $value;
+            if (array_key_exists($property, $field)) {
+                return $field[$property];
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * @param rex_form $form
      * @param $field
      * @author Joachim Doerr
@@ -319,6 +342,8 @@ class forCalFormFieldsetHandler
             }
 
             if (is_object($formField)) {
+                $formField->setNotice(self::getNotice($field));
+
                 if (array_key_exists('attribute', $field)) {
                     foreach ($field['attribute'] as $at_key => $at_value) {
                         $formField->setAttribute($at_key, $at_value);
