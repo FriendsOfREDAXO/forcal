@@ -282,10 +282,14 @@ body:not(.rex-theme-light) #forcal .fc-event {
 
 /* Event text color in dark mode */
 body.rex-theme-dark .fc-event .fc-event-main,
+body.rex-theme-dark .fc-event .fc-event-time,
+body.rex-theme-dark .fc-event .fc-time,
 body.rex-theme-dark .fc-event .fc-title, 
 body.rex-theme-dark .fc-event-title,
 body.rex-theme-dark .fc-event,
 body:not(.rex-theme-light) .fc-event .fc-event-main,
+body:not(.rex-theme-light) .fc-event .fc-event-time,
+body:not(.rex-theme-light) .fc-event .fc-time,
 body:not(.rex-theme-light) .fc-event .fc-title,
 body:not(.rex-theme-light) .fc-event-title,
 body:not(.rex-theme-light) .fc-event {

@@ -135,6 +135,8 @@ body.modal-open {
 
 /* Make event text readable on light backgrounds */
 .fc-event .fc-event-main,
+.fc-event .fc-event-time,
+.fc-event .fc-time,
 .fc-event .fc-title, 
 .fc-event-title,
 .fc-event {
