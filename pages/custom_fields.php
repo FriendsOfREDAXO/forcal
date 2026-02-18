@@ -36,10 +36,10 @@ if ($func == 'save') {
     if (file_exists($customFile)) {
         rex_file::delete($customFile);
         $msg = rex_view::success(rex_i18n::msg('forcal_custom_field_reset_success'));
-        
-        // Sync with database (using default definition)
-        $sql = rex_sql::factory();
-        $sql->setQuery('DELETE FROM ' . rex::getTable('forcal_custom_fields') . ' WHERE type = ?', [$type]);
+
+        // Re-run handler which will pick up the default file now since custom is gone
+        \forCal\Manager\forCalDatabaseManager::executeCustomFieldHandle();
+    }
 }
 
 // Load Content
