@@ -133,6 +133,15 @@ body.modal-open {
   background-color: #ef9a9a
 }
 
+/* Make event text readable on light backgrounds */
+.fc-event .fc-event-main,
+.fc-event .fc-title, 
+.fc-event-title,
+.fc-event {
+    color: #333 !important; 
+    font-weight: 500;
+}
+
 .fc-day-top.fc-sat .fc-day-number {
   color: #ffab91
 }
