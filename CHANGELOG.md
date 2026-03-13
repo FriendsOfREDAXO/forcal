@@ -2,6 +2,20 @@
 
 ### Added
 
+- **Orts-Berechtigungssystem (Venue Permissions)**: Neues Rechtemodell für Orte auf Basis von Eigentümerschaft (`createuser`):
+  - **Bearbeitungs-Scope** pro Benutzer einstellbar: `own` (nur eigene Orte), `all` (alle Orte bearbeiten), `by_owner` (Orte bestimmter Benutzer bearbeiten).
+  - **Löschen** ist nur dem Ersteller (Owner) oder Administratoren erlaubt.
+  - **Venue-Dropdown-Einschränkung** (`restrict_venue_selection`): Optionales Flag schränkt das Orte-Dropdown in der Terminmaske auf eigene Orte ein.
+  - Orte-Liste zeigt Ersteller und letzten Bearbeiter als Zusatzinfo.
+  - Neue Methoden in `forCalUserPermission`: `getVenueEditScope`, `getAllowedOwnerUserIds`, `getAllowedOwnerLogins`, `getOwnVenueIds`, `hasVenueEditPermission`, `canDeleteVenue`, `getVenueListWhere`, `isVenueSelectionRestricted`, `saveVenueEditPermission`, `saveVenueSelectionRestriction`.
+  - Benutzeroberfläche in den Benutzerberechtigungen mit Radio-Buttons (eigene/alle/nach Ersteller) und Checkbox für Dropdown-Einschränkung.
+  - Neue Datenbankspalte `owner_user_id` in `rex_forcal_user_venues` (ersetzt `venue_id`).
+  - Neue Datenbankspalte `restrict_venue_selection` in `rex_forcal_user_media_permissions`.
+
+### Fixed
+
+- **Bug**: SQL-Fehler durch doppeltes Quoting bei `rex_sql::escape()` in `getVenueListWhere` und Venue-Dropdown-Filter in `entries.php` behoben (erzeugte `''value''` statt `'value'` in IN-Clauses).
+
 - **Tagging-Widget für Custom Fields**: Neuer Feldtyp `tagging` in YAML-Definitionen ermöglicht farbige Schlagwörter direkt im Termin-/Kategorie-Formular.
 - **`forCalTaggingHelper`** (`lib/forcal/Utils/forCalTaggingHelper.php`): Eigenständige PHP-Klasse (`forCal\Utils` Namespace) mit folgenden Methoden:
   - `decode(string $raw): array` – JSON → `list<array{text, color}>`
