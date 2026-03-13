@@ -20,7 +20,7 @@
     gap: 5px;
     padding: 3px 10px;
     border-radius: 12px;
-    color: #fff;
+    color: #fff !important;
     font-size: 12px;
     font-weight: 500;
     line-height: 1.4;
@@ -190,7 +190,7 @@ body.rex-theme-dark .fields-tagging-contrast-hint { color: #ff7675; }
     align-items: center;
     padding: 3px 10px;
     border-radius: 12px;
-    color: #fff;
+    color: #fff !important;
     font-size: 12px;
     cursor: pointer;
     opacity: .75;
