@@ -222,3 +222,16 @@ forcal_custom_field_error_yaml = Fehler beim Parsen der YAML-Datei
 forcal_custom_field_yaml_definition = YAML-Definition
 forcal_custom_field_help_intro = Definieren Sie hier Ihre eigenen Felder im YAML-Format.
 perm_general_forcal[custom_fields] = FORCal Eigene Felder verwalten
+
+### venue permissions
+forcal_assign_venues = Locations zuweisen
+forcal_assign_venues_info = Wählen Sie die Locations aus, die zusätzlich zu den eigenen geteilt werden sollen. Eigene Locations (selbst erstellt) sind immer automatisch erlaubt. Ohne Zuweisung und ohne eigene Locations hat der Benutzer Zugriff auf alle Locations (Abwärtskompatibilität).
+forcal_select_all_venues = Alle Locations auswählen
+forcal_no_permission_for_venue = Sie haben keine Berechtigung für diese Location.
+forcal_own_venues_info = Folgende Locations hat dieser Benutzer selbst erstellt und kann sie immer verwalten:
+forcal_own_venue = Eigener Ort
+forcal_no_other_venues = Keine weiteren Locations vorhanden, die geteilt werden könnten.
+forcal_venue_permissions_saved = Venue-Berechtigungen erfolgreich gespeichert
+forcal_venue_permissions_error = Fehler beim Speichern der Venue-Berechtigungen
+forcal_media_permissions_saved = Medienberechtigungen erfolgreich gespeichert
+forcal_media_permissions_error = Fehler beim Speichern der Medienberechtigungen

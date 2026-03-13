@@ -4,6 +4,7 @@
         'forcal_categories',
         'forcal_venues',
         'forcal_user_categories',
+        'forcal_user_venues',
         'forcal_user_media_permissions'
     ];
     

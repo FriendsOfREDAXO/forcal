@@ -5,6 +5,8 @@
  * @license MIT
  */
 
+use forCal\Utils\forCalUserPermission;
+
 $func = rex_request::request('func', 'string');
 $id = rex_request::request('id', 'int');
 $start = rex_request::request('start', 'int', NULL);
@@ -12,19 +14,36 @@ $start = rex_request::request('start', 'int', NULL);
 $table = rex::getTablePrefix() . "forcal_venues";
 $message = '';
 
+$user = rex::getUser();
+
 if ($func == 'status') {
-    $message = \forCal\Utils\forCalListHelper::toggleBoolData($table, $id, 'status');
-    $func = '';
+    if (!forCalUserPermission::hasVenuePermission($id)) {
+        echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_venue'));
+        $func = '';
+    } else {
+        $message = \forCal\Utils\forCalListHelper::toggleBoolData($table, $id, 'status');
+        $func = '';
+    }
 }
 
 if ($func == 'clone') {
-    $message = \forCal\Utils\forCalListHelper::cloneData($table, $id);
-    $func = '';
+    if (!forCalUserPermission::hasVenuePermission($id)) {
+        echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_venue'));
+        $func = '';
+    } else {
+        $message = \forCal\Utils\forCalListHelper::cloneData($table, $id);
+        $func = '';
+    }
 }
 
 if ($func == 'delete') {
-    $message = \forCal\Utils\forCalListHelper::deleteData($table, $id);
-    $func = '';
+    if (!forCalUserPermission::hasVenuePermission($id)) {
+        echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_venue'));
+        $func = '';
+    } else {
+        $message = \forCal\Utils\forCalListHelper::deleteData($table, $id);
+        $func = '';
+    }
 }
 
 if ($func == '') {
@@ -39,8 +58,17 @@ if ($func == '') {
     // merge select with default
     $select = array_merge($select, array('status'));
 
+    // Venue-Filter für non-admin Benutzer
+    $whereClause = '';
+    if (!$user->isAdmin() && !$user->hasPerm('forcal[all]') && forCalUserPermission::hasVenueRestriction()) {
+        $allowedVenues = forCalUserPermission::getAllowedVenueIds($user);
+        if (!empty($allowedVenues)) {
+            $whereClause = ' WHERE id IN (' . implode(',', $allowedVenues) . ')';
+        }
+    }
+
     // instance list
-    $list = rex_list::factory("SELECT " . implode(', ', $select) . " FROM $table ORDER BY id");
+    $list = rex_list::factory("SELECT " . implode(', ', $select) . " FROM $table" . $whereClause . " ORDER BY id");
     $list->addTableAttribute('class', 'table-striped');
 
     // merge group with default
@@ -101,6 +129,13 @@ if ($func == '') {
 } elseif ($func == 'edit' || $func == 'add') {
 
     $id = rex_request('id', 'int');
+
+    // Berechtigungsprüfung für bestehende Venue
+    if ($func == 'edit' && $id > 0 && !forCalUserPermission::hasVenuePermission($id)) {
+        echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_venue'));
+        return;
+    }
+
     $form = rex_form::factory($table, '', 'id=' . $id);
     $form->addParam('start', $start);
     if ($func == 'edit') $form->addParam('id', $id);

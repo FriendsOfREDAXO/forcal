@@ -738,7 +738,18 @@ if ($func == '' || $func == 'filter') {
     // Column: Location
     $field = $form->addSelectField('venue');
     $select = $field->getSelect();
-    $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . ' ORDER BY name_' . rex_clang::getCurrentId());
+
+    if ($user->isAdmin() || $user->hasPerm('forcal[all]') || !forCalUserPermission::hasVenueRestriction()) {
+        // Admin, forcal[all] oder User ohne Venue-Einschränkung: alle Venues zeigen
+        $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . ' ORDER BY name_' . rex_clang::getCurrentId());
+    } else {
+        // Eingeschränkter Benutzer: nur erlaubte Venues
+        $allowedVenues = forCalUserPermission::getAllowedVenueIds($user);
+        if (!empty($allowedVenues)) {
+            $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . ' WHERE id IN (' . implode(',', $allowedVenues) . ') ORDER BY name_' . rex_clang::getCurrentId());
+        }
+    }
+
     $field->setLabel(rex_i18n::msg('forcal_entry_venue'));
     $field->setAttribute('class', 'forcal_venue_select selectpicker form-control');
     $field->setAttribute('data-live-search', 'true');

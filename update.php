@@ -16,6 +16,15 @@ rex_dir::copy(
     rex_addon::get('forcal')->getDataPath()
 );
 
+// Benutzer-Venue-Rechte-Tabelle sicherstellen (seit 6.5.0)
+rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_venues')
+    ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
+    ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
+    ->ensureColumn(new rex_sql_column('venue_id', 'int(11)'))
+    ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
+    ->setPrimaryKey('id')
+    ->ensure();
+
 // Benutzer-Kategorie-Rechte-Tabelle erstellen
 rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_categories')
     ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))

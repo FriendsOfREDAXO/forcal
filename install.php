@@ -105,6 +105,15 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
  * Erweitert den install.php Code, um die Tabelle für Medienberechtigungen zu erstellen
  */
 
+// Benutzer-Venue-Rechte-Tabelle erstellen (seit 6.5.0)
+    rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_venues')
+        ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
+        ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
+        ->ensureColumn(new rex_sql_column('venue_id', 'int(11)'))
+        ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
+        ->setPrimaryKey('id')
+        ->ensure();
+
 // Neue Tabelle für Media-Berechtigungen erstellen
 rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_media_permissions')
     ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))

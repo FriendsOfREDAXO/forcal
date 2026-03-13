@@ -19,7 +19,7 @@ class forCalUserPermission
      * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
      * @return bool
      */
-    public static function hasPermission($category_id, rex_user $user = null)
+    public static function hasPermission($category_id, ?rex_user $user = null)
     {
         if ($user === null) {
             $user = rex::getUser();
@@ -64,7 +64,7 @@ class forCalUserPermission
      * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
      * @return bool
      */
-    public static function hasAnyPermission(rex_user $user = null)
+    public static function hasAnyPermission(?rex_user $user = null)
     {
         if ($user === null) {
             $user = rex::getUser();
@@ -86,7 +86,7 @@ class forCalUserPermission
      * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
      * @return string
      */
-    public static function getCategoryFilter($table_alias = 'en', rex_user $user = null)
+    public static function getCategoryFilter($table_alias = 'en', ?rex_user $user = null)
     {
         if ($user === null) {
             $user = rex::getUser();
@@ -181,7 +181,7 @@ class forCalUserPermission
      * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
      * @return bool
      */
-    public static function canUploadMedia(rex_user $user = null)
+    public static function canUploadMedia(?rex_user $user = null)
     {
         if ($user === null) {
             $user = rex::getUser();
@@ -277,5 +277,201 @@ class forCalUserPermission
         }
         
         return $query;
+    }
+
+    // -------------------------------------------------------------------------
+    // Venue-Berechtigungen
+    // -------------------------------------------------------------------------
+
+    /**
+     * Gibt die IDs der Locations zurück, die dem Benutzer explizit (geteilt) zugewiesen sind.
+     *
+     * @param int $user_id Die Benutzer-ID
+     * @return array
+     */
+    public static function getUserVenues(int $user_id): array
+    {
+        $sql = rex_sql::factory();
+        $sql->setQuery(
+            'SELECT venue_id FROM ' . rex::getTablePrefix() . 'forcal_user_venues WHERE user_id = :user_id',
+            [':user_id' => $user_id]
+        );
+
+        $venues = [];
+        foreach ($sql as $row) {
+            $venues[] = (int) $row->getValue('venue_id');
+        }
+
+        return $venues;
+    }
+
+    /**
+     * Gibt die IDs der Locations zurück, die der Benutzer selbst erstellt hat (createuser = login).
+     *
+     * @param string $login Der Login-Name des Benutzers
+     * @return array
+     */
+    public static function getOwnVenueIds(string $login): array
+    {
+        $sql = rex_sql::factory();
+        $sql->setQuery(
+            'SELECT id FROM ' . rex::getTablePrefix() . 'forcal_venues WHERE createuser = :login',
+            [':login' => $login]
+        );
+
+        $ids = [];
+        foreach ($sql as $row) {
+            $ids[] = (int) $row->getValue('id');
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Prüft, ob ein Benutzer eine bestimmte Location verwalten darf.
+     * Erlaubt: eigene Orte (createuser) + geteilte Orte (forcal_user_venues).
+     * BC: Hat der User weder eigene noch geteilte Orte → keine Einschränkung (sieht alles).
+     *
+     * @param int $venue_id Die Location-ID
+     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
+     * @return bool
+     */
+    public static function hasVenuePermission(int $venue_id, ?rex_user $user = null): bool
+    {
+        if ($user === null) {
+            $user = rex::getUser();
+        }
+
+        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
+            return true;
+        }
+
+        // Eigene Orte (createuser)
+        $ownIds = self::getOwnVenueIds($user->getLogin());
+        if (in_array($venue_id, $ownIds)) {
+            return true;
+        }
+
+        // Geteilte Orte (explizit zugewiesen)
+        $sharedIds = self::getUserVenues($user->getId());
+        if (in_array($venue_id, $sharedIds)) {
+            return true;
+        }
+
+        // BC: weder eigene noch geteilte → keine Einschränkung
+        if (empty($ownIds) && empty($sharedIds)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Prüft, ob für diesen Benutzer eine Venue-Einschränkung aktiv ist.
+     * Aktiv wenn: User hat eigene Orte (createuser) ODER geteilte Orte (forcal_user_venues).
+     * BC: Keine eigenen + keine geteilten → keine Einschränkung.
+     *
+     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
+     * @return bool
+     */
+    public static function hasVenueRestriction(?rex_user $user = null): bool
+    {
+        if ($user === null) {
+            $user = rex::getUser();
+        }
+
+        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
+            return false;
+        }
+
+        $ownIds = self::getOwnVenueIds($user->getLogin());
+        if (!empty($ownIds)) {
+            return true;
+        }
+
+        $sharedIds = self::getUserVenues($user->getId());
+        return !empty($sharedIds);
+    }
+
+    /**
+     * Gibt eine WHERE-Bedingung für erlaubte Locations zurück (eigene + geteilte).
+     * BC: Hat der User weder eigene noch geteilte Orte → '' (kein Filter).
+     *
+     * @param string $table_alias Der Tabellen-Alias für die Venues-Spalte (Standard: 'en', Spalte 'venue')
+     * @param rex_user|null $user Der Benutzer (Standard: aktueller Benutzer)
+     * @return string
+     */
+    public static function getVenueFilter(string $table_alias = 'en', ?rex_user $user = null): string
+    {
+        if ($user === null) {
+            $user = rex::getUser();
+        }
+
+        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
+            return '';
+        }
+
+        $ownIds = self::getOwnVenueIds($user->getLogin());
+        $sharedIds = self::getUserVenues($user->getId());
+        $allIds = array_unique(array_merge($ownIds, $sharedIds));
+
+        // BC: keine eigenen + keine geteilten → keine Einschränkung
+        if (empty($allIds)) {
+            return '';
+        }
+
+        return ' AND ' . $table_alias . '.venue IN (' . implode(',', $allIds) . ') ';
+    }
+
+    /**
+     * Gibt alle erlaubten Venue-IDs für einen Benutzer zurück (eigene + geteilte).
+     *
+     * @param rex_user $user
+     * @return array
+     */
+    public static function getAllowedVenueIds(rex_user $user): array
+    {
+        $ownIds = self::getOwnVenueIds($user->getLogin());
+        $sharedIds = self::getUserVenues($user->getId());
+        return array_unique(array_merge($ownIds, $sharedIds));
+    }
+
+    /**
+     * Speichert die Venue-Berechtigungen für einen Benutzer
+     *
+     * @param int $user_id Die Benutzer-ID
+     * @param array $venue_ids Die Location-IDs
+     * @return bool
+     */
+    public static function saveVenuePermissions(int $user_id, array $venue_ids): bool
+    {
+        $sql = rex_sql::factory();
+
+        try {
+            $sql->beginTransaction();
+
+            $sql->setQuery(
+                'DELETE FROM ' . rex::getTablePrefix() . 'forcal_user_venues WHERE user_id = :user_id',
+                [':user_id' => $user_id]
+            );
+
+            foreach ($venue_ids as $venue_id) {
+                $venue_id = (int) $venue_id;
+                if ($venue_id <= 0) {
+                    continue;
+                }
+                $insert = rex_sql::factory();
+                $insert->setTable(rex::getTablePrefix() . 'forcal_user_venues');
+                $insert->setValue('user_id', $user_id);
+                $insert->setValue('venue_id', $venue_id);
+                $insert->insert();
+            }
+
+            $sql->commit();
+            return true;
+        } catch (\Exception $e) {
+            $sql->rollBack();
+            return false;
+        }
     }
 }
