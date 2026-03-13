@@ -17,7 +17,7 @@ $message = '';
 $user = rex::getUser();
 
 if ($func == 'status') {
-    if (!forCalUserPermission::hasVenuePermission($id)) {
+    if (!forCalUserPermission::hasVenueEditPermission($id)) {
         echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_venue'));
         $func = '';
     } else {
@@ -27,7 +27,7 @@ if ($func == 'status') {
 }
 
 if ($func == 'clone') {
-    if (!forCalUserPermission::hasVenuePermission($id)) {
+    if (!forCalUserPermission::hasVenueEditPermission($id)) {
         echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_venue'));
         $func = '';
     } else {
@@ -37,8 +37,8 @@ if ($func == 'clone') {
 }
 
 if ($func == 'delete') {
-    if (!forCalUserPermission::hasVenuePermission($id)) {
-        echo rex_view::error(rex_i18n::msg('forcal_no_permission_for_venue'));
+    if (!forCalUserPermission::canDeleteVenue($id)) {
+        echo rex_view::error(rex_i18n::msg('forcal_no_delete_permission_for_venue'));
         $func = '';
     } else {
         $message = \forCal\Utils\forCalListHelper::deleteData($table, $id);
@@ -58,18 +58,12 @@ if ($func == '') {
     // merge select with default
     $select = array_merge($select, array('status'));
 
-    // Venue-Filter für non-admin Benutzer: immer nur eigene + geteilte Orte
-    $whereClause = '';
-    if (forCalUserPermission::hasVenueRestriction()) {
-        $allowedVenues = forCalUserPermission::getAllowedVenueIds($user);
-        if (!empty($allowedVenues)) {
-            $whereClause = ' WHERE id IN (' . implode(',', $allowedVenues) . ')';
-        } else {
-            $whereClause = ' WHERE 0=1'; // noch keine eigenen Orte → leere Liste
-        }
-    }
+    // Venue-Filter: scope basiert auf Benutzer-Rechten
+    $whereClause = forCalUserPermission::getVenueListWhere($user);
 
-    // instance list
+    // instance list – createuser + updateuser für Anzeige
+    $select[] = 'createuser';
+    $select[] = 'updateuser';
     $list = rex_list::factory("SELECT " . implode(', ', $select) . " FROM $table" . $whereClause . " ORDER BY id");
     $list->addTableAttribute('class', 'table-striped');
 
@@ -100,19 +94,37 @@ if ($func == '') {
     $list->setColumnParams('status', ['id' => '###id###', 'func' => 'status', 'start' => $start]);
     $list->setColumnFormat('status', 'custom', array('\forCal\Utils\forCalListHelper','formatStatus'));
 
+    // createuser + updateuser anzeigen
+    $list->setColumnLabel('createuser', rex_i18n::msg('forcal_venue_owner'));
+    $list->setColumnLayout('createuser', ['', '<td class="rex-table-tabular-nums">###VALUE###</td>']);
+    $list->setColumnFormat('createuser', 'custom', function ($params) {
+        $val = $params['list']->getValue('createuser');
+        return '<span class="text-muted"><i class="rex-icon fa-user"></i> ' . rex_escape($val) . '</span>';
+    });
+
+    $list->setColumnLabel('updateuser', rex_i18n::msg('forcal_venue_last_editor'));
+    $list->setColumnLayout('updateuser', ['', '<td class="rex-table-tabular-nums">###VALUE###</td>']);
+    $list->setColumnFormat('updateuser', 'custom', function ($params) {
+        $val = $params['list']->getValue('updateuser');
+        return $val ? '<span class="text-muted"><i class="rex-icon fa-pencil"></i> ' . rex_escape($val) . '</span>' : '';
+    });
+
     // Column 4: edit
     $list->addColumn('edit', '<i class="rex-icon fa-pencil-square-o"></i> ' . rex_i18n::msg('edit'), -1, ['', '<td>###VALUE###</td>']);
     $list->setColumnParams('edit', ['func' => 'edit', 'id' => '###id###', 'start' => $start]);
 
-    // Column 5: Delete
+    // Column 5: Delete – nur für Owner (createuser = aktueller User) und Admin
     $list->addColumn('delete', '');
     $list->setColumnLayout('delete', array('', '<td>###VALUE###</td>'));
     $list->setColumnParams('delete', ['func' => 'delete', 'id' => '###id###', 'start' => $start]);
-    $list->setColumnFormat('delete', 'custom', function ($params) {
-        $list = $params['list'];
-        return $list->getColumnLink($params['params']['name'], "<span class=\"{$params['params']['icon_type']}\"><i class=\"rex-icon {$params['params']['icon']}\"></i> {$params['params']['msg']}</span>");
-
-    }, array('list'=> $list, 'name' => 'delete', 'icon' => 'rex-icon-delete', 'icon_type' => 'rex-offline', 'msg' => rex_i18n::msg('delete')));
+    $list->setColumnFormat('delete', 'custom', function ($params) use ($user) {
+        $listObj = $params['list'];
+        $venueId = (int) $listObj->getValue('id');
+        if (!forCalUserPermission::canDeleteVenue($venueId, $user)) {
+            return '<span class="text-muted" title="' . rex_escape(rex_i18n::msg('forcal_no_delete_permission_for_venue')) . '"><i class="rex-icon fa-lock"></i></span>';
+        }
+        return $listObj->getColumnLink($params['params']['name'], "<span class=\"{$params['params']['icon_type']}\"><i class=\"rex-icon {$params['params']['icon']}\"></i> {$params['params']['msg']}</span>");
+    }, array('list' => $list, 'name' => 'delete', 'icon' => 'rex-icon-delete', 'icon_type' => 'rex-offline', 'msg' => rex_i18n::msg('delete')));
 
     $list->addLinkAttribute('delete', 'data-confirm', rex_i18n::msg('delete') . ' ?');
 

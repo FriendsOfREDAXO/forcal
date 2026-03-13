@@ -16,11 +16,19 @@ rex_dir::copy(
     rex_addon::get('forcal')->getDataPath()
 );
 
-// Benutzer-Venue-Rechte-Tabelle sicherstellen (seit 6.5.0)
+// Benutzer-Venue-Edit-Rechte-Tabelle sicherstellen (seit 6.5.0)
+// Migration: venue_id → owner_user_id (seit 6.6.0)
+$venueColSql = rex_sql::factory();
+try {
+    $venueColSql->getArray('SELECT owner_user_id FROM ' . rex::getTablePrefix() . 'forcal_user_venues LIMIT 1');
+} catch (\Exception $e) {
+    // Spalte existiert noch nicht → umbenennen
+    $venueColSql->setQuery('ALTER TABLE ' . rex::getTablePrefix() . 'forcal_user_venues CHANGE venue_id owner_user_id int(11) NOT NULL');
+}
 rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_venues')
     ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
     ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
-    ->ensureColumn(new rex_sql_column('venue_id', 'int(11)'))
+    ->ensureColumn(new rex_sql_column('owner_user_id', 'int(11)'))
     ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
     ->setPrimaryKey('id')
     ->ensure();
@@ -38,11 +46,12 @@ rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_categories')
  * Erweitert den install.php Code, um die Tabelle für Medienberechtigungen zu erstellen
  */
 
-// Neue Tabelle für Media-Berechtigungen erstellen
+// Neue Tabelle für Media- und Venue-Selection-Berechtigungen
 rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_media_permissions')
     ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
     ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
     ->ensureColumn(new rex_sql_column('can_upload_media', 'tinyint(1)', false, '0'))
+    ->ensureColumn(new rex_sql_column('restrict_venue_selection', 'tinyint(1)', false, '0'))
     ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
     ->setPrimaryKey('id')
     ->ensure();

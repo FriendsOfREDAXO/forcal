@@ -739,15 +739,13 @@ if ($func == '' || $func == 'filter') {
     $field = $form->addSelectField('venue');
     $select = $field->getSelect();
 
-    if ($user->isAdmin() || $user->hasPerm('forcal[all]') || !forCalUserPermission::hasVenueRestriction()) {
-        // Admin, forcal[all] oder User ohne Venue-Einschränkung: alle Venues zeigen
+    if ($user->isAdmin() || $user->hasPerm('forcal[all]') || !forCalUserPermission::isVenueSelectionRestricted($user)) {
+        // Standard: alle Venues sichtbar
         $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . ' ORDER BY name_' . rex_clang::getCurrentId());
     } else {
-        // Eingeschränkter Benutzer: nur erlaubte Venues
-        $allowedVenues = forCalUserPermission::getAllowedVenueIds($user);
-        if (!empty($allowedVenues)) {
-            $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . ' WHERE id IN (' . implode(',', $allowedVenues) . ') ORDER BY name_' . rex_clang::getCurrentId());
-        }
+        // Flag "nur eigene Orte sehen" gesetzt: nur eigene Venues im Dropdown
+        $login = rex_sql::factory()->escape($user->getLogin());
+        $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . " WHERE createuser = '" . $login . "' ORDER BY name_" . rex_clang::getCurrentId());
     }
 
     $field->setLabel(rex_i18n::msg('forcal_entry_venue'));

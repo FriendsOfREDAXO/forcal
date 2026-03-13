@@ -208,13 +208,19 @@ forcal_ascending = Ascending
 forcal_descending = Descending
 
 ### venue permissions
-forcal_assign_venues = Assign Locations
-forcal_assign_venues_info = Select additional locations to share with this user. Own locations (self-created) are always automatically accessible.
-forcal_select_all_venues = Select all Locations
+forcal_venue_edit_scope_label = Venue management: Permission
+forcal_venue_edit_scope_info = Define which venues this user may edit. Owner rights (creator) remain unaffected – Delete is only possible for the owner.
+forcal_venue_scope_own = May edit own venues only (default)
+forcal_venue_scope_all = May edit all venues (no delete of foreign ones)
+forcal_venue_scope_by_owner = May also edit venues of these users (no delete):
+forcal_venue_scope_by_owner_info = Select the users whose venues this user may edit.
+forcal_venue_selection_label = Entry form: Venue selection
+forcal_venue_selection_restrict = May only select own venues in the entry form
+forcal_venue_selection_restrict_info = Default: all venues are available in the entry dropdown. With this flag the user only sees their own venues.
 forcal_no_permission_for_venue = You do not have permission for this location.
-forcal_own_venues_info = The following locations were created by this user and can always be managed by them:
-forcal_own_venue = Own location
-forcal_no_other_venues = No other locations available to share.
+forcal_no_delete_permission_for_venue = Only the creator (owner) may delete a venue.
+forcal_venue_owner = Owner
+forcal_venue_last_editor = Last edited by
 forcal_venue_permissions_saved = Venue permissions saved successfully
 forcal_venue_permissions_error = Error saving venue permissions
 forcal_media_permissions_saved = Media permissions saved successfully

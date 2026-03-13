@@ -19,10 +19,17 @@ if (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('forcal[userpermissions
     if (rex_post('btn_save', 'string') && $current_user_id > 0) {
         // Kategorien-Berechtigungen speichern
         $categories = rex_post('categories', 'array', []);
-        
-        // Venue-Berechtigungen
-        $venues = rex_post('venues', 'array', []);
-        
+
+        // Venue-Edit-Scope speichern
+        $venue_edit_scope = rex_post('venue_edit_scope', 'string', 'own');
+        if (!in_array($venue_edit_scope, ['own', 'all', 'by_owner'], true)) {
+            $venue_edit_scope = 'own';
+        }
+        $allowed_owner_ids = rex_post('allowed_owner_ids', 'array', []);
+
+        // Venue-Selection-Flag (Termin-Dropdown)
+        $restrict_venue_selection = rex_post('restrict_venue_selection', 'boolean', false);
+
         // Medienberechtigungen
         $can_upload_media = rex_post('can_upload_media', 'boolean', false);
         
@@ -33,14 +40,15 @@ if (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('forcal[userpermissions
             $message = rex_view::error(rex_i18n::msg('forcal_user_permissions_error'));
         }
 
-        // Venue-Berechtigungen speichern
-        if (forCalUserPermission::saveVenuePermissions($current_user_id, $venues)) {
+        // Venue-Edit-Scope speichern
+        if (forCalUserPermission::saveVenueEditPermission($current_user_id, $venue_edit_scope, array_map('intval', $allowed_owner_ids))) {
             $message .= rex_view::success(rex_i18n::msg('forcal_venue_permissions_saved'));
         } else {
             $message .= rex_view::error(rex_i18n::msg('forcal_venue_permissions_error'));
         }
-        
-        // Medienberechtigungen speichern
+
+        // Venue-Selection-Flag (Termin-Dropdown) und Media speichern
+        forCalUserPermission::saveVenueSelectionRestriction($current_user_id, $restrict_venue_selection);
         if (forCalUserPermission::saveMediaPermissions($current_user_id, $can_upload_media)) {
             $message .= rex_view::success(rex_i18n::msg('forcal_media_permissions_saved'));
         } else {
@@ -75,18 +83,6 @@ if (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('forcal[userpermissions
         $obj->color = $category['color'];
         $category_objects[] = $obj;
     }
-    
-    // Venues abrufen
-    $sql = rex_sql::factory();
-    $venues = $sql->getArray('SELECT id, name_' . rex_clang::getCurrentId() . ' as name FROM ' . rex::getTable('forcal_venues') . ' ORDER BY name_' . rex_clang::getCurrentId());
-
-    $venue_objects = [];
-    foreach ($venues as $venue) {
-        $obj = new stdClass();
-        $obj->id = $venue['id'];
-        $obj->name = $venue['name'];
-        $venue_objects[] = $obj;
-    }
 
     // Zugewiesene Kategorien abrufen
     $assigned_categories = [];
@@ -94,16 +90,18 @@ if (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('forcal[userpermissions
         $assigned_categories = forCalUserPermission::getUserCategories($current_user_id);
     }
 
-    // Zugewiesene Venues (geteilt) + eigene Orte abrufen
-    $assigned_venues = [];
-    $own_venue_ids = [];
+    // Venue-Edit-Scope + erlaubte Owner-IDs abrufen
+    $venue_edit_scope = 'own';
+    $allowed_owner_ids = [];
+    $restrict_venue_selection = false;
     if ($current_user_id > 0) {
-        $assigned_venues = forCalUserPermission::getUserVenues($current_user_id);
-        $target_user = rex_user::get($current_user_id);
-        if ($target_user instanceof rex_user) {
-            $own_venue_ids = forCalUserPermission::getOwnVenueIds($target_user->getLogin());
-        }
+        $venue_edit_scope = forCalUserPermission::getVenueEditScope($current_user_id);
+        $allowed_owner_ids = forCalUserPermission::getAllowedOwnerUserIds($current_user_id);
+        $restrict_venue_selection = forCalUserPermission::isVenueSelectionRestricted(rex_user::get($current_user_id));
     }
+
+    // Alle anderen forcal-User (für by_owner-Multiselect); den aktuellen User ausblenden
+    $other_forcal_users = array_filter($user_objects, fn($u) => $u instanceof rex_user && $u->getId() !== $current_user_id);
     
     // Medienberechtigungen abrufen
     $can_upload_media = false;
@@ -122,11 +120,12 @@ if (rex::getUser()->isAdmin() || rex::getUser()->hasPerm('forcal[userpermissions
     $fragment = new rex_fragment();
     $fragment->setVar('users', $user_objects);
     $fragment->setVar('categories', $category_objects);
-    $fragment->setVar('venues', $venue_objects);
     $fragment->setVar('current_user_id', $current_user_id);
     $fragment->setVar('assigned_categories', $assigned_categories);
-    $fragment->setVar('assigned_venues', $assigned_venues);
-    $fragment->setVar('own_venue_ids', $own_venue_ids);
+    $fragment->setVar('venue_edit_scope', $venue_edit_scope);
+    $fragment->setVar('allowed_owner_ids', $allowed_owner_ids);
+    $fragment->setVar('other_forcal_users', array_values($other_forcal_users));
+    $fragment->setVar('restrict_venue_selection', $restrict_venue_selection);
     $fragment->setVar('can_upload_media', $can_upload_media);
     
     // Nachricht anzeigen
