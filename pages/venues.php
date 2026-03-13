@@ -94,19 +94,26 @@ if ($func == '') {
     $list->setColumnParams('status', ['id' => '###id###', 'func' => 'status', 'start' => $start]);
     $list->setColumnFormat('status', 'custom', array('\forCal\Utils\forCalListHelper','formatStatus'));
 
-    // createuser + updateuser anzeigen
-    $list->setColumnLabel('createuser', rex_i18n::msg('forcal_venue_owner'));
-    $list->setColumnLayout('createuser', ['', '<td class="rex-table-tabular-nums">###VALUE###</td>']);
-    $list->setColumnFormat('createuser', 'custom', function ($params) {
-        $val = $params['list']->getValue('createuser');
-        return '<span class="text-muted"><i class="rex-icon fa-user"></i> ' . rex_escape($val) . '</span>';
-    });
+    // createuser/updateuser nicht als Text-Spalten, nur als Tooltip-Icon
+    $list->removeColumn('createuser');
+    $list->removeColumn('updateuser');
 
-    $list->setColumnLabel('updateuser', rex_i18n::msg('forcal_venue_last_editor'));
-    $list->setColumnLayout('updateuser', ['', '<td class="rex-table-tabular-nums">###VALUE###</td>']);
-    $list->setColumnFormat('updateuser', 'custom', function ($params) {
-        $val = $params['list']->getValue('updateuser');
-        return $val ? '<span class="text-muted"><i class="rex-icon fa-pencil"></i> ' . rex_escape($val) . '</span>' : '';
+    // Kompaktes Owner-Icon mit Tooltip (kein Login sichtbar)
+    $list->addColumn('_owner', '', 3, ['', '<td class="rex-table-tabular-nums" style="width:30px;">###VALUE###</td>']);
+    $list->setColumnFormat('_owner', 'custom', function ($params) {
+        $listObj    = $params['list'];
+        $createLogin = $listObj->getValue('createuser');
+        $updateLogin = $listObj->getValue('updateuser');
+        // Vollständige Namen aus rex_user auflösen
+        $ownerUser  = $createLogin ? rex_sql::factory()->getArray('SELECT name FROM ' . rex::getTable('user') . ' WHERE login = ? LIMIT 1', [$createLogin]) : [];
+        $editorUser = $updateLogin ? rex_sql::factory()->getArray('SELECT name FROM ' . rex::getTable('user') . ' WHERE login = ? LIMIT 1', [$updateLogin]) : [];
+        $ownerName  = !empty($ownerUser)  ? $ownerUser[0]['name']  : $createLogin;
+        $editorName = !empty($editorUser) ? $editorUser[0]['name'] : $updateLogin;
+        $tooltip = rex_i18n::msg('forcal_venue_owner') . ': ' . rex_escape($ownerName);
+        if ($editorName && $editorName !== $ownerName) {
+            $tooltip .= ' | ' . rex_i18n::msg('forcal_venue_last_editor') . ': ' . rex_escape($editorName);
+        }
+        return '<span class="text-muted" title="' . $tooltip . '" style="cursor:default;"><i class="rex-icon fa-user-circle-o"></i></span>';
     });
 
     // Column 4: edit
@@ -183,8 +190,33 @@ if ($func == '') {
     // add custom fields
     \forCal\Manager\forCalFormManager::addCustomFormField($form, $clang);
 
+    // Im Edit-Modus: Owner-Info aus DB laden und als read-only Block anzeigen
+    $ownerInfo = '';
+    if ($func == 'edit' && $id > 0) {
+        $vSql = rex_sql::factory();
+        $vSql->setQuery('SELECT createuser, updateuser, createdate, updatedate FROM ' . $table . ' WHERE id = :id', [':id' => $id]);
+        if ($vSql->getRows() > 0) {
+            $createLogin = (string) $vSql->getValue('createuser');
+            $updateLogin = (string) $vSql->getValue('updateuser');
+            $createdate  = (string) $vSql->getValue('createdate');
+            $updatedate  = (string) $vSql->getValue('updatedate');
+
+            $ownerRow  = $createLogin ? rex_sql::factory()->getArray('SELECT name FROM ' . rex::getTable('user') . ' WHERE login = ? LIMIT 1', [$createLogin]) : [];
+            $editorRow = $updateLogin ? rex_sql::factory()->getArray('SELECT name FROM ' . rex::getTable('user') . ' WHERE login = ? LIMIT 1', [$updateLogin]) : [];
+            $ownerName  = !empty($ownerRow)  ? $ownerRow[0]['name']  : $createLogin;
+            $editorName = !empty($editorRow) ? $editorRow[0]['name'] : $updateLogin;
+
+            $ownerInfo  = '<dl class="dl-horizontal" style="margin-top:12px;margin-bottom:0;font-size:12px;color:#888;">';
+            $ownerInfo .= '<dt>' . rex_i18n::msg('forcal_venue_owner')       . '</dt><dd>' . rex_escape($ownerName)  . ' <span style="color:#bbb;">(' . rex_escape($createdate) . ')</span></dd>';
+            if ($updateLogin && $updateLogin !== $createLogin) {
+                $ownerInfo .= '<dt>' . rex_i18n::msg('forcal_venue_last_editor') . '</dt><dd>' . rex_escape($editorName) . ' <span style="color:#bbb;">(' . rex_escape($updatedate) . ')</span></dd>';
+            }
+            $ownerInfo .= '</dl>';
+        }
+    }
+
     // show
-    $content = $form->get();
+    $content = $form->get() . $ownerInfo;
     $fragment = new rex_fragment();
     $fragment->setVar('class', 'edit', false);
     $fragment->setVar('title', ($func == 'edit') ? rex_i18n::msg('forcal_venue_edit') : rex_i18n::msg('forcal_venue_add'));
