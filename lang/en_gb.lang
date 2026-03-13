@@ -209,7 +209,7 @@ forcal_descending = Descending
 
 ### venue permissions
 forcal_assign_venues = Assign Locations
-forcal_assign_venues_info = Select locations to share with this user in addition to their own. Own locations (self-created) are always automatically accessible. Without any assignment and no own locations the user has access to all locations (backward compatibility).
+forcal_assign_venues_info = Select additional locations to share with this user. Own locations (self-created) are always automatically accessible.
 forcal_select_all_venues = Select all Locations
 forcal_no_permission_for_venue = You do not have permission for this location.
 forcal_own_venues_info = The following locations were created by this user and can always be managed by them:

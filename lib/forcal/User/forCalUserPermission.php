@@ -358,11 +358,6 @@ class forCalUserPermission
             return true;
         }
 
-        // BC: weder eigene noch geteilte → keine Einschränkung
-        if (empty($ownIds) && empty($sharedIds)) {
-            return true;
-        }
-
         return false;
     }
 
@@ -384,13 +379,7 @@ class forCalUserPermission
             return false;
         }
 
-        $ownIds = self::getOwnVenueIds($user->getLogin());
-        if (!empty($ownIds)) {
-            return true;
-        }
-
-        $sharedIds = self::getUserVenues($user->getId());
-        return !empty($sharedIds);
+        return true; // Nicht-Admins sehen immer nur eigene + geteilte Orte
     }
 
     /**

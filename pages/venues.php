@@ -58,12 +58,14 @@ if ($func == '') {
     // merge select with default
     $select = array_merge($select, array('status'));
 
-    // Venue-Filter für non-admin Benutzer
+    // Venue-Filter für non-admin Benutzer: immer nur eigene + geteilte Orte
     $whereClause = '';
-    if (!$user->isAdmin() && !$user->hasPerm('forcal[all]') && forCalUserPermission::hasVenueRestriction()) {
+    if (forCalUserPermission::hasVenueRestriction()) {
         $allowedVenues = forCalUserPermission::getAllowedVenueIds($user);
         if (!empty($allowedVenues)) {
             $whereClause = ' WHERE id IN (' . implode(',', $allowedVenues) . ')';
+        } else {
+            $whereClause = ' WHERE 0=1'; // noch keine eigenen Orte → leere Liste
         }
     }
 

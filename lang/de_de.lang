@@ -225,7 +225,7 @@ perm_general_forcal[custom_fields] = FORCal Eigene Felder verwalten
 
 ### venue permissions
 forcal_assign_venues = Locations zuweisen
-forcal_assign_venues_info = Wählen Sie die Locations aus, die zusätzlich zu den eigenen geteilt werden sollen. Eigene Locations (selbst erstellt) sind immer automatisch erlaubt. Ohne Zuweisung und ohne eigene Locations hat der Benutzer Zugriff auf alle Locations (Abwärtskompatibilität).
+forcal_assign_venues_info = Wählen Sie zusätzliche Locations aus, die mit diesem Benutzer geteilt werden sollen. Eigene Locations (selbst erstellt) sind immer automatisch zugänglich.
 forcal_select_all_venues = Alle Locations auswählen
 forcal_no_permission_for_venue = Sie haben keine Berechtigung für diese Location.
 forcal_own_venues_info = Folgende Locations hat dieser Benutzer selbst erstellt und kann sie immer verwalten:
