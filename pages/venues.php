@@ -94,27 +94,23 @@ if ($func == '') {
     $list->setColumnParams('status', ['id' => '###id###', 'func' => 'status', 'start' => $start]);
     $list->setColumnFormat('status', 'custom', array('\forCal\Utils\forCalListHelper','formatStatus'));
 
-    // createuser/updateuser nicht als Text-Spalten, nur als Tooltip-Icon
+    // createuser/updateuser aus der Ansicht entfernen (werden nur für Delete-Check und Name-Suffix gebraucht)
     $list->removeColumn('createuser');
     $list->removeColumn('updateuser');
 
-    // Kompaktes Owner-Icon mit Tooltip (kein Login sichtbar)
-    $list->addColumn('_owner', '', 3, ['', '<td class="rex-table-tabular-nums" style="width:30px;">###VALUE###</td>']);
-    $list->setColumnFormat('_owner', 'custom', function ($params) {
-        $listObj    = $params['list'];
-        $createLogin = $listObj->getValue('createuser');
-        $updateLogin = $listObj->getValue('updateuser');
-        // Vollständige Namen aus rex_user auflösen
-        $ownerUser  = $createLogin ? rex_sql::factory()->getArray('SELECT name FROM ' . rex::getTable('user') . ' WHERE login = ? LIMIT 1', [$createLogin]) : [];
-        $editorUser = $updateLogin ? rex_sql::factory()->getArray('SELECT name FROM ' . rex::getTable('user') . ' WHERE login = ? LIMIT 1', [$updateLogin]) : [];
-        $ownerName  = !empty($ownerUser)  ? $ownerUser[0]['name']  : $createLogin;
-        $editorName = !empty($editorUser) ? $editorUser[0]['name'] : $updateLogin;
-        $tooltip = rex_i18n::msg('forcal_venue_owner') . ': ' . rex_escape($ownerName);
-        if ($editorName && $editorName !== $ownerName) {
-            $tooltip .= ' | ' . rex_i18n::msg('forcal_venue_last_editor') . ': ' . rex_escape($editorName);
-        }
-        return '<span class="text-muted" title="' . $tooltip . '" style="cursor:default;"><i class="rex-icon fa-user-circle-o"></i></span>';
-    });
+    // Owner-Info als kleinen Untertitel unter dem ersten Namen einblenden
+    $firstClangId = rex_clang::getAll()[array_key_first(rex_clang::getAll())]->getId();
+    $list->setColumnFormat('name_' . $firstClangId, 'custom', function ($params) {
+        $listObj     = $params['list'];
+        $name        = $listObj->getValue('name_' . $params['params']['clang_id']);
+        $createLogin = (string) $listObj->getValue('createuser');
+        $updateLogin = (string) $listObj->getValue('updateuser');
+        $ownerRow    = $createLogin ? rex_sql::factory()->getArray('SELECT name FROM ' . rex::getTable('user') . ' WHERE login = ? LIMIT 1', [$createLogin]) : [];
+        $ownerName   = !empty($ownerRow) ? $ownerRow[0]['name'] : '';
+        $sub = $ownerName ? '<br><small class="text-muted"><i class="rex-icon fa-user-o"></i> ' . rex_escape($ownerName) . '</small>' : '';
+        $url = $params['list']->getUrl(['func' => 'edit', 'id' => $listObj->getValue('id')]);
+        return '<a href="' . $url . '">' . rex_escape($name) . '</a>' . $sub;
+    }, ['clang_id' => $firstClangId]);
 
     // Column 4: edit
     $list->addColumn('edit', '<i class="rex-icon fa-pencil-square-o"></i> ' . rex_i18n::msg('edit'), -1, ['', '<td>###VALUE###</td>']);
