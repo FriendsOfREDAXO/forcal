@@ -508,13 +508,13 @@ class forCalUserPermission
             $allowedLogins = self::getAllowedOwnerLogins($user->getId());
             // Eigene immer dazu
             $logins = array_unique(array_merge([$user->getLogin()], $allowedLogins));
-            $escaped = array_map(static fn(string $l) => "'" . rex_sql::factory()->escape($l) . "'", $logins);
+            $escaped = array_map(static fn(string $l) => rex_sql::factory()->escape($l), $logins);
             return ' WHERE createuser IN (' . implode(',', $escaped) . ')';
         }
 
         // scope 'own'
         $login = rex_sql::factory()->escape($user->getLogin());
-        return " WHERE createuser = '" . $login . "'";
+        return ' WHERE createuser = ' . $login;
     }
 
     /**

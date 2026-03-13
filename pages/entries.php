@@ -745,7 +745,7 @@ if ($func == '' || $func == 'filter') {
     } else {
         // Flag "nur eigene Orte sehen" gesetzt: nur eigene Venues im Dropdown
         $login = rex_sql::factory()->escape($user->getLogin());
-        $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . " WHERE createuser = '" . $login . "' ORDER BY name_" . rex_clang::getCurrentId());
+        $select->addSqlOptions('SELECT name_' . rex_clang::getCurrentId() . ', id FROM ' . $tableVenues . ' WHERE createuser = ' . $login . ' ORDER BY name_' . rex_clang::getCurrentId());
     }
 
     $field->setLabel(rex_i18n::msg('forcal_entry_venue'));
