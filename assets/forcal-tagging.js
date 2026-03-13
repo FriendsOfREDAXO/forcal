@@ -220,8 +220,8 @@ jQuery(function ($) {
                     }
                 });
             } else {
-                var color = activeColor !== colors[0] ? activeColor : $s.data('color');
-                addChip($s.data('text'), color);
+                // Immer die Farbe des Vorschlags verwenden, nie die aktive Farbe
+                addChip($s.data('text'), $s.data('color'));
             }
         });
 
