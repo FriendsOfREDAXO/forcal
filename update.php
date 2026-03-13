@@ -5,6 +5,17 @@
  * @license MIT
  */
 
+// tags-Spalte in forcal_entries sicherstellen (seit 6.4.0)
+rex_sql_table::get(rex::getTable('forcal_entries'))
+    ->ensureColumn(new rex_sql_column('tags', 'text', true))
+    ->ensure();
+
+// Standard-Definitions-Dateien aktualisieren (custom_*.yml werden nicht überschrieben)
+rex_dir::copy(
+    rex_addon::get('forcal')->getPath('data'),
+    rex_addon::get('forcal')->getDataPath()
+);
+
 // Benutzer-Kategorie-Rechte-Tabelle erstellen
 rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_categories')
     ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))

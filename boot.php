@@ -92,6 +92,13 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addCssFile($this->getAssetsUrl('forcal.css'));
     rex_view::addCssFile($this->getAssetsUrl('forcal-dark.css'));
 
+    // Tagging-Widget: eigene Assets nur laden wenn fields-Addon nicht aktiv ist
+    // (fields lädt dieselben Widget-Klassen; Doppelladen wird so vermieden)
+    if (!rex_addon::get('fields')->isAvailable()) {
+        rex_view::addJsFile($this->getAssetsUrl('forcal-tagging.js'));
+        rex_view::addCssFile($this->getAssetsUrl('forcal-tagging.css'));
+    }
+
     // Register clang added event
     rex_extension::register('CLANG_ADDED', function () {
         // duplicate lang columns

@@ -426,6 +426,110 @@ Orte-bezogene Felder werden ausgeblendet, wenn die Orte-Funktionalität deaktivi
 ### JavaScript-Validierung für Pflichtfelder
 Validierung von Pflichtfeldern wie Terminname und Kategorie direkt im Browser mit benutzerfreundlichen Fehlermeldungen.
 
+### Tagging-Widget für eigene Felder
+
+Mit dem Feldtyp `tagging` in einer YAML-Definition können farbige Schlagwörter (Tags) direkt im Termin-Formular vergeben werden.
+
+**Beispiel `custom_entries.yml`:**
+
+```yaml
+fields:
+  - name: 'tags'
+    type: 'tagging'
+    label_de: 'Schlagwörter'
+    label_en: 'Tags'
+    source_table: 'forcal_entries'
+    source_field: 'tags'
+    max_tags: 10
+```
+
+Voraussetzung: Die Spalte muss in der Datenbank vorhanden sein, z.B.:
+
+```sql
+ALTER TABLE rex_forcal_entries ADD tags TEXT NULL;
+```
+
+Das Widget lädt ein farbiges Chip-Panel mit Autocomplete-Vorschlägen aus der konfigurierten Quelltabelle. Eigene Farben sind per Farbpicker wählbar – eine WCAG-Kontrastprüfung (Ratio ≥ 3,0) verhindert dabei zu helle Farben für weiße Schrift.
+
+Die gespeicherten Daten haben das Format `[{"text":"php","color":"#2980b9"}, ...]`.
+
+---
+
+## Tags auswerten mit `forCalTaggingHelper`
+
+Die Klasse `forCal\Utils\forCalTaggingHelper` (wird automatisch über den REDAXO-Autoloader geladen, keine Abhängigkeit zum `fields`-Addon) bietet alle nötigen Methoden:
+
+```php
+use forCal\Utils\forCalTaggingHelper;
+```
+
+### Dekodieren & Rendern
+
+```php
+// JSON → Array
+$tags = forCalTaggingHelper::decode($item['tags']);
+// → [["text" => "php", "color" => "#2980b9"], ...]
+
+// Nur Texte
+$texte = forCalTaggingHelper::getTexts($tags);
+// → ["php", "redaxo"]
+
+// Als farbige HTML-Chips ausgeben
+echo forCalTaggingHelper::toHtml($tags);
+// → <span style="background:#2980b9;...">php</span> ...
+
+// Direkt aus DB-Rohwert (Kurzform)
+echo forCalTaggingHelper::fromRaw($item['tags'], '–');
+
+// Einzelnen Chip rendern
+echo forCalTaggingHelper::chipHtml('php', '#2980b9');
+
+// Array → JSON-String (z.B. nach Manipulation)
+$json = forCalTaggingHelper::encode($tags);
+```
+
+### Datenbankabfragen
+
+```php
+// Alle eindeutigen Tags einer Tabellenspalte sammeln (alphabetisch)
+$alleTags = forCalTaggingHelper::collectFromTable('rex_forcal_entries', 'tags');
+// → [["text" => "php", "color" => "#2980b9"], ...]
+
+// Nur Texte
+$texte = forCalTaggingHelper::collectTextsFromTable('rex_forcal_entries', 'tags');
+// → ["php", "redaxo", ...]
+
+// SQL-WHERE-Fragment (MySQL ≥ 5.7, JSON_SEARCH)
+$sql = rex_sql::factory();
+$rows = $sql->getArray(
+    'SELECT * FROM rex_forcal_entries WHERE '
+    . forCalTaggingHelper::sqlHasTag('tags', 'php')
+);
+
+// PHP-seitiger Filter (auf bereits geladene Zeilen)
+$gefiltert = forCalTaggingHelper::filterByTag($rows, 'tags', 'php');
+```
+
+### In FORCalEventsFactory integrieren
+
+```php
+use forCal\Factory\FORCalEventsFactory;
+use forCal\Utils\forCalTaggingHelper;
+
+$factory  = new FORCalEventsFactory();
+$events   = $factory->getEventsByMonth(date('Y'), date('m'));
+
+// Nur Events mit Tag "php" anzeigen
+$filtered = forCalTaggingHelper::filterByTag($events, 'tags', 'php');
+
+foreach ($filtered as $event) {
+    echo '<h2>' . rex_escape($event['name_1']) . '</h2>';
+    echo forCalTaggingHelper::fromRaw($event['tags'], '–');
+}
+```
+
+---
+
 ## Installation und Kompatibilität
 
 ### Automatische Tabellenanpassung

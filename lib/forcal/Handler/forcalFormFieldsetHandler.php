@@ -13,7 +13,9 @@ use rex_clang;
 use rex_addon;
 use rex_form;
 use rex_i18n;
+use rex_url;
 use forCal\Utils\forCalFormHelper;
+use forCal\Utils\forCalTaggingHelper;
 use forCal\Utils\forCalUserPermission;
 
 class forCalFormFieldsetHandler
@@ -338,6 +340,27 @@ class forCalFormFieldsetHandler
                             $select->addOption($v['name'], $v['id']);
                         }
                     }
+                    break;
+                case 'tagging':
+                    $ftFieldId  = 'forcal-ft-' . preg_replace('/[^a-z0-9_-]/i', '-', (string) $field['name']);
+                    $ftSrcTable = (string) ($field['source_table'] ?? '');
+                    $ftSrcField = (string) ($field['source_field'] ?? '');
+                    $ftMaxTags  = (int) ($field['max_tags'] ?? 0);
+                    $ftApiUrl   = ($ftSrcTable !== '' && $ftSrcField !== '')
+                        ? rex_url::backendController(['rex-api-call' => 'forcal_tagging_suggest'])
+                        : '';
+                    $formField  = $form->addTextField($field['name']);
+                    $formField->setLabel(self::getLabel($field));
+                    $formField->setAttribute('id', $ftFieldId);
+                    $formField->setAttribute('class', 'fields-tagging-value');
+                    $formField->setAttribute('style', 'display:none!important;position:absolute;');
+                    $formField->setPrefix(forCalTaggingHelper::renderWidgetOpen($ftFieldId, [
+                        'api_url'      => $ftApiUrl,
+                        'source_table' => $ftSrcTable,
+                        'source_field' => $ftSrcField,
+                        'max_tags'     => $ftMaxTags,
+                    ]));
+                    $formField->setSuffix('</div>');// closes .fields-tagging-widget
                     break;
             }
 

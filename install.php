@@ -72,6 +72,7 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
         ->ensureColumn(new rex_sql_column('updatedate', 'datetime', false, 'CURRENT_TIMESTAMP', 'on update CURRENT_TIMESTAMP'))
         ->ensureColumn(new rex_sql_column('createuser', 'varchar(255)'))
         ->ensureColumn(new rex_sql_column('updateuser', 'varchar(255)'))
+        ->ensureColumn(new rex_sql_column('tags', 'text', true))
         ->setPrimaryKey('id')
         ->ensure();
 

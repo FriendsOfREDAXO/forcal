@@ -21,3 +21,15 @@ fields:
     type: 'media'
     label_de: 'Datei Anhang'
     label_en: 'File attachment'
+
+  # ─── Tagging-Feld ──────────────────────────────────────────────
+  # Auslesen im Modul:
+  #   $tags = forCal\Utils\forCalTaggingHelper::decode($entry['tags']);
+  #   echo forCal\Utils\forCalTaggingHelper::toHtml($tags);
+  - name: 'tags'
+    type: 'tagging'
+    label_de: 'Schlagwörter'
+    label_en: 'Tags'
+    source_table: 'forcal_entries'
+    source_field: 'tags'
+    max_tags: 10
