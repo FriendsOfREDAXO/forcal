@@ -42,7 +42,7 @@ class rex_api_forcal_tagging_suggest extends rex_api_function
         ];
 
         // Eigene Tabellen können via Extension Point ergänzt werden
-        $allowedTables = rex_extension::fire('FORCAL_TAGGING_ALLOWED_TABLES', $allowedTables);
+        $allowedTables = rex_extension::registerPoint(new rex_extension_point('FORCAL_TAGGING_ALLOWED_TABLES', $allowedTables));
 
         if (!in_array($table, (array) $allowedTables, true)) {
             // Auch prefixierte Varianten erlauben
