@@ -1,3 +1,17 @@
+## 6.5.0 - 2026-03-16
+
+### Added
+
+- **Inline Venue-Erstellung**: Neuer „+ Neuen Ort anlegen"-Button direkt im Termin-Formular neben dem Venue-Select. Öffnet ein Bootstrap-Modal mit mehrsprachigen Namensfeldern und Adressfeldern (Straße, Hausnummer, PLZ, Stadt, Land). Der neue Ort wird per AJAX erstellt und sofort im Select übernommen.
+- **API-Endpoint `rex_api_forcal_venue_create`**: Neuer Backend-API-Endpoint für die AJAX-basierte Venue-Erstellung mit CSRF-Schutz, Berechtigungsprüfung und JSON-Response.
+- **Asset `forcal-venue-inline.js`**: Eigenständiges JavaScript für das Venue-Modal mit Validierung, Fehlerbehandlung und Bootstrap-Select-Aktualisierung.
+- Neue Sprachschlüssel für Inline-Venue-Erstellung (de/en).
+
+### Fixed
+
+- **CSRF-Token-Fehler bei Venue-Erstellung**: `rex_url::backendController()` wurde ohne `false`-Parameter aufgerufen, wodurch die URL HTML-escaped wurde (`&amp;` statt `&`). Das CSRF-Token kam dadurch als `amp;_csrf_token` beim Server an und wurde nie validiert.
+- **SelectPicker-Refresh nach Venue-Erstellung**: Die Prüfung `select.hasClass('selectpicker')` schlug fehl, da REDAXO Bootstrap-Select automatisch über `data-live-search` initialisiert, ohne die Klasse `selectpicker` zwingend auf dem Element zu setzen. Geändert zu `select.data('selectpicker')`, um die tatsächliche Plugin-Instanz zu prüfen.
+
 ## 6.4.0 - 2026-03-13
 
 ### Added

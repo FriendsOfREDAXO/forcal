@@ -751,6 +751,23 @@ if ($func == '' || $func == 'filter') {
     $field->setLabel(rex_i18n::msg('forcal_entry_venue'));
     $field->setAttribute('class', 'forcal_venue_select selectpicker form-control');
     $field->setAttribute('data-live-search', 'true');
+
+    // Inline Venue-Erstellung: „+ Neuer Ort"-Button neben dem Select
+    $langDataForJs = [];
+    foreach (rex_clang::getAll() as $clang) {
+        $langDataForJs[] = [
+            'id' => $clang->getId(),
+            'code' => strtoupper($clang->getCode()),
+            'label' => rex_i18n::msg('forcal_venue_name') . (rex_clang::count() > 1 ? ' [' . strtoupper($clang->getCode()) . ']' : ''),
+        ];
+    }
+    $langJson = rex_escape(json_encode($langDataForJs, JSON_UNESCAPED_UNICODE));
+    $form->addRawField(
+        '<div class="form-group"><label></label>'
+        . '<button type="button" class="btn btn-default btn-xs" id="forcal-add-venue-btn" data-langs=\'' . $langJson . '\'>'
+        . '<i class="rex-icon fa-plus"></i> ' . rex_i18n::msg('forcal_venue_add_inline')
+        . '</button></div>'
+    );
     }
     // Column: Status
     $field = $form->addSelectField('status');

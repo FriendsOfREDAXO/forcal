@@ -241,3 +241,13 @@ forcal_venue_permissions_saved = Orte-Berechtigungen erfolgreich gespeichert
 forcal_venue_permissions_error = Fehler beim Speichern der Orte-Berechtigungen
 forcal_media_permissions_saved = Medienberechtigungen erfolgreich gespeichert
 forcal_media_permissions_error = Fehler beim Speichern der Medienberechtigungen
+
+### inline venue creation
+forcal_venue_add_inline = Neuen Ort anlegen
+forcal_venue_add_inline_save = Ort anlegen & übernehmen
+forcal_venue_name_validation = Bitte geben Sie einen Ort-Namen ein.
+forcal_venue_lbl_street = Straße
+forcal_venue_lbl_housenumber = Hausnummer
+forcal_venue_lbl_zip = PLZ
+forcal_venue_lbl_city = Stadt
+forcal_venue_lbl_country = Land

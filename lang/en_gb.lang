@@ -225,3 +225,13 @@ forcal_venue_permissions_saved = Venue permissions saved successfully
 forcal_venue_permissions_error = Error saving venue permissions
 forcal_media_permissions_saved = Media permissions saved successfully
 forcal_media_permissions_error = Error saving media permissions
+
+### inline venue creation
+forcal_venue_add_inline = Add New Venue
+forcal_venue_add_inline_save = Create & Select Venue
+forcal_venue_name_validation = Please enter a venue name.
+forcal_venue_lbl_street = Street
+forcal_venue_lbl_housenumber = House Number
+forcal_venue_lbl_zip = ZIP Code
+forcal_venue_lbl_city = City
+forcal_venue_lbl_country = Country

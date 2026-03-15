@@ -1,5 +1,5 @@
 package: forcal
-version: '6.4.1'
+version: '6.5.0'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 page:
@@ -37,6 +37,11 @@ page:
             icon: rex-icon fa-cog
             itemClass: pull-right
             perm: 'forcal[settings]'
+        help:
+            title: 'translate:forcal_help'
+            subPath: help.md
+            icon: rex-icon fa-question-circle
+            itemClass: pull-right
 requires:
     redaxo: ^5.18.0
     php:

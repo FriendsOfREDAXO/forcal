@@ -85,6 +85,21 @@ if (rex::isBackend() && rex::getUser()) {
     
     rex_view::addJSFile($this->getAssetsUrl('forcal.js'));
 
+    // Inline Venue Creation – JS + API-URL
+    rex_view::addJSFile($this->getAssetsUrl('forcal-venue-inline.js'));
+    rex_view::setJsProperty('forcal_venue_create_url', rex_url::backendController(
+        rex_api_forcal_venue_create::getUrlParams(), false
+    ));
+    rex_view::setJsProperty('forcal_venue_modal_title', rex_i18n::msg('forcal_venue_add_inline'));
+    rex_view::setJsProperty('forcal_venue_btn_save', rex_i18n::msg('forcal_venue_add_inline_save'));
+    rex_view::setJsProperty('forcal_venue_btn_cancel', rex_i18n::msg('forcal_cancel'));
+    rex_view::setJsProperty('forcal_venue_name_required', rex_i18n::msg('forcal_venue_name_validation'));
+    rex_view::setJsProperty('forcal_venue_lbl_street', rex_i18n::msg('forcal_venue_lbl_street'));
+    rex_view::setJsProperty('forcal_venue_lbl_housenumber', rex_i18n::msg('forcal_venue_lbl_housenumber'));
+    rex_view::setJsProperty('forcal_venue_lbl_zip', rex_i18n::msg('forcal_venue_lbl_zip'));
+    rex_view::setJsProperty('forcal_venue_lbl_city', rex_i18n::msg('forcal_venue_lbl_city'));
+    rex_view::setJsProperty('forcal_venue_lbl_country', rex_i18n::msg('forcal_venue_lbl_country'));
+
     // add css - FullCalendar 6.x CSS ist in den JS-Dateien enthalten
     rex_view::addCssFile($this->getAssetsUrl('forcal-colorpicker.css')); // CSS für den neuen ColorPicker
     // Bootstrap 3 Kompatibilität

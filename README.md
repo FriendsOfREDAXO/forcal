@@ -416,6 +416,15 @@ Die Orte-Funktionalität kann jetzt komplett deaktiviert werden. Ist diese Optio
 $venuesEnabled = rex_addon::get('forcal')->getConfig('forcal_venues_enabled', true);
 ```
 
+### Inline-Erstellung von Orten
+
+Direkt im Termin-Formular kann über den Button **„+ Neuen Ort anlegen"** neben dem Venue-Dropdown ein neuer Ort erstellt werden, ohne die Seite zu verlassen. Ein Modal-Dialog öffnet sich mit:
+
+- Mehrsprachigen Namensfeldern (bei Multi-Language-Installationen als Tabs)
+- Adressfeldern: Straße, Hausnummer, PLZ, Stadt, Land
+
+Nach dem Speichern wird der neue Ort per AJAX angelegt und automatisch im Dropdown ausgewählt. Die Funktion steht allen Benutzern mit der Berechtigung `forcal[]` zur Verfügung und erfordert, dass die Orte-Verwaltung aktiviert ist.
+
 
 ## Formulare und Felder
 
