@@ -1,3 +1,9 @@
+## 6.5.1 - 2026-03-19
+
+### Fixed
+
+- **Update-Tabelle `rex_forcal_user_venues`**: Fix für #83 (Update auf 6.4.1 oder 6.5.0 nicht möglich). Spalten-Umbenennung prüft nun die Existenz der Tabelle und Spalten mit `rex_sql_table::hasColumn()` und `renameColumn()`.
+
 ## 6.5.0 - 2026-03-16
 
 ### Added

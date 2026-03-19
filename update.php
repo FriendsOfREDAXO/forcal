@@ -5,78 +5,18 @@
  * @license MIT
  */
 
-// tags-Spalte in forcal_entries sicherstellen (seit 6.4.0)
-rex_sql_table::get(rex::getTable('forcal_entries'))
-    ->ensureColumn(new rex_sql_column('tags', 'text', true))
-    ->ensure();
+include __DIR__ . '/install.php';
 
-// Standard-Definitions-Dateien aktualisieren (custom_*.yml werden nicht überschrieben)
-rex_dir::copy(
-    rex_addon::get('forcal')->getPath('data'),
-    rex_addon::get('forcal')->getDataPath()
-);
-
-// Benutzer-Venue-Edit-Rechte-Tabelle sicherstellen (seit 6.5.0)
-// Migration: venue_id → owner_user_id (seit 6.6.0)
-$venueColSql = rex_sql::factory();
-try {
-    $venueColSql->getArray('SELECT owner_user_id FROM ' . rex::getTablePrefix() . 'forcal_user_venues LIMIT 1');
-} catch (\Exception $e) {
-    // Spalte existiert noch nicht → umbenennen
-    $venueColSql->setQuery('ALTER TABLE ' . rex::getTablePrefix() . 'forcal_user_venues CHANGE venue_id owner_user_id int(11) NOT NULL');
-}
-rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_venues')
-    ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
-    ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
-    ->ensureColumn(new rex_sql_column('owner_user_id', 'int(11)'))
-    ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
-    ->setPrimaryKey('id')
-    ->ensure();
-
-// Benutzer-Kategorie-Rechte-Tabelle erstellen
-rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_categories')
-    ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
-    ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
-    ->ensureColumn(new rex_sql_column('category_id', 'int(11)'))
-    ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
-    ->setPrimaryKey('id')
-    ->ensure();
-
-/**
- * Erweitert den install.php Code, um die Tabelle für Medienberechtigungen zu erstellen
- */
-
-// Neue Tabelle für Media- und Venue-Selection-Berechtigungen
-rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_media_permissions')
-    ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
-    ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
-    ->ensureColumn(new rex_sql_column('can_upload_media', 'tinyint(1)', false, '0'))
-    ->ensureColumn(new rex_sql_column('restrict_venue_selection', 'tinyint(1)', false, '0'))
-    ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
-    ->setPrimaryKey('id')
-    ->ensure();
-
-// Datapane-Struktur zum Backend hinzufügen
+// Datapane-Struktur zum Backend hinzufügen / Forcal Multiuser aktivieren
 if (rex_addon::get('forcal')->hasConfig()) {
     $config = rex_addon::get('forcal')->getConfig();
-    $config['forcal_multiuser'] = 1;
-    rex_addon::get('forcal')->setConfig($config);
+    if (!isset($config['forcal_multiuser'])) {
+        $config['forcal_multiuser'] = 1;
+        rex_addon::get('forcal')->setConfig($config);
+    }
 }
 
 // Neue Rechte für Benutzer registrieren
 if (rex::isBackend() && rex::getUser()) {
     rex_perm::register('forcal[userpermissions]', null, rex_perm::OPTIONS);
 }
-
-// Tabelle für gespeicherte Filter erstellen (Update-Script)
-rex_sql_table::get(rex::getTablePrefix() . 'forcal_saved_filters')
-    ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
-    ->ensureColumn(new rex_sql_column('user_id', 'int(11)', false))
-    ->ensureColumn(new rex_sql_column('name', 'varchar(100)', false))
-    ->ensureColumn(new rex_sql_column('filter_data', 'text', false))
-    ->ensureColumn(new rex_sql_column('is_default', 'tinyint(1)', false, '0'))
-    ->ensureColumn(new rex_sql_column('createdate', 'datetime', false, 'CURRENT_TIMESTAMP'))
-    ->ensureColumn(new rex_sql_column('updatedate', 'datetime', false, 'CURRENT_TIMESTAMP', 'on update CURRENT_TIMESTAMP'))
-    ->setPrimaryKey('id')
-    ->ensureIndex(new rex_sql_index('user_id', ['user_id']))
-    ->ensure();

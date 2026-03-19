@@ -107,7 +107,14 @@ if (rex_string::versionCompare($dbVersion, $minDbVersion, '<')) {
 
 // Benutzer-Venue-Edit-Rechte-Tabelle (seit 6.5.0)
     // owner_user_id: 0 = darf alle, >0 = darf Orte dieses Owners, keine Rows = nur eigene
-    rex_sql_table::get(rex::getTablePrefix() . 'forcal_user_venues')
+    $venueTableName = rex::getTablePrefix() . 'forcal_user_venues';
+    $venueTable = rex_sql_table::get($venueTableName);
+
+    if ($venueTable->hasColumn('venue_id') && !$venueTable->hasColumn('owner_user_id')) {
+        $venueTable->renameColumn('venue_id', 'owner_user_id');
+    }
+
+    $venueTable
         ->ensureColumn(new rex_sql_column('id', 'int(11) unsigned', false, null, 'auto_increment'))
         ->ensureColumn(new rex_sql_column('user_id', 'int(11)'))
         ->ensureColumn(new rex_sql_column('owner_user_id', 'int(11)'))
