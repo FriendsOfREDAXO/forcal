@@ -40,6 +40,8 @@ class forCalFormFieldsetHandler
      */
     public static function handleFormFieldset(rex_form $form, $fieldset, rex_clang $clang, $langField = false)
     {
+        if (empty($fieldset)) return;
+
         foreach ($fieldset as $key => $field) {
 
             if (array_key_exists('panel', $field) && array_key_exists('fields', $field)) {
@@ -367,7 +369,7 @@ class forCalFormFieldsetHandler
             if (is_object($formField)) {
                 $formField->setNotice(self::getNotice($field));
 
-                if (array_key_exists('attribute', $field)) {
+                if (!empty($field['attribute'])) {
                     foreach ($field['attribute'] as $at_key => $at_value) {
                         $formField->setAttribute($at_key, $at_value);
                     }
