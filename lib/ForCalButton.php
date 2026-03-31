@@ -1,9 +1,4 @@
 <?php
-/**
- * @author mail[at]doerr-softwaredevelopment[dot]com Joachim Doerr
- * @package redaxo5
- * @license MIT
- */
 
 use FriendsOfRedaxo\QuickNavigation\Button\ButtonInterface;
 
@@ -12,98 +7,115 @@ class ForCalButton implements ButtonInterface
     public function get(): string
     {
         $user = rex::getUser();
-        if (!$user || !$user->hasPerm('forcal[]')) {
+        if (!$user || (!$user->isAdmin() && !$user->hasPerm('forcal[]'))) {
             return '';
         }
 
-        // Get recent entries
-        $listItems = $this->getRecentEntries();
-
-        if (empty($listItems)) {
-            $newEntryUrl = rex_url::backendPage('forcal/entries', ['func' => 'add', 'itemdate' => date('Y-m-d')]);
-            $listItems[] = '<div style="padding: 10px; text-align: center;">
-                <p style="margin-bottom: 10px;">' . rex_i18n::msg('forcal_no_recent_entries') . '</p>
-                <a href="' . $newEntryUrl . '" class="btn btn-default btn-sm">
-                    <i class="fa fa-plus"></i> ' . rex_i18n::msg('forcal_add_new_entry') . '
-                </a>
-            </div>';
-        }
-
-        // Aktueller Tag des Monats
-        $currentDay = date('j');
-        
-        $fragment = new rex_fragment([
-            'label' => rex_i18n::msg('forcal_title'),
-            'icon' => 'rex-icon fa-calendar',
-            'iconBadge' => $currentDay,
-            'listItems' => $listItems,
-        ]);
-        
-        return $fragment->parse('QuickNavigation/Dropdown.php');
-    }
-
-    private function getRecentEntries(): array
-    {
-        $user = rex::getUser();
         $listItems = [];
 
-        try {
-            $sql = rex_sql::factory();
-            $query = '
-                SELECT id, name, updatedate, updateuser
-                FROM ' . rex::getTablePrefix() . 'forcal_entries
-                WHERE updatedate > 0
-                ORDER BY updatedate DESC
-                LIMIT 10
-            ';
+        // --- "Neuer Termin"-Button immer oben ---
+        $listItems[] = sprintf(
+            '<div class="quick-navigation-item-row">
+                <a href="%s" class="btn btn-default forcal-qn-add-btn" title="%s">
+                    <i class="fa-regular fa-calendar-plus" aria-hidden="true"></i> %s
+                </a>
+            </div>',
+            rex_url::backendPage('forcal/entries', ['func' => 'add']),
+            rex_escape(rex_i18n::msg('forcal_add_new_entry')),
+            rex_escape(rex_i18n::msg('forcal_add_new_entry'))
+        );
 
-            $sql->setQuery($query);
-            $rows = $sql->getRows();
+        // --- Nächste 10 Termine ab heute laden ---
+        $entries = \forCal\Handler\forCalHandler::getEntries(
+            date('Y-m-d'),
+            date('Y-m-d', strtotime('+2 years')),
+            true,       // ignoreStatus: Backend zeigt auch offline-Termine
+            SORT_ASC,
+            null,       // Kategorien: Filter läuft intern per useUserPermissions
+            null,
+            10,         // pageSize
+            1,          // pageNumber
+            true        // useUserPermissions: Admins sehen alles, andere nur erlaubte Kategorien
+        );
 
-            for ($i = 0; $i < $rows; ++$i) {
-                $id = $sql->getValue('id');
-                $name = $sql->getValue('name');
-                $updateuser = $sql->getValue('updateuser');
-                $updatedate = $sql->getValue('updatedate');
+        if (count($entries) > 0) {
+            $today    = new DateTime('today');
+            $tomorrow = new DateTime('tomorrow');
 
-                $date = date('d.m. H:i', strtotime($updatedate));
+            foreach ($entries as $forcal) {
+                /** @var \stdClass $entry */
+                $entry = $forcal['entry'];
+
+                $id         = (int) $forcal['id'];
+                $name       = rex_escape($entry->entry_name);
+                $color      = rex_escape($entry->category_color ?? '#9ca5b2');
+                $catName    = rex_escape($entry->category_name ?? '');
+                $fullTime   = !empty($entry->full_time);
+
+                $startDate = $entry->entry_start_date;
+                $endDate   = $entry->entry_end_date;
+
+                // Datumsanzeige mit "Heute" / "Morgen"-Label
+                $dateLabel = '';
+                if ($startDate->format('Y-m-d') === $today->format('Y-m-d')) {
+                    $dateLabel = '<span class="forcal-qn-badge forcal-qn-today">Heute</span> ';
+                } elseif ($startDate->format('Y-m-d') === $tomorrow->format('Y-m-d')) {
+                    $dateLabel = '<span class="forcal-qn-badge forcal-qn-tomorrow">Morgen</span> ';
+                }
+
+                $startFormatted = rex_formatter::intlDate($startDate->getTimestamp());
+                $endFormatted   = rex_formatter::intlDate($endDate->getTimestamp());
+                $dateStr = $startDate->format('Y-m-d') === $endDate->format('Y-m-d')
+                    ? $startFormatted
+                    : $startFormatted . ' – ' . $endFormatted;
+
+                // Uhrzeit (nur wenn nicht ganztägig und nicht 00:00)
+                $timeStr = '';
+                if (!$fullTime && !empty($entry->entry_start_time)) {
+                    $st = (new DateTime($entry->entry_start_time))->format('H:i');
+                    $et = (new DateTime($entry->entry_end_time))->format('H:i');
+                    if ($st !== '00:00' || $et !== '00:00') {
+                        $timeStr = ' &middot; ' . rex_escape($st) . '–' . rex_escape($et) . ' Uhr';
+                    }
+                }
+
+                $canEdit = $user->isAdmin() || $user->hasPerm('forcal[all]')
+                    || \forCal\Utils\forCalUserPermission::hasPermission($entry->category_id);
 
                 $editUrl = rex_url::backendPage('forcal/entries', [
-                    'func' => 'edit',
-                    'entry_id' => $id,
+                    'func' => $canEdit ? 'edit' : 'view',
+                    'id'   => $id,
                 ]);
 
                 $listItems[] = sprintf(
-                    '<div class="quick-navigation-item-row">
-                        <a href="%s" title="%s">
-                            <div>%s</div>
-                            <div class="quick-navigation-item-info">
-                                <small>%s • %s</small>
-                            </div>
+                    '<div class="quick-navigation-item-row forcal-qn-entry">
+                        <a href="%s" title="%s" class="forcal-qn-link" style="--forcal-color:%s">
+                            <span class="forcal-qn-name">%s%s</span>
+                            <span class="forcal-qn-meta">%s%s%s</span>
                         </a>
                     </div>',
                     $editUrl,
-                    rex_escape($name),
-                    rex_escape($this->truncateString($name, 30)),
-                    rex_escape($updateuser),
-                    $date
+                    rex_escape($entry->entry_name),
+                    $color,
+                    $dateLabel,
+                    $name,
+                    rex_escape($dateStr),
+                    $timeStr,
+                    $catName ? ' &middot; <span class="forcal-qn-cat">' . $catName . '</span>' : ''
                 );
-
-                $sql->next();
             }
-        } catch (Exception $e) {
-            // Silent fail
+        } else {
+            $listItems[] = '<div class="quick-navigation-no-results"><div>'
+                . rex_escape(rex_i18n::msg('forcal_no_recent_entries'))
+                . '</div></div>';
         }
 
-        return $listItems;
-    }
+        $fragment = new rex_fragment([
+            'label'     => rex_i18n::msg('forcal_quick_navigation_label'),
+            'icon'      => 'fa-regular fa-calendar',
+            'listItems' => $listItems,
+        ]);
 
-    private function truncateString(string $string, int $length): string
-    {
-        if (mb_strlen($string) <= $length) {
-            return $string;
-        }
-
-        return mb_substr($string, 0, $length - 3) . '...';
+        return $fragment->parse('QuickNavigation/Dropdown.php');
     }
 }

@@ -1,3 +1,19 @@
+## 6.5.2 - 2026-03-31
+
+### Fixed
+
+- **Quick Navigation – ForCalButton**: Die bisherige Implementierung verwendete eine fehlerhafte eigene SQL-Query mit falschem Spaltenname (`name` statt `name_{clang_id}`) und falschem URL-Parameter (`entry_id` statt `id`). Dadurch wurden keine Termine angezeigt.
+- **Quick Navigation – ForCalButton**: `forCalHandler::getEntries()` wird nun korrekt mit der PHP-Konstante `SORT_ASC` (statt dem String `'SORT_ASC'`), `pageSize=10` und einem Suchfenster von 2 Jahren ab heute aufgerufen.
+- **Quick Navigation – ForCalButton**: Berechtigungsfilter (`useUserPermissions`) greift korrekt; Administratoren sehen alle Termine, normale Benutzer nur Termine aus erlaubten Kategorien.
+
+### Changed
+
+- **Quick Navigation – ForCalButton**: Zeigt nun die nächsten 10 Termine ab heute (aufsteigend sortiert) statt zuletzt geänderter Einträge.
+- **Quick Navigation – ForCalButton**: Einträge zeigen Kategorie-Farbe als linken Randstreifen, Datum, Uhrzeit (wenn nicht ganztägig) und Kategorienamen.
+- **Quick Navigation – ForCalButton**: Badges „Heute" und „Morgen" heben zeitnahe Termine hervor.
+- **Quick Navigation – ForCalButton**: `ignoreStatus=true` sorgt dafür, dass auch offline-Termine und -Kategorien im Backend sichtbar sind.
+- CSS-Stile für den neuen ForCalButton-Block in `forcal.css` ergänzt (Dark-Mode-Support inklusive).
+
 ## 6.5.1 - 2026-03-19
 
 ### Fixed
