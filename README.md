@@ -60,6 +60,76 @@ Egal ob man einen einfachen Kalender oder ein komplexes Event-System benötigt.
 
 Nach der Installation müssen die Nutzerrechte in den Benutzer-Rollen und die Benutzerberechtigungen im Kalender definiert werden. 
 
+## Troubleshooting: Illegal mix of collations
+
+Wenn im Backend SQL-Fehler wie `SQLSTATE[HY000]: 1267 Illegal mix of collations` auftreten (typisch bei Vergleichen von `rex_user.login` mit `createuser`), liegt meist eine historisch gemischte Datenbank-Collation vor.
+
+Empfohlener Weg: Collations in Adminer oder per SQL auf einen gemeinsamen Stand bringen.
+
+### 1) Vorher Backup erstellen
+
+Vor den SQL-Änderungen ein vollständiges Datenbank-Backup anlegen.
+
+### 2) Aktuellen Stand prüfen
+
+```sql
+SHOW FULL COLUMNS FROM rex_user LIKE 'login';
+SHOW FULL COLUMNS FROM rex_forcal_entries LIKE 'createuser';
+SHOW FULL COLUMNS FROM rex_forcal_entries LIKE 'updateuser';
+SHOW FULL COLUMNS FROM rex_forcal_categories LIKE 'createuser';
+SHOW FULL COLUMNS FROM rex_forcal_categories LIKE 'updateuser';
+SHOW FULL COLUMNS FROM rex_forcal_venues LIKE 'createuser';
+SHOW FULL COLUMNS FROM rex_forcal_venues LIKE 'updateuser';
+```
+
+Ziel: Alle beteiligten Login/User-Spalten sollen die gleiche Collation haben wie `rex_user.login`.
+
+### 3) Collation angleichen
+
+Variante A: Instanz nutzt `utf8mb3` (alte `utf8`-Installationen):
+
+```sql
+ALTER TABLE rex_forcal_entries
+    MODIFY createuser varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL,
+    MODIFY updateuser varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL;
+
+ALTER TABLE rex_forcal_categories
+    MODIFY createuser varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL,
+    MODIFY updateuser varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL;
+
+ALTER TABLE rex_forcal_venues
+    MODIFY createuser varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL,
+    MODIFY updateuser varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NULL;
+```
+
+Variante B: Instanz nutzt `utf8mb4`:
+
+```sql
+ALTER TABLE rex_forcal_entries
+    MODIFY createuser varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+    MODIFY updateuser varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+
+ALTER TABLE rex_forcal_categories
+    MODIFY createuser varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+    MODIFY updateuser varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+
+ALTER TABLE rex_forcal_venues
+    MODIFY createuser varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+    MODIFY updateuser varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+```
+
+Hinweis: Falls `rex_user.login` eine andere Collation verwendet (z. B. `*_general_ci`), die oben genannten Befehle auf genau diese Collation anpassen.
+
+### 4) Ergebnis prüfen
+
+```sql
+SHOW FULL COLUMNS FROM rex_user LIKE 'login';
+SHOW FULL COLUMNS FROM rex_forcal_entries LIKE 'createuser';
+SHOW FULL COLUMNS FROM rex_forcal_entries LIKE 'updateuser';
+```
+
+Danach Cache leeren und die ForCal-Seiten erneut testen.
+
 
 ## FORCalEventsFactory
 
