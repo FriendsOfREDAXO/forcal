@@ -1,0 +1,358 @@
+/**
+ * ForCal v7 – Datums-/Uhrzeitpicker auf Basis von air-datepicker
+ *
+ * Initialisiert Von/Bis-Felder und synchronisiert sie mit den
+ * versteckten ISO-Feldern, die von rex_form gespeichert werden.
+ * Locale wird inline definiert (kein separates Locale-Script nötig).
+ */
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------------------
+  // Inline Locales
+  // ---------------------------------------------------------------------------
+  var localeDE = {
+    days:        ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+    daysShort:   ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+    daysMin:     ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+    months:      ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    monthsShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+    today:       'Heute',
+    clear:       'Löschen',
+    dateFormat:  'dd.MM.yyyy',
+    timeFormat:  'HH:mm',
+    firstDay:    1,
+  };
+
+  var localeEN = {
+    days:        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    daysShort:   ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    daysMin:     ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+    months:      ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    today:       'Today',
+    clear:       'Clear',
+    dateFormat:  'MM/dd/yyyy',
+    timeFormat:  'hh:mm aa',
+    firstDay:    0,
+  };
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  function getLocale() {
+    var lang = (document.documentElement.lang || 'de').toLowerCase().substring(0, 2);
+    return lang === 'de' ? localeDE : localeEN;
+  }
+
+  /** Date → ISO 'YYYY-MM-DDTHH:MM' */
+  function toISO(date) {
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    return (
+      date.getFullYear() + '-' +
+      pad(date.getMonth() + 1) + '-' +
+      pad(date.getDate()) + 'T' +
+      pad(date.getHours()) + ':' +
+      pad(date.getMinutes())
+    );
+  }
+
+  /** ISO string → Date or null */
+  function fromISO(str) {
+    if (!str) return null;
+    var d = new Date(str.replace('T', ' '));
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Init
+  // ---------------------------------------------------------------------------
+
+  function initPickers() {
+    var startUI  = document.getElementById('forcal_dtstart_ui');
+    var endUI    = document.getElementById('forcal_dtend_ui');
+    var startH   = document.getElementById('forcal_dtstart');
+    var endH     = document.getElementById('forcal_dtend');
+    var alldayCb = document.getElementById('forcal_allday_ui');
+    var alldayH  = document.getElementById('forcal_full_time');
+
+    // Elemente nicht vorhanden → nur auf der Eintrags-Seite aktiv
+    if (!startUI || !endUI) return;
+
+    if (typeof AirDatepicker === 'undefined') {
+      console.error('ForCal: AirDatepicker nicht geladen. Picker-URL prüfen.');
+      return;
+    }
+
+    var locale   = getLocale();
+    var isAllDay = alldayCb ? alldayCb.checked : false;
+
+    // Inputs manuell readonly setzen (kein typing, aber Picker funktioniert)
+    startUI.setAttribute('readonly', 'readonly');
+    endUI.setAttribute('readonly', 'readonly');
+    // Caret verstecken
+    startUI.style.caretColor = 'transparent';
+    endUI.style.caretColor   = 'transparent';
+
+    var endPicker   = null;
+    var startPicker = null;
+
+    var commonOpts = {
+      locale:     locale,
+      timepicker: !isAllDay,
+      autoClose:  true,
+      position:   'bottom left',
+      buttons:    ['today'],
+    };
+
+    startPicker = new AirDatepicker(startUI, Object.assign({}, commonOpts, {
+      onSelect: function (opts) {
+        var date = Array.isArray(opts.date) ? opts.date[0] : opts.date;
+        if (!date) return;
+        if (startH) startH.value = toISO(date);
+        if (endPicker) endPicker.update({ minDate: date });
+        var endDate = endPicker && endPicker.selectedDates[0];
+        if (endDate && endDate < date) {
+          endPicker.selectDate(date, { silent: false });
+        }
+      },
+    }));
+
+    endPicker = new AirDatepicker(endUI, Object.assign({}, commonOpts, {
+      onSelect: function (opts) {
+        var date = Array.isArray(opts.date) ? opts.date[0] : opts.date;
+        if (!date) return;
+        if (endH) endH.value = toISO(date);
+      },
+    }));
+
+    // Initialwerte setzen
+    var initStart = startH ? fromISO(startH.value) : null;
+    var initEnd   = endH   ? fromISO(endH.value)   : null;
+    if (initStart) {
+      startPicker.selectDate(initStart, { silent: true });
+      endPicker.update({ minDate: initStart });
+    }
+    if (initEnd) {
+      endPicker.selectDate(initEnd, { silent: true });
+    }
+
+    // Expliziter Click-Handler als Fallback (falls Focus nicht feuert)
+    startUI.addEventListener('click', function () { startPicker.show(); });
+    endUI.addEventListener('click',   function () { endPicker.show(); });
+
+    // ---------------------------------------------------------------------------
+    // Ganztägig-Toggle
+    // ---------------------------------------------------------------------------
+    if (alldayCb) {
+      alldayCb.addEventListener('change', function () {
+        var checked = this.checked;
+        if (alldayH) alldayH.value = checked ? '1' : '0';
+
+        startPicker.update({ timepicker: !checked, autoClose: true });
+        endPicker.update({   timepicker: !checked, autoClose: true });
+
+        if (checked) {
+          var sDate = startPicker.selectedDates[0];
+          var eDate = endPicker.selectedDates[0];
+          if (sDate) {
+            sDate = new Date(sDate.getFullYear(), sDate.getMonth(), sDate.getDate(), 0, 0, 0);
+            if (startH) startH.value = toISO(sDate);
+            startPicker.selectDate(sDate, { silent: true });
+          }
+          if (eDate) {
+            eDate = new Date(eDate.getFullYear(), eDate.getMonth(), eDate.getDate(), 0, 0, 0);
+            if (endH) endH.value = toISO(eDate);
+            endPicker.selectDate(eDate, { silent: true });
+          }
+        }
+      });
+    }
+
+    // Picker-Referenzen für externe Nutzung
+    window.forCalPickers = { start: startPicker, end: endPicker };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Boot
+  // ---------------------------------------------------------------------------
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPickers);
+  } else {
+    initPickers();
+  }
+
+  window.forCalDatepicker = { init: initPickers };
+})();
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------------------
+  // Inline Locales (air-datepicker locale-Dateien sind CommonJS, kein Browser-Global)
+  // ---------------------------------------------------------------------------
+  var localeDE = {
+    days:        ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+    daysShort:   ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+    daysMin:     ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+    months:      ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    monthsShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+    today:       'Heute',
+    clear:       'Löschen',
+    dateFormat:  'dd.MM.yyyy',
+    timeFormat:  'HH:mm',
+    firstDay:    1,
+  };
+
+  var localeEN = {
+    days:        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    daysShort:   ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    daysMin:     ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+    months:      ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    today:       'Today',
+    clear:       'Clear',
+    dateFormat:  'MM/dd/yyyy',
+    timeFormat:  'hh:mm aa',
+    firstDay:    0,
+  };
+
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  function getLocale() {
+    var lang = (document.documentElement.lang || 'de').toLowerCase().substring(0, 2);
+    return lang === 'de' ? localeDE : localeEN;
+  }
+
+  /** Date → ISO 'YYYY-MM-DDTHH:MM' (for hidden field / DB) */
+  function toISO(date) {
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    return (
+      date.getFullYear() + '-' +
+      pad(date.getMonth() + 1) + '-' +
+      pad(date.getDate()) + 'T' +
+      pad(date.getHours()) + ':' +
+      pad(date.getMinutes())
+    );
+  }
+
+  /** ISO string → Date or null */
+  function fromISO(str) {
+    if (!str) return null;
+    // Replace T with space so Safari/Firefox handle it like Chrome
+    var d = new Date(str.replace('T', ' '));
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Main init
+  // ---------------------------------------------------------------------------
+
+  function initPickers() {
+    var startUI  = document.getElementById('forcal_dtstart_ui');
+    var endUI    = document.getElementById('forcal_dtend_ui');
+    var startH   = document.getElementById('forcal_dtstart');
+    var endH     = document.getElementById('forcal_dtend');
+    var alldayCb = document.getElementById('forcal_allday_ui');
+    var alldayH  = document.getElementById('forcal_full_time');
+
+    // Bail if elements or library not present
+    if (!startUI || !endUI || !startH || !endH) return;
+    if (typeof AirDatepicker === 'undefined') {
+      console.warn('forcal-datepicker: AirDatepicker not loaded');
+      return;
+    }
+
+    var locale   = getLocale();
+    var isAllDay = alldayCb ? alldayCb.checked : false;
+
+    var endPicker   = null;
+    var startPicker = null;
+
+    var baseOpts = {
+      locale:      locale,
+      timepicker:  !isAllDay,
+      dateFormat:  locale.dateFormat,
+      timeFormat:  locale.timeFormat,
+      isMobile:    false,
+      autoClose:   true,
+      position:    'bottom left',
+    };
+
+    startPicker = new AirDatepicker(startUI, Object.assign({}, baseOpts, {
+      onSelect: function (opts) {
+        var date = Array.isArray(opts.date) ? opts.date[0] : opts.date;
+        if (!date) return;
+        startH.value = toISO(date);
+        // Endpicker-Mindestdatum anpassen
+        if (endPicker) endPicker.update({ minDate: date });
+        // Falls Endzeit vor Startzeit, Endzeit auf Startzeit setzen
+        var endDate = endPicker && endPicker.selectedDates[0];
+        if (endDate && endDate < date) {
+          endPicker.selectDate(date, { silent: false });
+        }
+      },
+    }));
+
+    endPicker = new AirDatepicker(endUI, Object.assign({}, baseOpts, {
+      onSelect: function (opts) {
+        var date = Array.isArray(opts.date) ? opts.date[0] : opts.date;
+        if (!date) return;
+        endH.value = toISO(date);
+      },
+    }));
+
+    // Initialwerte aus hidden-Feldern setzen (silent = keine onSelect-Auslösung)
+    var initStart = fromISO(startH.value);
+    var initEnd   = fromISO(endH.value);
+    if (initStart) {
+      startPicker.selectDate(initStart, { silent: true });
+      endPicker.update({ minDate: initStart });
+    }
+    if (initEnd) {
+      endPicker.selectDate(initEnd, { silent: true });
+    }
+
+    // ---------------------------------------------------------------------------
+    // Ganztägig-Toggle
+    // ---------------------------------------------------------------------------
+    if (alldayCb) {
+      alldayCb.addEventListener('change', function () {
+        var checked = this.checked;
+        if (alldayH) alldayH.value = checked ? '1' : '0';
+        startPicker.update({ timepicker: !checked });
+        endPicker.update({ timepicker: !checked });
+
+        // Bei Ganztägig Uhrzeit auf 00:00 normalisieren
+        if (checked) {
+          var sDate = startPicker.selectedDates[0];
+          var eDate = endPicker.selectedDates[0];
+          if (sDate) {
+            sDate.setHours(0, 0, 0, 0);
+            startH.value = toISO(sDate);
+          }
+          if (eDate) {
+            eDate.setHours(0, 0, 0, 0);
+            endH.value = toISO(eDate);
+          }
+        }
+      });
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Boot
+  // ---------------------------------------------------------------------------
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPickers);
+  } else {
+    initPickers();
+  }
+
+  // Public API
+  window.forCalDatepicker = { init: initPickers };
+})();

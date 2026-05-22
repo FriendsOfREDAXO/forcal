@@ -1,3 +1,22 @@
+## 6.6.0 - 2026-05-22
+
+### Added
+
+- **Tagging-Feldtyp (`tagging`)** fuer Custom Fields weiter ausgebaut und dokumentiert, inklusive Suggest-API und Rendering-Helpern fuer farbige Tags.
+- **Tagging-Assets** (`forcal-tagging.js`, `forcal-tagging.css`) werden im Backend automatisch geladen (wenn `fields` nicht aktiv ist), um Konflikte durch doppelte Widget-Initialisierung zu vermeiden.
+
+### Changed
+
+- **Date/Time-Picker-Integration**: ForCal nutzt den zentralen Picker aus dem REDAXO-Addon `flatpickr` (a11y_datetime-kompatibel), statt eine eigene gebuendelte Flatpickr-Version zu erwarten.
+- **Theme-Verhalten des Pickers**: Das Picker-Theme folgt nun dem aktiven REDAXO-Backend-Theme (Light/Dark/Auto) und synchronisiert sich bei Theme-Wechseln zur Laufzeit.
+- **RRULE-Builder**: Until-Picker nutzt dieselbe zentrale Picker-Factory (mit AirDatepicker-Prioritaet), damit die Initialisierung konsistent bleibt.
+
+### Fixed
+
+- **Ganztags-Termine (Von/Bis)**: Beim Aendern des Startdatums wird das Bis-Datum bei Bedarf robust auf den gleichen Tag gesetzt (insbesondere wenn vorher ein Vergangenheitswert gesetzt war oder das Feld durch `minDate` geleert wurde).
+- **Ganztags-Termine mit manueller Eingabe**: Zusätzlicher Fallback auf `onClose`, damit die Von/Bis-Synchronisierung auch ohne direkten Kalendertag-Klick greift.
+- **Picker-Verfügbarkeit**: Klarere Fallback-Logik in den JS-Initialisierungen, falls der Picker nicht geladen ist (a11y_datetime/flatpickr-Erkennung).
+
 ## 6.5.2 - 2026-03-31
 
 ### Fixed

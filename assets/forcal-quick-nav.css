@@ -1,0 +1,388 @@
+/* Forcal Modal Styles */
+#forcal-modal .modal-dialog {
+    width: 90%;
+    max-width: 1400px;
+}
+
+#forcal-modal .modal-body {
+    padding: 20px;
+}
+
+#forcal-modal h5 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #337ab7;
+    color: #337ab7;
+}
+
+/* FullCalendar Container */
+#forcal-quick-calendar {
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+#forcal-quick-calendar .fc-button {
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+#forcal-quick-calendar .fc-button:hover {
+    background-color: #286090;
+    border-color: #286090;
+}
+
+#forcal-quick-calendar .fc-daygrid-day:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+/* Forcal History List */
+.forcal-history-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.forcal-history-list ul {
+    margin: 0;
+    padding: 0;
+}
+
+.forcal-history-list li {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+.forcal-history-list li:hover {
+    background-color: #f5f5f5;
+}
+
+.forcal-history-list li:last-child {
+    border-bottom: none;
+}
+
+.forcal-history-list a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.forcal-history-list a:hover {
+    color: #337ab7;
+}
+
+.forcal-history-list small {
+    display: block;
+    color: #777;
+    margin-top: 3px;
+}
+
+.forcal-history-list .fa {
+    margin-right: 5px;
+    color: #337ab7;
+}
+
+/* Forcal Quick Navigation Dropdown */
+.forcal-dropdown {
+    min-width: 320px;
+}
+
+/* Tabs */
+.forcal-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background-color: #f5f5f5;
+}
+
+.forcal-tab {
+    flex: 1;
+    padding: 10px 15px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.forcal-tab:hover {
+    background-color: #e8e8e8;
+    color: #333;
+}
+
+.forcal-tab.active {
+    background-color: #fff;
+    color: #333;
+    font-weight: 600;
+    border-bottom: 2px solid #337ab7;
+}
+
+.forcal-tab i {
+    margin-right: 5px;
+}
+
+/* Tab Content */
+.forcal-tab-content {
+    position: relative;
+}
+
+.forcal-tab-pane {
+    display: none;
+}
+
+.forcal-tab-pane.active {
+    display: block;
+}
+
+/* Calendar in Modal */
+#forcal-modal .forcal-calendar {
+    padding: 0;
+}
+
+#forcal-modal .forcal-calendar-header {
+    margin-bottom: 20px;
+}
+
+#forcal-modal .forcal-calendar-title {
+    font-size: 16px;
+}
+
+/* Calendar */
+.forcal-calendar {
+    padding: 15px;
+}
+
+.forcal-calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.forcal-calendar-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.forcal-calendar-nav {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.forcal-calendar-nav:hover {
+    color: #337ab7;
+}
+
+.forcal-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 5px;
+}
+
+.forcal-calendar-weekday {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    padding: 5px 0;
+}
+
+.forcal-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.forcal-calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    position: relative;
+    transition: all 0.2s;
+    background: #fff;
+}
+
+.forcal-calendar-day.empty {
+    border-color: transparent;
+    pointer-events: none;
+}
+
+.forcal-calendar-day:hover {
+    background-color: #f0f0f0;
+    border-color: #337ab7;
+    transform: scale(1.05);
+}
+
+.forcal-calendar-day.today {
+    background-color: #337ab7;
+    color: #fff;
+    font-weight: 700;
+    border-color: #337ab7;
+}
+
+.forcal-calendar-day.today:hover {
+    background-color: #286090;
+}
+
+.forcal-calendar-day.has-events {
+    font-weight: 600;
+}
+
+.forcal-day-number {
+    font-size: 12px;
+}
+
+.forcal-event-dots {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.forcal-event-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #337ab7;
+}
+
+.forcal-calendar-day.today .forcal-event-dot {
+    background-color: #fff;
+}
+
+/* Dark Theme */
+.rex-theme-dark .forcal-tabs {
+    background-color: #2a2d33;
+    border-bottom-color: #404040;
+}
+
+.rex-theme-dark .forcal-tab {
+    color: #aaa;
+}
+
+.rex-theme-dark .forcal-tab:hover {
+    background-color: #35383e;
+    color: #fff;
+}
+
+.rex-theme-dark .forcal-tab.active {
+    background-color: #1e2126;
+    color: #fff;
+    border-bottom-color: #337ab7;
+}
+
+.rex-theme-dark .forcal-calendar-title {
+    color: #fff;
+}
+
+.rex-theme-dark .forcal-calendar-nav {
+    color: #aaa;
+}
+
+.rex-theme-dark .forcal-calendar-nav:hover {
+    color: #5b9dd9;
+}
+
+.rex-theme-dark .forcal-calendar-day {
+    background: #2a2d33;
+    border-color: #404040;
+    color: #fff;
+}
+
+.rex-theme-dark .forcal-calendar-day:hover {
+    background-color: #35383e;
+    border-color: #5b9dd9;
+}
+
+.rex-theme-dark .forcal-calendar-day.today {
+    background-color: #337ab7;
+    color: #fff;
+    border-color: #337ab7;
+}
+
+.rex-theme-dark .forcal-calendar-day.today:hover {
+    background-color: #286090;
+}
+
+/* Dark Theme: Modal */
+.rex-theme-dark #forcal-modal .modal-content {
+    background-color: #1e2126;
+    color: #fff;
+}
+
+.rex-theme-dark #forcal-modal .modal-header {
+    border-bottom-color: #404040;
+}
+
+.rex-theme-dark #forcal-modal h5 {
+    color: #5b9dd9;
+    border-bottom-color: #5b9dd9;
+}
+
+.rex-theme-dark #forcal-modal .close {
+    color: #fff;
+    opacity: 0.8;
+}
+
+.rex-theme-dark #forcal-quick-calendar {
+    background: #2a2d33;
+    border-color: #404040;
+}
+
+.rex-theme-dark #forcal-quick-calendar .fc-theme-standard td,
+.rex-theme-dark #forcal-quick-calendar .fc-theme-standard th {
+    border-color: #404040;
+}
+
+.rex-theme-dark #forcal-quick-calendar .fc-col-header-cell,
+.rex-theme-dark #forcal-quick-calendar .fc-daygrid-day {
+    background: #2a2d33;
+    color: #fff;
+}
+
+.rex-theme-dark #forcal-quick-calendar .fc-daygrid-day:hover {
+    background-color: #35383e;
+}
+
+.rex-theme-dark #forcal-quick-calendar .fc-button {
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.rex-theme-dark #forcal-quick-calendar .fc-toolbar-title {
+    color: #fff;
+}
+
+.rex-theme-dark .forcal-history-list li {
+    border-bottom-color: #404040;
+}
+
+.rex-theme-dark .forcal-history-list li:hover {
+    background-color: #2a2d33;
+}
+
+.rex-theme-dark .forcal-history-list a {
+    color: #fff;
+}
+
+.rex-theme-dark .forcal-history-list a:hover {
+    color: #5b9dd9;
+}
+
+.rex-theme-dark .forcal-history-list small {
+    color: #aaa;
+}

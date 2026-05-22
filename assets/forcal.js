@@ -16,6 +16,7 @@ $(function () {
 });
 
 function forcal_init() {
+    forcal_initPickerThemeSync();
     forcal_colorpalette_init();
     forcal_fullcalendar_init();
     forcal_flatpickr_init();
@@ -23,6 +24,56 @@ function forcal_init() {
     forcal_fulltime();
     forcal_repeat();
     forcal_submit();
+}
+
+function forcal_syncPickerThemeWithBackend() {
+    if (!document.documentElement || !document.body) {
+        return;
+    }
+
+    let body = document.body;
+    let isExplicitDark = body.classList.contains('rex-theme-dark');
+    let isExplicitLight = body.classList.contains('rex-theme-light');
+    let isAutoTheme = body.classList.contains('rex-has-theme') && !isExplicitDark && !isExplicitLight;
+
+    let prefersDark = false;
+    if (window.matchMedia) {
+        prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    let useDark = isExplicitDark || (isAutoTheme && prefersDark);
+    let theme = useDark ? 'dark' : 'light';
+
+    document.documentElement.setAttribute('data-a11y-datetime-theme', theme);
+    document.body.setAttribute('data-a11y-datetime-theme', theme);
+}
+
+function forcal_initPickerThemeSync() {
+    forcal_syncPickerThemeWithBackend();
+
+    if (window.__forcalPickerThemeSyncInstalled) {
+        return;
+    }
+    window.__forcalPickerThemeSyncInstalled = true;
+
+    if (window.matchMedia) {
+        let mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        if (typeof mediaQuery.addEventListener === 'function') {
+            mediaQuery.addEventListener('change', forcal_syncPickerThemeWithBackend);
+        } else if (typeof mediaQuery.addListener === 'function') {
+            mediaQuery.addListener(forcal_syncPickerThemeWithBackend);
+        }
+    }
+
+    if (typeof MutationObserver !== 'undefined' && document.body) {
+        let observer = new MutationObserver(function () {
+            forcal_syncPickerThemeWithBackend();
+        });
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
 }
 
 function forcal_submit() {
@@ -138,6 +189,20 @@ function forcal_fulltime_trigger(type) {
         forcal_clock.hide();
         forcal_clock.find('input').val('00:00:00');
         forcal_date.addClass('only');
+
+        // Bei Ganztagsterminen Enddatum auf Startdatum synchronisieren,
+        // falls das Enddatum leer ist oder vor dem Start liegt.
+        let startDateInput = $('#dpd1');
+        let endDateInput = $('#dpd2');
+        let startDate = startDateInput.val();
+        let endDate = endDateInput.val();
+
+        if (startDate && (!endDate || endDate < startDate)) {
+            endDateInput.val(startDate).trigger('change');
+            if (endDateInput[0] && endDateInput[0]._flatpickr) {
+                endDateInput[0]._flatpickr.setDate(startDate, true);
+            }
+        }
     } else {
         forcal_clock.show();
         forcal_date.removeClass('only');
@@ -293,7 +358,23 @@ function forcal_fullcalendar_init() {
     }
 }
 
+function forcal_getPickerFactory() {
+    if (typeof a11y_datetime === 'function') {
+        return a11y_datetime;
+    }
+    if (typeof flatpickr === 'function') {
+        return flatpickr;
+    }
+    return null;
+}
+
 function forcal_flatpickr_init() {
+    const pickerFactory = forcal_getPickerFactory();
+    if (!pickerFactory) {
+        console.warn('forcal: Kein DateTime-Picker verfuegbar. Bitte das flatpickr-Addon aktivieren.');
+        return;
+    }
+
     let dpd1 = $('#dpd1');
     let dpd2 = $('#dpd2');
     let dpd2b = $('#dpd2b');
@@ -413,10 +494,22 @@ function forcal_flatpickr_init() {
 
     // Datum-Picker für Start- und Enddatum
     let startPicker, endPicker, timepicker1, timepicker2;
+
+    function ensureAllDayEndDate(startDateStr) {
+        const fullTimeChecked = $('.forcal_fulltime_master_check').is(':checked');
+        if (!fullTimeChecked || !startDateStr || !endPicker) {
+            return;
+        }
+
+        const endDateStr = dpd2.val();
+        if (!endDateStr || endDateStr < startDateStr) {
+            endPicker.setDate(startDateStr, true);
+        }
+    }
     
     if (dpd1.length && dpd2.length) {
         // Startdatum-Picker
-        startPicker = flatpickr(dpd1[0], {
+        startPicker = pickerFactory(dpd1[0], {
             dateFormat: "Y-m-d",
             locale: localeToUse,
             allowInput: true,
@@ -426,11 +519,27 @@ function forcal_flatpickr_init() {
                 
                 // Stellen Sie sicher, dass das Enddatum nicht vor dem Startdatum liegt
                 if (selectedDates[0]) {
+                    const previousEndDate = endPicker.selectedDates[0]
+                        ? new Date(endPicker.selectedDates[0].getTime())
+                        : null;
+
                     endPicker.set('minDate', selectedDates[0]);
+
+                    // Bei Ganztag: Enddatum robust auf Startdatum synchronisieren,
+                    // falls es leer ist oder vor dem neuen Startdatum liegt.
+                    ensureAllDayEndDate(dateStr);
                     
-                    // Wenn das Enddatum vor dem neuen Startdatum liegt, setze es auf das Startdatum
-                    if (endPicker.selectedDates[0] && selectedDates[0] > endPicker.selectedDates[0]) {
-                        endPicker.setDate(selectedDates[0]);
+                    // Wenn das Enddatum vor dem neuen Startdatum lag, setze es auf das Startdatum.
+                    // previousEndDate muss hier verwendet werden, da minDate den Endwert bereits
+                    // geleert haben kann.
+                    if (previousEndDate && selectedDates[0] > previousEndDate) {
+                        endPicker.setDate(selectedDates[0], true);
+                    }
+
+                    // Sicherheitsnetz: falls Enddatum trotz Korrekturen leer bleibt,
+                    // bei Ganztag auf Startdatum setzen.
+                    if ($('.forcal_fulltime_master_check').is(':checked') && !dpd2.val()) {
+                        endPicker.setDate(selectedDates[0], true);
                     }
                     
                     // Validiere die Zeiten, wenn Start- und Enddatum gleich sind
@@ -438,11 +547,17 @@ function forcal_flatpickr_init() {
                         validateAndUpdateTimes();
                     }
                 }
+            },
+            onClose: function(selectedDates, dateStr) {
+                // Fallback für manuelle Eingaben in das Von-Feld.
+                if (dateStr) {
+                    ensureAllDayEndDate(dateStr);
+                }
             }
         });
 
         // Enddatum-Picker
-        endPicker = flatpickr(dpd2[0], {
+        endPicker = pickerFactory(dpd2[0], {
             dateFormat: "Y-m-d",
             locale: localeToUse,
             allowInput: true,
@@ -469,7 +584,7 @@ function forcal_flatpickr_init() {
 
     // Datum-Picker für Wiederholungs-Enddatum
     if (dpd2b.length) {
-        flatpickr(dpd2b[0], {
+        pickerFactory(dpd2b[0], {
             dateFormat: "Y-m-d",
             locale: localeToUse,
             allowInput: true
@@ -512,7 +627,7 @@ function forcal_flatpickr_init() {
 
     // Zeit-Picker für Startzeit
     if (tpd1.length) {
-        timepicker1 = flatpickr(tpd1[0], {
+        timepicker1 = pickerFactory(tpd1[0], {
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i:S",
@@ -533,7 +648,7 @@ function forcal_flatpickr_init() {
 
     // Zeit-Picker für Endzeit
     if (tpd2.length) {
-        timepicker2 = flatpickr(tpd2[0], {
+        timepicker2 = pickerFactory(tpd2[0], {
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i:S",

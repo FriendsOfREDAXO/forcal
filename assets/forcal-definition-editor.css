@@ -1,0 +1,358 @@
+/**
+ * forCal Definition Editor Styles
+ * @author mail[at]doerr-softwaredevelopment[dot]com Joachim Doerr
+ */
+
+/* Editor Container */
+.forcal-definition-editor {
+    margin: 20px 0;
+}
+
+/* Toolbar */
+.forcal-definition-toolbar {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+.forcal-definition-toolbar .btn-toolbar {
+    margin: 0;
+}
+
+.forcal-definition-toolbar .btn-group {
+    margin-right: 10px;
+}
+
+/* Definition Content */
+.forcal-definition-content {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    min-height: 400px;
+}
+
+/* Section */
+.forcal-def-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.forcal-def-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #2e7bcf;
+    color: #2e7bcf;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.forcal-def-list {
+    margin-bottom: 15px;
+}
+
+/* Item (Field or Panel) */
+.forcal-def-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.forcal-def-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.forcal-def-item.ui-sortable-helper {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    opacity: 0.9;
+}
+
+/* Item Header */
+.forcal-def-item-header {
+    padding: 12px 15px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    cursor: move;
+}
+
+.forcal-def-drag-handle {
+    color: #999;
+    margin-right: 10px;
+    cursor: move;
+}
+
+.forcal-def-drag-handle:hover {
+    color: #666;
+}
+
+.forcal-def-item-title {
+    flex: 1;
+    font-weight: 600;
+    color: #333;
+}
+
+.forcal-def-item-type {
+    margin-left: 10px;
+    padding: 3px 8px;
+    background: #2e7bcf;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.forcal-def-item-actions {
+    margin-left: 10px;
+}
+
+.forcal-def-item-actions .btn {
+    margin-left: 5px;
+}
+
+/* Item Body (Form) */
+.forcal-def-item-body {
+    padding: 15px;
+    background: #fff;
+}
+
+.forcal-def-form {
+    max-width: 800px;
+}
+
+.forcal-def-form .form-group {
+    margin-bottom: 15px;
+}
+
+.forcal-def-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+.forcal-def-form .form-control {
+    width: 100%;
+}
+
+/* Type Specific Fields */
+.forcal-type-specific-fields {
+    background: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    margin-bottom: 15px;
+}
+
+.forcal-type-specific-fields h5 {
+    margin-top: 0;
+    font-weight: 600;
+}
+
+.forcal-type-specific-fields .help-block {
+    color: #666;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+.forcal-type-specific-fields textarea {
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-size: 12px;
+}
+
+/* Checkbox Labels */
+.forcal-def-form label.checkbox {
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.forcal-def-form label.checkbox input {
+    margin-right: 8px;
+}
+
+/* Panel Specific */
+.forcal-def-panel .forcal-def-item-header {
+    background: #e8f4f8;
+}
+
+.forcal-def-panel .forcal-def-item-type {
+    background: #17a2b8;
+}
+
+.forcal-panel-fields {
+    background: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    margin-bottom: 15px;
+}
+
+.forcal-panel-field {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.forcal-panel-field strong {
+    flex: 1;
+}
+
+.forcal-panel-field button {
+    margin-left: 5px;
+}
+
+/* Placeholder für Sortable */
+.forcal-def-placeholder {
+    background: #fff3cd;
+    border: 2px dashed #ffc107;
+    height: 60px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}
+
+/* Add Field Button */
+.forcal-add-field-btn {
+    margin-top: 10px;
+}
+
+/* Modals */
+.modal-body pre {
+    background: #f5f5f5;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.modal-body textarea {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+/* Alert Messages */
+.forcal-definition-editor .alert {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .forcal-definition-toolbar .btn-group {
+        margin-bottom: 10px;
+    }
+    
+    .forcal-def-item-header {
+        flex-wrap: wrap;
+    }
+    
+    .forcal-def-item-title {
+        flex: 1 1 100%;
+        margin-bottom: 5px;
+    }
+    
+    .forcal-def-item-type {
+        margin-left: 30px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .forcal-definition-content {
+        background: #2b2b2b;
+        border-color: #444;
+    }
+    
+    .forcal-def-section {
+        background: #333;
+        border-color: #444;
+    }
+    
+    .forcal-def-item {
+        background: #2b2b2b;
+        border-color: #444;
+    }
+    
+    .forcal-def-item-header {
+        background: #333;
+        border-color: #444;
+    }
+    
+    .forcal-def-item-title {
+        color: #ddd;
+    }
+    
+    .forcal-def-item-body {
+        background: #2b2b2b;
+    }
+    
+    .forcal-def-form label {
+        color: #ccc;
+    }
+    
+    .forcal-panel-fields {
+        background: #333;
+        border-color: #444;
+    }
+    
+    .forcal-panel-field {
+        background: #2b2b2b;
+        border-color: #444;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.forcal-def-item {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Loading State */
+.forcal-definition-editor.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.forcal-definition-editor.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #2e7bcf;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
