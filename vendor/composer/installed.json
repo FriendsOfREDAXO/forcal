@@ -2,29 +2,29 @@
     "packages": [
         {
             "name": "spatie/calendar-links",
-            "version": "1.11.1",
-            "version_normalized": "1.11.1.0",
+            "version": "2.0",
+            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/calendar-links.git",
-                "reference": "bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5"
+                "reference": "8031e8dea654ed61b4729ce7c4d248f11bd7153f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5",
-                "reference": "bf4645d6a2d8eb32248a5b0b7da7976a13e5e2b5",
+                "url": "https://api.github.com/repos/spatie/calendar-links/zipball/8031e8dea654ed61b4729ce7c4d248f11bd7153f",
+                "reference": "8031e8dea654ed61b4729ce7c4d248f11bd7153f",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1"
+                "php": "^8.3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.49",
-                "phpunit/phpunit": "^10.5",
-                "spatie/phpunit-snapshot-assertions": "^5.1",
-                "vimeo/psalm": "^5.22"
+                "friendsofphp/php-cs-fixer": "^3.93",
+                "phpunit/phpunit": "^12.5 || ^13.0",
+                "spatie/phpunit-snapshot-assertions": "^5.3",
+                "vimeo/psalm": "^6.15"
             },
-            "time": "2025-01-16T16:49:47+00:00",
+            "time": "2026-02-10T09:25:16+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -52,7 +52,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/calendar-links/issues",
-                "source": "https://github.com/spatie/calendar-links/tree/1.11.1"
+                "source": "https://github.com/spatie/calendar-links/tree/2.0"
             },
             "funding": [
                 {

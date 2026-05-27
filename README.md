@@ -880,6 +880,11 @@ $link = forCalLink::create(rex_escape($event->entry_name), $from, $to)
 	->description($event->entry_teaser) // Auskommentieren, falls kein Teaser vorhanden
 	->address($location); // Auskommentieren, falls keine Location vorhanden
 
+// Für ganztägige Termine (calendar-links >=2.0):
+// $link = forCalLink::createAllDay(rex_escape($event->entry_name), $from, 1)
+// 	->description($event->entry_teaser)
+// 	->address($location);
+
 echo '<a href="'.$link->google().'">Google Calendar</a><br>';
 echo '<a href="'.$link->yahoo().'">Yahoo</a><br>';
 echo '<a href="'.$link->webOutlook().'">Outlook</a><br>';

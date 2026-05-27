@@ -1,4 +1,4 @@
-## 6.6.0 - 2026-05-22
+## 6.6.0 - 2026-05-27
 
 ### Added
 
@@ -10,12 +10,17 @@
 - **Date/Time-Picker-Integration**: ForCal nutzt den zentralen Picker aus dem REDAXO-Addon `flatpickr` (a11y_datetime-kompatibel), statt eine eigene gebuendelte Flatpickr-Version zu erwarten.
 - **Theme-Verhalten des Pickers**: Das Picker-Theme folgt nun dem aktiven REDAXO-Backend-Theme (Light/Dark/Auto) und synchronisiert sich bei Theme-Wechseln zur Laufzeit.
 - **RRULE-Builder**: Until-Picker nutzt dieselbe zentrale Picker-Factory (mit AirDatepicker-Prioritaet), damit die Initialisierung konsistent bleibt.
+- **PHP-Mindestanforderung**: Fuer das Addon gilt nun PHP `>=8.3`.
+- **Kalender-Link-Bibliothek**: `spatie/calendar-links` wurde auf `2.0` aktualisiert.
+- **Dokumentation**: README-Beispiel fuer ganztagige Terminlinks um `forCalLink::createAllDay(...)` (calendar-links 2.x) ergänzt.
 
 ### Fixed
 
 - **Ganztags-Termine (Von/Bis)**: Beim Aendern des Startdatums wird das Bis-Datum bei Bedarf robust auf den gleichen Tag gesetzt (insbesondere wenn vorher ein Vergangenheitswert gesetzt war oder das Feld durch `minDate` geleert wurde).
 - **Ganztags-Termine mit manueller Eingabe**: Zusätzlicher Fallback auf `onClose`, damit die Von/Bis-Synchronisierung auch ohne direkten Kalendertag-Klick greift.
 - **Picker-Verfügbarkeit**: Klarere Fallback-Logik in den JS-Initialisierungen, falls der Picker nicht geladen ist (a11y_datetime/flatpickr-Erkennung).
+- **iCal-Export (RFC 5545)**: `DTSTAMP` und `CREATED` werden jetzt als UTC-Zeitstempel mit `Z` ausgegeben.
+- **iCal-Export (Escaping)**: Reihenfolge beim Escaping korrigiert (erst Backslashes, dann Newlines/Sonderzeichen), damit `\n` nicht doppelt escaped wird.
 
 ## 6.5.2 - 2026-03-31
 

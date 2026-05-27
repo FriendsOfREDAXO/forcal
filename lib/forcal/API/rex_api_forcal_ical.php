@@ -328,10 +328,10 @@ class rex_api_forcal_ical extends rex_api_function
             $lines[] = 'CATEGORIES:' . $this->escapeString($event['category_name']);
         }
 
-        // DTSTAMP (aktueller Zeitstempel)
+        // DTSTAMP/CREATED als UTC ausgeben (RFC 5545-konform)
         $now = new DateTime('now', new DateTimeZone($this->timezone));
-        $lines[] = 'DTSTAMP:' . $this->formatDateTime($now);
-        $lines[] = 'CREATED:' . $this->formatDateTime($now);
+        $lines[] = 'DTSTAMP:' . $this->formatDateTime($now, true);
+        $lines[] = 'CREATED:' . $this->formatDateTime($now, true);
 
         // Wiederholungsregel (RRULE) für wiederkehrende Termine
         // Wir fügen die RRULE nur beim ersten Vorkommen hinzu
@@ -555,11 +555,11 @@ class rex_api_forcal_ical extends rex_api_function
         // HTML-Entities dekodieren (z.B. &amp; zu &)
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 
-        // Zeilenumbrüche für iCal formatieren
-        $text = str_replace(["\r\n", "\n"], "\\n", $text);
-
-        // Spezielle Zeichen escapen
-        $text = str_replace(["\\", ";", ","], ["\\\\", "\\;", "\\,"], $text);
+        // Reihenfolge beachten: zuerst Backslashes escapen, dann Newlines/Sonderzeichen.
+        // Dadurch bleibt Newline-Escaping als \n erhalten und wird nicht zu \\n.
+        $text = str_replace('\\', '\\\\', $text);
+        $text = str_replace(["\r\n", "\r", "\n"], "\\n", $text);
+        $text = str_replace([';', ','], ['\\;', '\\,'], $text);
 
         // Lange Zeilen aufteilen (RFC 5545)
         $text = wordwrap($text, 75, "\r\n ", true);
