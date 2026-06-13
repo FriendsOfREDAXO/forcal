@@ -886,15 +886,18 @@ function forcal_fullcalendar(forcal) {
                     };
                 }
                 
-                // Funktion zur Erzeugung einer transparenten Pastellversion der Farbe
-                function createPastelColor(colorValue, opacity = 0.2) {
+                // Funktion zur Erzeugung einer Pastellversion der Farbe
+                function createPastelColor(colorValue, opacity = 1.0) {
                     const rgb = extractRGB(colorValue);
                     
                     // Erstelle hellere Pastellversion (mische mit Weiß)
-                    const r = Math.floor(rgb.r + (255 - rgb.r) * 0.5);
-                    const g = Math.floor(rgb.g + (255 - rgb.g) * 0.5);
-                    const b = Math.floor(rgb.b + (255 - rgb.b) * 0.5); // Korrigiert: rgb.b statt b
+                    const r = Math.floor(rgb.r + (255 - rgb.r) * 0.6);
+                    const g = Math.floor(rgb.g + (255 - rgb.g) * 0.6);
+                    const b = Math.floor(rgb.b + (255 - rgb.b) * 0.6);
                     
+                    if (opacity >= 1) {
+                        return `rgb(${r}, ${g}, ${b})`;
+                    }
                     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
                 }
                 
@@ -936,7 +939,7 @@ function forcal_fullcalendar(forcal) {
                     // Im Dark Mode stärkere Pastellfarben für bessere Sichtbarkeit
                     bgColor = shouldUseDarkMode ? 
                               createPastelColor(eventColor, 0.5) : // Höhere Deckkraft im Dark Mode
-                              createPastelColor(eventColor, 0.4);  // Normale Deckkraft im Light Mode
+                              createPastelColor(eventColor);       // Solide Pastellfarbe im Light Mode
                               
                     // Text-Farbe abhängig vom Modus
                     textColor = shouldUseDarkMode ? "#ffffff" : "#333333";
@@ -947,13 +950,13 @@ function forcal_fullcalendar(forcal) {
                     if (info.el.classList.contains('fc-timegrid-event')) {
                         // Termine in der Wochen-/Tagesansicht
                         bgColor = shouldUseDarkMode ? 
-                                  createPastelColor(eventColor, 0.25) : // Dezentere Farbe im Dark Mode
-                                  createPastelColor(eventColor, 0.15);  // Sehr dezent im Light Mode
+                                  createPastelColor(eventColor, 0.35) : // Dezentere Farbe im Dark Mode
+                                  createPastelColor(eventColor);         // Solide Pastellfarbe im Light Mode
                     } else {
                         // Termine in der Monatsansicht 
                         bgColor = shouldUseDarkMode ? 
-                                  createPastelColor(eventColor, 0.3) : // Etwas stärker im Dark Mode
-                                  createPastelColor(eventColor, 0.2);  // Dezent im Light Mode
+                                  createPastelColor(eventColor, 0.4) : // Etwas stärker im Dark Mode
+                                  createPastelColor(eventColor);        // Solide Pastellfarbe im Light Mode
                     }
                     
                     // Text-Farbe abhängig vom Modus
@@ -963,6 +966,7 @@ function forcal_fullcalendar(forcal) {
                 // Wende die Stile auf das Event-Element an
                 info.el.style.backgroundColor = bgColor;
                 info.el.style.borderColor = 'transparent';
+                info.el.style.borderLeft = `3px solid ${eventColor}`;
                 info.el.style.boxShadow = 'none';
                 
                 // Entferne zuerst alle existierenden Kategorie-Punkte (um Duplikate zu vermeiden)
