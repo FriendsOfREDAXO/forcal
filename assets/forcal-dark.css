@@ -103,7 +103,7 @@
 
 /* Automatischen Dark Mode für Browser-Einstellung unterstützen */
 @media (prefers-color-scheme: dark) {
-    body:not(.rex-theme-light) {
+    body.rex-has-theme:not(.rex-theme-light) {
         /* Hauptfarben */
         --fc-background: #1b232c;
         --fc-text: rgba(255, 255, 255, 0.75);
@@ -152,34 +152,34 @@
     }
     
     /* Popup für "Weitere Termine" im automatischen Dark Mode */
-    body:not(.rex-theme-light) #forcal .fc-popover {
+    body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover {
         background-color: var(--fc-panel-bg);
         border-color: var(--fc-border);
     }
     
-    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header {
+    body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header {
         background-color: var(--fc-day-header-bg);
         color: var(--fc-day-header-text);
     }
     
-    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-title {
+    body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-title {
         color: var(--fc-day-header-text);
     }
     
-    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close {
+    body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close {
         color: var(--fc-day-header-text);
         opacity: 0.7;
     }
     
-    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close:hover {
+    body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close:hover {
         opacity: 1;
     }
     
-    body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-body {
+    body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-body {
         color: var(--fc-text);
     }
     
-    body:not(.rex-theme-light) #forcal .fc-popover .fc-event-main-frame {
+    body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-event-main-frame {
         color: var(--fc-text);
     }
 }
@@ -188,21 +188,21 @@
 
 /* Toolbar und Grundstruktur */
 body.rex-theme-dark #forcal .fc-toolbar,
-body:not(.rex-theme-light) #forcal .fc-toolbar {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-toolbar {
     background-color: var(--fc-background);
 }
 
 body.rex-theme-dark #forcal th,
 body.rex-theme-dark #forcal td,
 body.rex-theme-dark #forcal .fc-row,
-body:not(.rex-theme-light) #forcal th,
-body:not(.rex-theme-light) #forcal td,
-body:not(.rex-theme-light) #forcal .fc-row {
+body.rex-has-theme:not(.rex-theme-light) #forcal th,
+body.rex-has-theme:not(.rex-theme-light) #forcal td,
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-row {
     border-color: var(--fc-border);
 }
 
 body.rex-theme-dark #forcal .fc-divider,
-body:not(.rex-theme-light) #forcal .fc-divider {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-divider {
     background: var(--fc-border);
     border-color: var(--fc-border);
 }
@@ -210,77 +210,77 @@ body:not(.rex-theme-light) #forcal .fc-divider {
 /* Plus-Symbole für neue Einträge */
 body.rex-theme-dark #forcal .fc-day-header .fa-plus-circle.add,
 body.rex-theme-dark #forcal .fc-day-top .fa-plus-circle.add,
-body:not(.rex-theme-light) #forcal .fc-day-header .fa-plus-circle.add,
-body:not(.rex-theme-light) #forcal .fc-day-top .fa-plus-circle.add {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-header .fa-plus-circle.add,
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-top .fa-plus-circle.add {
     color: var(--fc-add-icon);
 }
 
 body.rex-theme-dark #forcal .fc-day-top:hover .fa-plus-circle.add,
 body.rex-theme-dark #forcal .fc-day-top .fa-plus-circle.add:hover,
-body:not(.rex-theme-light) #forcal .fc-day-top:hover .fa-plus-circle.add,
-body:not(.rex-theme-light) #forcal .fc-day-top .fa-plus-circle.add:hover {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-top:hover .fa-plus-circle.add,
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-top .fa-plus-circle.add:hover {
     color: var(--fc-add-icon-hover);
 }
 
 body.rex-theme-dark #forcal .fc-day-header i.add:hover,
-body:not(.rex-theme-light) #forcal .fc-day-header i.add:hover {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-header i.add:hover {
     color: var(--fc-add-icon-hover);
 }
 
 body.rex-theme-dark #forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
 body.rex-theme-dark #forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover,
-body:not(.rex-theme-light) #forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
-body:not(.rex-theme-light) #forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-header.fc-sun .fa-plus-circle.add:hover,
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-header.fc-sat .fa-plus-circle.add:hover {
     color: var(--fc-weekend-add-hover);
 }
 
 /* Kalenderheader und Tage */
 body.rex-theme-dark #forcal .fc-day-header,
-body:not(.rex-theme-light) #forcal .fc-day-header {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-header {
     background-color: var(--fc-day-header-bg);
     color: var(--fc-day-header-text);
 }
 
 body.rex-theme-dark #forcal .fc-day-header.fc-sat,
 body.rex-theme-dark #forcal td.fc-sat,
-body:not(.rex-theme-light) #forcal .fc-day-header.fc-sat,
-body:not(.rex-theme-light) #forcal td.fc-sat {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-header.fc-sat,
+body.rex-has-theme:not(.rex-theme-light) #forcal td.fc-sat {
     background-color: var(--fc-sat-header-bg);
 }
 
 body.rex-theme-dark #forcal .fc-day-header.fc-sun,
 body.rex-theme-dark #forcal td.fc-sun,
-body:not(.rex-theme-light) #forcal .fc-day-header.fc-sun,
-body:not(.rex-theme-light) #forcal td.fc-sun {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-header.fc-sun,
+body.rex-has-theme:not(.rex-theme-light) #forcal td.fc-sun {
     background-color: var(--fc-sun-header-bg);
 }
 
 body.rex-theme-dark #forcal td.fc-today,
-body:not(.rex-theme-light) #forcal td.fc-today {
+body.rex-has-theme:not(.rex-theme-light) #forcal td.fc-today {
     background-color: var(--fc-today-bg);
 }
 
 body.rex-theme-dark #forcal .fc-week-number,
 body.rex-theme-dark #forcal .fc-daygrid-week-number,
-body:not(.rex-theme-light) #forcal .fc-week-number,
-body:not(.rex-theme-light) #forcal .fc-daygrid-week-number {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-week-number,
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-daygrid-week-number {
     background-color: var(--fc-week-number-bg);
     color: var(--fc-text) !important;
     text-decoration: none;
 }
 
 body.rex-theme-dark #forcal .fc-day-top.fc-sat .fc-day-number,
-body:not(.rex-theme-light) #forcal .fc-day-top.fc-sat .fc-day-number {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-top.fc-sat .fc-day-number {
     color: var(--fc-sat-number);
 }
 
 body.rex-theme-dark #forcal .fc-day-top.fc-sun .fc-day-number,
-body:not(.rex-theme-light) #forcal .fc-day-top.fc-sun .fc-day-number {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-day-top.fc-sun .fc-day-number {
     color: var(--fc-sun-number);
 }
 
 body.rex-theme-dark #forcal .fc-event,
-body:not(.rex-theme-light) #forcal .fc-event {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-event {
     color: var(--fc-text);
 }
 
@@ -291,23 +291,36 @@ body.rex-theme-dark .fc-event .fc-time,
 body.rex-theme-dark .fc-event .fc-title, 
 body.rex-theme-dark .fc-event-title,
 body.rex-theme-dark .fc-event,
-body:not(.rex-theme-light) .fc-event .fc-event-main,
-body:not(.rex-theme-light) .fc-event .fc-event-time,
-body:not(.rex-theme-light) .fc-event .fc-time,
-body:not(.rex-theme-light) .fc-event .fc-title,
-body:not(.rex-theme-light) .fc-event-title,
-body:not(.rex-theme-light) .fc-event {
+body.rex-has-theme:not(.rex-theme-light) .fc-event .fc-event-main,
+body.rex-has-theme:not(.rex-theme-light) .fc-event .fc-event-time,
+body.rex-has-theme:not(.rex-theme-light) .fc-event .fc-time,
+body.rex-has-theme:not(.rex-theme-light) .fc-event .fc-title,
+body.rex-has-theme:not(.rex-theme-light) .fc-event-title,
+body.rex-has-theme:not(.rex-theme-light) .fc-event {
     color: #fff !important;
+}
+
+/* Auto-Theme + bevorzugt hell: Event-Text bleibt dunkel */
+@media (prefers-color-scheme: light) {
+    body.rex-has-theme:not(.rex-theme-light):not(.rex-theme-dark) #forcal .fc-event,
+    body.rex-has-theme:not(.rex-theme-light):not(.rex-theme-dark) .fc-event .fc-event-main,
+    body.rex-has-theme:not(.rex-theme-light):not(.rex-theme-dark) .fc-event .fc-event-time,
+    body.rex-has-theme:not(.rex-theme-light):not(.rex-theme-dark) .fc-event .fc-time,
+    body.rex-has-theme:not(.rex-theme-light):not(.rex-theme-dark) .fc-event .fc-title,
+    body.rex-has-theme:not(.rex-theme-light):not(.rex-theme-dark) .fc-event-title,
+    body.rex-has-theme:not(.rex-theme-light):not(.rex-theme-dark) .fc-event {
+        color: #333 !important;
+    }
 }
 
 /* Tabs und Formularfelder */
 body.rex-theme-dark .forcal_clangtabs .nav,
-body:not(.rex-theme-light) .forcal_clangtabs .nav {
+body.rex-has-theme:not(.rex-theme-light) .forcal_clangtabs .nav {
     border-bottom: 1px solid var(--fc-tab-border);
 }
 
 body.rex-theme-dark .forcal-tabform,
-body:not(.rex-theme-light) .forcal-tabform {
+body.rex-has-theme:not(.rex-theme-light) .forcal-tabform {
     background-color: var(--fc-tabform-bg);
     border-bottom: 1px solid var(--fc-background);
 }
@@ -315,9 +328,9 @@ body:not(.rex-theme-light) .forcal-tabform {
 body.rex-theme-dark .forcal_clangtabs .nav-tabs > li.active > a,
 body.rex-theme-dark .forcal_clangtabs .nav-tabs > li.active > a:hover,
 body.rex-theme-dark .forcal_clangtabs .nav-tabs > li.active > a:focus,
-body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a,
-body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a:hover,
-body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a:focus {
+body.rex-has-theme:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a,
+body.rex-has-theme:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a:hover,
+body.rex-has-theme:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a:focus {
     background-color: var(--fc-tab-active-bg);
     border: 1px solid var(--fc-tab-border);
     border-bottom: 1px solid var(--fc-tab-active-bg);
@@ -326,25 +339,25 @@ body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li.active > a:focus {
 }
 
 body.rex-theme-dark .forcal_clangtabs .nav-tabs > li > a,
-body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li > a {
+body.rex-has-theme:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li > a {
     color: var(--fc-text);
     background-color: var(--fc-tab-bg);
     border-color: transparent;
 }
 
 body.rex-theme-dark .forcal_clangtabs .nav-tabs > li > a:hover,
-body:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li > a:hover {
+body.rex-has-theme:not(.rex-theme-light) .forcal_clangtabs .nav-tabs > li > a:hover {
     color: var(--fc-tab-hover-text);
     border-color: transparent;
 }
 
 body.rex-theme-dark .forcal_clangtabs .nav.nav-tabs,
-body:not(.rex-theme-light) .forcal_clangtabs .nav.nav-tabs {
+body.rex-has-theme:not(.rex-theme-light) .forcal_clangtabs .nav.nav-tabs {
     background-color: var(--fc-background);
 }
 
 body.rex-theme-dark .forcal-first-group,
-body:not(.rex-theme-light) .forcal-first-group {
+body.rex-has-theme:not(.rex-theme-light) .forcal-first-group {
     background-color: var(--fc-panel-bg);
     color: var(--fc-text);
 }
@@ -353,118 +366,118 @@ body:not(.rex-theme-light) .forcal-first-group {
 body.rex-theme-dark .forcal-panel .panel-collapse.collapsing .panel-body,
 body.rex-theme-dark .forcal-panel .panel-collapse.collapse .panel-body,
 body.rex-theme-dark .forcal-tabform .forcal-panel .panel-collapse.collapse .panel-body,
-body:not(.rex-theme-light) .forcal-panel .panel-collapse.collapsing .panel-body,
-body:not(.rex-theme-light) .forcal-panel .panel-collapse.collapse .panel-body,
-body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-collapse.collapse .panel-body {
+body.rex-has-theme:not(.rex-theme-light) .forcal-panel .panel-collapse.collapsing .panel-body,
+body.rex-has-theme:not(.rex-theme-light) .forcal-panel .panel-collapse.collapse .panel-body,
+body.rex-has-theme:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-collapse.collapse .panel-body {
     border-color: transparent;
 }
 
 body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default,
-body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default {
+body.rex-has-theme:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default {
     border-color: var(--fc-background);
 }
 
 body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default .panel-body,
-body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default .panel-body {
+body.rex-has-theme:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default .panel-body {
     background-color: var(--fc-panel-bg);
 }
 
 body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default > .panel-heading,
-body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default > .panel-heading {
+body.rex-has-theme:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default > .panel-heading {
     background-color: var(--fc-tab-bg);
 }
 
 body.rex-theme-dark .forcal-tabform .forcal-panel .panel-default > .panel-heading a,
-body:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default > .panel-heading a {
+body.rex-has-theme:not(.rex-theme-light) .forcal-tabform .forcal-panel .panel-default > .panel-heading a {
     color: var(--fc-text);
 }
 
 body.rex-theme-dark .forcal-panel .panel-heading a:after,
-body:not(.rex-theme-light) .forcal-panel .panel-heading a:after {
+body.rex-has-theme:not(.rex-theme-light) .forcal-panel .panel-heading a:after {
     color: var(--fc-text);
 }
 
 /* Datepicker */
 body.rex-theme-dark .daterangepicker.forcal,
-body:not(.rex-theme-light) .daterangepicker.forcal {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal {
     background-color: var(--fc-datepicker-bg);
     border-color: var(--fc-datepicker-border);
 }
 
 body.rex-theme-dark .daterangepicker.forcal .calendar-table,
-body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal .calendar-table {
     background-color: transparent;
     border: 0;
 }
 
 body.rex-theme-dark .daterangepicker.forcal .calendar-table table,
-body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table table {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal .calendar-table table {
     background-color: transparent;
 }
 
 body.rex-theme-dark .daterangepicker.forcal .drp-buttons,
-body:not(.rex-theme-light) .daterangepicker.forcal .drp-buttons {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal .drp-buttons {
     border-top: 1px solid var(--fc-datepicker-border);
 }
 
 body.rex-theme-dark .daterangepicker.forcal .calendar-table .prev span,
 body.rex-theme-dark .daterangepicker.forcal .calendar-table .next span,
-body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table .prev span,
-body:not(.rex-theme-light) .daterangepicker.forcal .calendar-table .next span {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal .calendar-table .prev span,
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal .calendar-table .next span {
     border-color: var(--fc-text);
 }
 
 body.rex-theme-dark .daterangepicker.forcal td,
 body.rex-theme-dark .daterangepicker.forcal th,
-body:not(.rex-theme-light) .daterangepicker.forcal td,
-body:not(.rex-theme-light) .daterangepicker.forcal th {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal td,
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal th {
     color: var(--fc-text);
 }
 
 body.rex-theme-dark .daterangepicker.forcal td:hover,
 body.rex-theme-dark .daterangepicker.forcal th:hover,
-body:not(.rex-theme-light) .daterangepicker.forcal td:hover,
-body:not(.rex-theme-light) .daterangepicker.forcal th:hover {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal td:hover,
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal th:hover {
     background-color: var(--fc-datepicker-hover);
 }
 
 body.rex-theme-dark .daterangepicker.forcal td.in-range,
-body:not(.rex-theme-light) .daterangepicker.forcal td.in-range {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal td.in-range {
     background-color: var(--fc-datepicker-in-range);
 }
 
 body.rex-theme-dark .daterangepicker.forcal td.off,
-body:not(.rex-theme-light) .daterangepicker.forcal td.off {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal td.off {
     color: rgba(255, 255, 255, 0.35);
     background-color: transparent;
 }
 
 body.rex-theme-dark .daterangepicker.forcal td.active,
-body:not(.rex-theme-light) .daterangepicker.forcal td.active {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal td.active {
     background-color: var(--fc-datepicker-active);
 }
 
 /* Datepicker-Pfeile */
 body.rex-theme-dark .daterangepicker.forcal.opensright:before,
 body.rex-theme-dark .daterangepicker.forcal.opensright:after,
-body:not(.rex-theme-light) .daterangepicker.forcal.opensright:before,
-body:not(.rex-theme-light) .daterangepicker.forcal.opensright:after {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal.opensright:before,
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal.opensright:after {
     border-bottom-color: rgba(0, 0, 0, 0.2);
 }
 
 body.rex-theme-dark .daterangepicker.forcal.opensright:before,
-body:not(.rex-theme-light) .daterangepicker.forcal.opensright:before {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal.opensright:before {
     border-bottom: 11px solid var(--fc-datepicker-border);
 }
 
 body.rex-theme-dark .daterangepicker.forcal.opensright:after,
-body:not(.rex-theme-light) .daterangepicker.forcal.opensright:after {
+body.rex-has-theme:not(.rex-theme-light) .daterangepicker.forcal.opensright:after {
     border-bottom: 10px solid var(--fc-datepicker-bg);
 }
 
 /* Clockpicker */
 body.rex-theme-dark div.popover.clockpicker-popover,
-body:not(.rex-theme-light) div.popover.clockpicker-popover {
+body.rex-has-theme:not(.rex-theme-light) div.popover.clockpicker-popover {
     border: 1px solid var(--fc-clockpicker-border);
 }
 
@@ -508,39 +521,39 @@ body[id^="rex-page-forcal"]:not(.rex-theme-light) .clockpicker-popover .popover-
 
 /* Popup für "Weitere Termine" im Dark Mode */
 body.rex-theme-dark #forcal .fc-popover,
-body:not(.rex-theme-light) #forcal .fc-popover {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover {
     background-color: var(--fc-panel-bg);
     border-color: var(--fc-border);
 }
 
 body.rex-theme-dark #forcal .fc-popover .fc-popover-header,
-body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header {
     background-color: var(--fc-day-header-bg);
     color: var(--fc-day-header-text);
 }
 
 body.rex-theme-dark #forcal .fc-popover .fc-popover-header .fc-popover-title,
-body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-title {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-title {
     color: var(--fc-day-header-text);
 }
 
 body.rex-theme-dark #forcal .fc-popover .fc-popover-header .fc-popover-close,
-body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close {
     color: var(--fc-day-header-text);
     opacity: 0.7;
 }
 
 body.rex-theme-dark #forcal .fc-popover .fc-popover-header .fc-popover-close:hover,
-body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close:hover {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-header .fc-popover-close:hover {
     opacity: 1;
 }
 
 body.rex-theme-dark #forcal .fc-popover .fc-popover-body,
-body:not(.rex-theme-light) #forcal .fc-popover .fc-popover-body {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-popover-body {
     color: var(--fc-text);
 }
 
 body.rex-theme-dark #forcal .fc-popover .fc-event-main-frame,
-body:not(.rex-theme-light) #forcal .fc-popover .fc-event-main-frame {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover .fc-event-main-frame {
     color: var(--fc-text);
 }

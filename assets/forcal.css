@@ -544,6 +544,35 @@ div.forcal-form-checkboxes-inline dl + dl {
   width: 60px !important;
 }
 
+/* Repeat-Selects: Light zuerst, Dark/Auto separat überschreiben */
+.forcal_repeat_fields,
+.forcal_repeats_show {
+  --forcal-repeat-select-text: #111111;
+}
+
+.forcal_repeats_show .bootstrap-select > .dropdown-toggle,
+.forcal_repeats_show .bootstrap-select > .dropdown-toggle .filter-option,
+.forcal_repeats_show .bootstrap-select .dropdown-menu > li > a,
+.forcal_repeats_show .bootstrap-select .dropdown-menu > li > a .text,
+.forcal_repeat_fields .bootstrap-select > .dropdown-toggle,
+.forcal_repeat_fields .bootstrap-select > .dropdown-toggle .filter-option,
+.forcal_repeat_fields .bootstrap-select .dropdown-menu > li > a,
+.forcal_repeat_fields .bootstrap-select .dropdown-menu > li > a .text {
+  color: var(--forcal-repeat-select-text) !important;
+}
+
+body.rex-theme-dark .forcal_repeat_fields,
+body.rex-theme-dark .forcal_repeats_show {
+  --forcal-repeat-select-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.rex-has-theme:not(.rex-theme-light) .forcal_repeat_fields,
+  body.rex-has-theme:not(.rex-theme-light) .forcal_repeats_show {
+    --forcal-repeat-select-text: #ffffff;
+  }
+}
+
 #dpd2b_wrapper {
   width: 220px;
   padding-left: 10px;
@@ -704,12 +733,12 @@ body.rex-theme-dark .fc-day-sun.forcal-clickable-day:hover {
 
 /* Im Dark Mode */
 body.rex-theme-dark .fc-daygrid-more-link,
-body:not(.rex-theme-light) .fc-daygrid-more-link {
+body.rex-has-theme:not(.rex-theme-light) .fc-daygrid-more-link {
   color: #52a8ff !important;
 }
 
 body.rex-theme-dark .fc-daygrid-more-link:hover,
-body:not(.rex-theme-light) .fc-daygrid-more-link:hover {
+body.rex-has-theme:not(.rex-theme-light) .fc-daygrid-more-link:hover {
   background-color: rgba(82, 168, 255, 0.2) !important;
   color: #78bcff !important;
 }
@@ -734,7 +763,7 @@ body #forcal .fc-popover.fc-more-popover {
 /* Sicherstellen, dass der Popover die richtige Hintergrundfarbe hat */
 body #forcal .fc-popover.fc-more-popover,
 body.rex-theme-dark #forcal .fc-popover.fc-more-popover,
-body:not(.rex-theme-light) #forcal .fc-popover.fc-more-popover {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover.fc-more-popover {
   background-color: var(--fc-panel-bg, #fff);
   border: 1px solid var(--fc-border, #ddd);
   border-radius: 5px;
@@ -743,7 +772,7 @@ body:not(.rex-theme-light) #forcal .fc-popover.fc-more-popover {
 
 /* Verbesserte Dark Mode Anpassungen */
 body.rex-theme-dark #forcal .fc-popover.fc-more-popover .fc-event,
-body:not(.rex-theme-light) #forcal .fc-popover.fc-more-popover .fc-event {
+body.rex-has-theme:not(.rex-theme-light) #forcal .fc-popover.fc-more-popover .fc-event {
   background-color: transparent;
 }
 
