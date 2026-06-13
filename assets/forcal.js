@@ -230,13 +230,15 @@ function forcal_repeat() {
     }
 
     if (select.length) {
-        // weekly daily yearly select
-        select.find('option').each(function () {
-            if ($(this).is(':selected')) {
+        // Initialzustand für jedes Select setzen
+        select.each(function () {
+            if ($(this).val() != '') {
                 forcal_repeat_select($(this).val());
             }
         });
-        select.on('hidden.bs.select', function () {
+
+        // Sowohl native Select-Änderungen als auch bootstrap-select Events unterstützen
+        select.on('change changed.bs.select hidden.bs.select', function () {
             if ($(this).val() != '') {
                 forcal_repeat_select($(this).val());
             }
@@ -269,8 +271,9 @@ function forcal_repeat_select(type) {
     if (type == 'weekly' || type == 'yearly' || type == 'monthly' || type == 'monthly-week') {
         // panel.collapse("show");
         panel.show();
-        viewelements.addClass('hidden');
-        $('.view-' + type).removeClass('hidden');
+        // Nicht von Bootstrap-.hidden abhängig sein: explizit ein-/ausblenden
+        viewelements.hide();
+        $('.view-' + type).show();
     }
 }
 
