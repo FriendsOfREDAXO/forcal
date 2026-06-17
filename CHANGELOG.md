@@ -1,3 +1,9 @@
+## 6.6.3 - 2026-06-17
+
+### Fixed
+
+- **Frontend-Rechteprüfung**: Im Frontend findet keine Benutzerrechteprüfung mehr statt. `forCalUserPermission::hasPermission()`, `hasAnyPermission()` und `getCategoryFilter()` geben im Frontend immer `true` bzw. einen leeren Filter zurück, sodass alle Einträge unabhängig von Backend-Nutzerrechten angezeigt werden.
+
 ## 6.6.0 - 2026-05-27
 
 ### Added
