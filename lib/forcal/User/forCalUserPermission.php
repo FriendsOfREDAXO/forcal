@@ -21,12 +21,17 @@ class forCalUserPermission
      */
     public static function hasPermission($category_id, ?rex_user $user = null)
     {
+        // Im Frontend keine Rechteprüfung
+        if (!rex::isBackend()) {
+            return true;
+        }
+
         if ($user === null) {
             $user = rex::getUser();
         }
 
         // Administrator oder User mit forcal[all]-Recht hat immer Zugriff
-        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
+        if ($user instanceof rex_user && ($user->isAdmin() || $user->hasPerm('forcal[all]'))) {
             return true;
         }
 
@@ -66,12 +71,17 @@ class forCalUserPermission
      */
     public static function hasAnyPermission(?rex_user $user = null)
     {
+        // Im Frontend keine Rechteprüfung
+        if (!rex::isBackend()) {
+            return true;
+        }
+
         if ($user === null) {
             $user = rex::getUser();
         }
 
         // Administrator oder User mit forcal[all]-Recht hat immer Zugriff
-        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
+        if ($user instanceof rex_user && ($user->isAdmin() || $user->hasPerm('forcal[all]'))) {
             return true;
         }
 
@@ -88,12 +98,17 @@ class forCalUserPermission
      */
     public static function getCategoryFilter($table_alias = 'en', ?rex_user $user = null)
     {
+        // Im Frontend keine Rechteprüfung – alle Kategorien anzeigen
+        if (!rex::isBackend()) {
+            return '';
+        }
+
         if ($user === null) {
             $user = rex::getUser();
         }
 
         // Administrator oder User mit forcal[all]-Recht hat immer Zugriff auf alle Kategorien
-        if ($user->isAdmin() || $user->hasPerm('forcal[all]')) {
+        if ($user instanceof rex_user && ($user->isAdmin() || $user->hasPerm('forcal[all]'))) {
             return '';
         }
 
