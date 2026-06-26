@@ -1,3 +1,15 @@
+## 6.7.0 - 2026-06-26
+
+### Added
+
+- Builder-Integration: Das Builder-Element `forcal_list` wurde aus dem builder-Addon in das forcal-Addon ueberfuehrt (`elements/forcal_list`).
+- Builder-Integration: Neuer Renderer `FriendsOfREDAXO\\Forcal\\ForcalRenderer` direkt im forcal-Addon bereitgestellt.
+- Builder-Integration: Registrierung des forcal-Element-Pfads ueber `BUILDER_ELEMENT_PATHS`, wenn das builder-Addon verfuegbar ist.
+
+### Changed
+
+- Entkopplung: Das `forcal_list` Element ist nun logisch dem forcal-Addon zugeordnet und wird nicht mehr im builder-Core mitgeliefert.
+
 ## 6.6.3 - 2026-06-17
 
 ### Fixed
