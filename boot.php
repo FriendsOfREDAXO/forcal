@@ -146,3 +146,30 @@ if (rex_plugin::get('forcal', 'documentation')->isInstalled()) {
     $manager = rex_package_manager::factory($plugin);
     $success = $manager->delete();
 }
+
+if (rex_addon::exists('builder') && rex_addon::get('builder')->isAvailable()) {
+    $registerForNames = static function (string $legacyName, callable $callable): void {
+        $names = [$legacyName];
+        if (str_starts_with($legacyName, 'BUILDER_')) {
+            $names[] = 'BUILDER_' . substr($legacyName, strlen('BUILDER_'));
+        }
+
+        foreach (array_values(array_unique($names)) as $name) {
+            rex_extension::register($name, $callable, rex_extension::EARLY);
+        }
+    };
+
+    $registerForNames(
+        'BUILDER_ELEMENT_PATHS',
+        static function (rex_extension_point $ep): array {
+            $paths = $ep->getSubject();
+            if (!is_array($paths)) {
+                $paths = [];
+            }
+
+            $paths[] = rex_path::addon('forcal', 'elements/');
+
+            return $paths;
+        },
+    );
+}
