@@ -1,3 +1,9 @@
+## 6.7.1 - 2026-09-14
+
+### Changed
+
+- Abhängigkeit auf das umbenannte DateTime-Picker-Addon umgestellt: `flatpickr` (>=1.1.1) → `a11y_datetime_addon` (>=3.0.0). Das flatpickr-Addon wurde von den Maintainern komplett auf `a11y_datetime_addon` umbenannt (Package-Name, PHP-Namespace, YForm-Feldtyp) und ist unter dem alten Namen nicht mehr installierbar. Die Nutzung in forcal selbst (globales `flatpickr`/`a11y_datetime`-JS-Symbol, `_flatpickr`-Instanz-Property) ist unverändert, da das Vendor-Bundle weiterhin beide Globals setzt — nur der Addon-Name in `package.yml` `requires` und in Warnhinweisen wurde angepasst.
+
 ## 6.7.0 - 2026-06-26
 
 ### Added

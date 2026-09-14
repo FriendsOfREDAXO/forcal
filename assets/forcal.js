@@ -374,7 +374,7 @@ function forcal_getPickerFactory() {
 function forcal_flatpickr_init() {
     const pickerFactory = forcal_getPickerFactory();
     if (!pickerFactory) {
-        console.warn('forcal: Kein DateTime-Picker verfuegbar. Bitte das flatpickr-Addon aktivieren.');
+        console.warn('forcal: Kein DateTime-Picker verfuegbar. Bitte das a11y_datetime_addon-Addon aktivieren.');
         return;
     }
 

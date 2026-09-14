@@ -2,8 +2,8 @@
  * ForCal v7 – DateTime Picker Initialisierung
  *
  * Initialisiert Flatpickr auf allen forcal-DateTime-Feldern.
- * Der Picker wird zentral ueber das REDAXO-Addon flatpickr bereitgestellt
- * (a11y_datetime mit flatpickr-Kompatibilitaetsalias).
+ * Der Picker wird zentral ueber das REDAXO-Addon a11y_datetime_addon
+ * bereitgestellt (a11y_datetime-Vendor-Bundle mit flatpickr-Kompatibilitaetsalias).
  *
  * Felder:
  *   [data-forcal-picker="datetime"] – Datum + Uhrzeit
@@ -42,7 +42,7 @@
   function initPickers() {
     const pickerFactory = getPickerFactory();
     if (!pickerFactory) {
-      console.warn('forcal-datetime-picker: Kein DateTime-Picker verfuegbar. Bitte das flatpickr-Addon aktivieren.');
+      console.warn('forcal-datetime-picker: Kein DateTime-Picker verfuegbar. Bitte das a11y_datetime_addon-Addon aktivieren.');
       return;
     }
 

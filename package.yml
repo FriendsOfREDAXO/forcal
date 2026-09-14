@@ -1,5 +1,5 @@
 package: forcal
-version: '6.7.0'
+version: '6.7.1'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 page:
@@ -45,7 +45,7 @@ requires:
         version: '>=8.3, <9'
         extensions: [intl]
     packages:
-        flatpickr: '>=1.1.1'
+        a11y_datetime_addon: '>=3.0.0'
 default_config:
     forcal_multiuser: 1
     forcal_shortcut_save: 1
