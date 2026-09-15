@@ -4,6 +4,12 @@
 
 - Abhängigkeit auf das umbenannte DateTime-Picker-Addon umgestellt: `flatpickr` (>=1.1.1) → `a11y_datetime_addon` (>=3.0.0). Das flatpickr-Addon wurde von den Maintainern komplett auf `a11y_datetime_addon` umbenannt (Package-Name, PHP-Namespace, YForm-Feldtyp) und ist unter dem alten Namen nicht mehr installierbar. Die Nutzung in forcal selbst (globales `flatpickr`/`a11y_datetime`-JS-Symbol, `_flatpickr`-Instanz-Property) ist unverändert, da das Vendor-Bundle weiterhin beide Globals setzt — nur der Addon-Name in `package.yml` `requires` und in Warnhinweisen wurde angepasst.
 
+### Fixed
+
+- iCal-Export: Ganztägige Termine belegten im Export einen Tag zu viel. `forCalHandler::decorateEntry()` liefert das Ende bereits exklusiv (+1 Tag), der Export addierte nochmals einen Tag. DTSTART/DTEND werden jetzt direkt aus `start_date`/`end_date`/`start_time`/`end_time` des jeweiligen Vorkommens gebildet.
+- iCal-Export: Der Export eines einzelnen Termins (`entry=ID`) brach mit HTTP 500 ab (`Cannot use object of type stdClass as array`).
+- iCal-Export: Wiederkehrende Termine erzeugten je Vorkommen ein VEVENT mit identischer UID und jeweils vollständiger RRULE, Kalender-Clients zeigten dadurch Wiederholungen doppelt oder gar nicht. Es wird jetzt ein VEVENT je Vorkommen mit eindeutiger UID (`<id>-<Ymd>`) ausgegeben, RRULE entfällt; die Vorkommen entsprechen damit exakt der Kalenderansicht.
+
 ## 6.7.0 - 2026-06-26
 
 ### Added
