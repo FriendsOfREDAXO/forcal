@@ -854,9 +854,9 @@ Die API kann mit folgenden Parametern verwendet werden:
 
 4. Mit angepasstem Dateinamen:   `index.php?rex-api-call=forcal_ical&filename=vereinstermine`
 
-Die Termine werden immer 10 Jahre rückwirkend bis maximal 10 Jahre in die Zukunft exportiert.
+Ohne weitere Angaben werden Termine von einem Jahr rückwirkend bis zwei Jahre in die Zukunft exportiert. Der Zeitraum lässt sich über `start_offset` und `end_offset` anpassen (z.B. `start_offset=-6 months&end_offset=+5 years`).
 
-Die Datei implementiert auch die korrekte Behandlung von wiederholenden Terminen mit RRULE, sodass Kalender-Programme die Wiederholungen korrekt darstellen können.
+Wiederkehrende Termine werden als einzelne Vorkommen exportiert (ein VEVENT je Vorkommen mit eindeutiger UID), genau wie sie in der Kalenderansicht erscheinen. Ganztägige Termine werden als reine Datumswerte (`VALUE=DATE`) mit exklusivem Enddatum gemäß RFC 5545 ausgegeben.
 
 
 ## Terminlink erstellen

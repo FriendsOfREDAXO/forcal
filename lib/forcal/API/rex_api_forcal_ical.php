@@ -120,11 +120,15 @@ class rex_api_forcal_ical extends rex_api_function
         $ical = array_merge($ical, $this->getTimezoneComponent());
 
         // Termine laden
+        $events = [];
         if ($entryId > 0) {
-            // Einzelnen Termin laden
-            $events = \forCal\Handler\forCalHandler::getEntry($entryId);
+            // Einzelnen Termin laden; alle Vorkommen liegen unter "dates"
+            if (count(\forCal\Handler\forCalHandler::getEntry($entryId)) > 0) {
+                $events[] = \forCal\Handler\forCalHandler::exchangeEntry($entryId, false);
+            }
         } else {
-            // Termine nach Kategorien filtern
+            // Termine nach Kategorien filtern; wiederkehrende Termine kommen bereits
+            // als ein Element pro Vorkommen zurueck
             $events = \forCal\Handler\forCalHandler::exchangeEntries(
                 $startDate->format('Y-m-d'),
                 $endDate->format('Y-m-d'),
@@ -141,23 +145,17 @@ class rex_api_forcal_ical extends rex_api_function
             );
         }
 
-        // Termine in iCal-Format konvertieren
+        // Termine in iCal-Format konvertieren: ein VEVENT pro Vorkommen
         foreach ($events as $event) {
-            // Bei wiederkehrenden Terminen müssen wir jedes Vorkommen berücksichtigen
-            if (isset($event['type']) && $event['type'] == 'repeat' && isset($event['dates'])) {
-                // Für jeden wiederholten Termin ein VEVENT erstellen
+            if (isset($event['dates']) && is_array($event['dates']) && count($event['dates']) > 0) {
                 foreach ($event['dates'] as $occurrence) {
                     $eventCopy = $event;
-                    // Überschreibe Start- und Enddatum mit dem jeweiligen Vorkommen
-                    $eventCopy['start'] = $occurrence['entry_start_date'];
-                    $eventCopy['end'] = $occurrence['entry_end_date'];
-                    $vevent = $this->convertEventToVEvent($eventCopy);
-                    $ical = array_merge($ical, $vevent);
+                    $eventCopy['start_date'] = $occurrence['entry_start_date'];
+                    $eventCopy['end_date'] = $occurrence['entry_end_date'];
+                    $ical = array_merge($ical, $this->convertEventToVEvent($eventCopy));
                 }
             } else {
-                // Einzelne Termine normal konvertieren
-                $vevent = $this->convertEventToVEvent($event);
-                $ical = array_merge($ical, $vevent);
+                $ical = array_merge($ical, $this->convertEventToVEvent($event));
             }
         }
 
@@ -255,17 +253,35 @@ class rex_api_forcal_ical extends rex_api_function
     }
 
     /**
-     * Konvertiert einen Termin in das VEVENT-Format
+     * Konvertiert ein Vorkommen eines Termins in das VEVENT-Format
      *
-     * @param array $event Der zu konvertierende Termin
-     * @return array Die VEVENT-Zeilen
+     * Erwartet die Felder aus forCalHandler::decorateEntry(): start_date/end_date
+     * (jeweils einschliesslich, als Datum des Vorkommens), start_time/end_time und
+     * full_time. Das Feld "end" aus decorateEntry() ist fuer FullCalendar bereits
+     * exklusiv (+1 Tag) und wird hier bewusst nicht verwendet.
+     *
+     * @param array<string, mixed> $event Das zu konvertierende Vorkommen
+     * @return list<string> Die VEVENT-Zeilen
      */
     private function convertEventToVEvent(array $event): array
     {
-        $lines = [];
+        $startDay = $this->toDay($event['start_date'] ?? null);
+        $endDay = $this->toDay($event['end_date'] ?? null) ?? $startDay;
 
-        // Basisdaten extrahieren
-        $uid = isset($event['id']) ? $event['id'] : uniqid('forcal-');
+        if (null === $startDay) {
+            return []; // Keine gültigen Datumsangaben
+        }
+
+        if ($endDay < $startDay) {
+            $endDay = clone $startDay;
+        }
+
+        $uid = isset($event['id']) ? (string) $event['id'] : uniqid('forcal-');
+        if (isset($event['type']) && 'repeat' === $event['type']) {
+            // Jedes Vorkommen einer Wiederholung braucht eine eigene UID
+            $uid .= '-' . $startDay->format('Ymd');
+        }
+
         $title = isset($event['title']) ? $event['title'] : 'Unbenannter Termin';
         $description = '';
 
@@ -276,43 +292,11 @@ class rex_api_forcal_ical extends rex_api_function
         }
 
         $location = isset($event['venue_name']) ? $event['venue_name'] : '';
-        $isFullDay = isset($event['date_time']['full_time']) ? (bool)$event['date_time']['full_time'] : false;
+        $isFullDay = (bool) ($event['date_time']['full_time'] ?? $event['full_time'] ?? false);
 
-        // Datum und Zeit verarbeiten
-        $startDate = null;
-        $endDate = null;
-
-        if (isset($event['start'])) {
-            if (is_string($event['start'])) {
-                $startDate = new DateTime($event['start'], new DateTimeZone($this->timezone));
-            } elseif ($event['start'] instanceof DateTime) {
-                $startDate = clone $event['start'];
-                $startDate->setTimezone(new DateTimeZone($this->timezone));
-            }
-        }
-
-        if (isset($event['end'])) {
-            if (is_string($event['end'])) {
-                $endDate = new DateTime($event['end'], new DateTimeZone($this->timezone));
-            } elseif ($event['end'] instanceof DateTime) {
-                $endDate = clone $event['end'];
-                $endDate->setTimezone(new DateTimeZone($this->timezone));
-            }
-        }
-
-        if (!$startDate || !$endDate) {
-            return $lines; // Keine gültigen Datumsangaben
-        }
-
-        // Eindeutige UID für jedes Vorkommen
-        $eventUID = $uid;
-        if (isset($event['occurrence_id'])) {
-            $eventUID .= '-' . $event['occurrence_id'];
-        }
-
-        // VEVENT erstellen
+        $lines = [];
         $lines[] = 'BEGIN:VEVENT';
-        $lines[] = 'UID:' . $eventUID . '@' . rex::getServer();
+        $lines[] = 'UID:' . $uid . '@' . rex::getServer();
         $lines[] = 'SUMMARY:' . $this->escapeString($title);
 
         if (!empty($description)) {
@@ -323,7 +307,6 @@ class rex_api_forcal_ical extends rex_api_function
             $lines[] = 'LOCATION:' . $this->escapeString($location);
         }
 
-        // Kategorie hinzufügen, falls vorhanden
         if (isset($event['category_name']) && !empty($event['category_name'])) {
             $lines[] = 'CATEGORIES:' . $this->escapeString($event['category_name']);
         }
@@ -333,28 +316,24 @@ class rex_api_forcal_ical extends rex_api_function
         $lines[] = 'DTSTAMP:' . $this->formatDateTime($now, true);
         $lines[] = 'CREATED:' . $this->formatDateTime($now, true);
 
-        // Wiederholungsregel (RRULE) für wiederkehrende Termine
-        // Wir fügen die RRULE nur beim ersten Vorkommen hinzu
-        if (!isset($event['occurrence_id']) && isset($event['type']) && $event['type'] == 'repeat') {
-            $rrule = $this->generateRRule($event);
-            if (!empty($rrule)) {
-                $lines[] = $rrule;
-            }
-        }
-
-        // Start- und Endzeit
         if ($isFullDay) {
-            // Ganztägiges Event - ohne Zeitkomponente
-            $lines[] = 'DTSTART;VALUE=DATE:' . $startDate->format('Ymd');
-            
-            // Bei ganztägigen Events muss das Enddatum um einen Tag erhöht werden
-            $endDateAdjusted = clone $endDate;
-            $endDateAdjusted->modify('+1 day');
-            $lines[] = 'DTEND;VALUE=DATE:' . $endDateAdjusted->format('Ymd');
+            // Ganztägig: DTEND ist laut RFC 5545 exklusiv, also der Tag nach dem letzten Termintag
+            $dtEnd = clone $endDay;
+            $dtEnd->modify('+1 day');
+            $lines[] = 'DTSTART;VALUE=DATE:' . $startDay->format('Ymd');
+            $lines[] = 'DTEND;VALUE=DATE:' . $dtEnd->format('Ymd');
         } else {
-            // Event mit Uhrzeit - mit Zeitzone
-            $lines[] = 'DTSTART;TZID=' . $this->timezone . ':' . $startDate->format('Ymd\THis');
-            $lines[] = 'DTEND;TZID=' . $this->timezone . ':' . $endDate->format('Ymd\THis');
+            $timezone = new DateTimeZone($this->timezone);
+            $startDateTime = new DateTime($startDay->format('Y-m-d') . ' ' . ($event['start_time'] ?? '00:00:00'), $timezone);
+            $endDateTime = new DateTime($endDay->format('Y-m-d') . ' ' . ($event['end_time'] ?? '00:00:00'), $timezone);
+
+            if ($endDateTime <= $startDateTime) {
+                // Wie in der Kalenderansicht: Ende vor/gleich Start bedeutet Ende am Folgetag
+                $endDateTime->modify('+1 day');
+            }
+
+            $lines[] = 'DTSTART;TZID=' . $this->timezone . ':' . $startDateTime->format('Ymd\THis');
+            $lines[] = 'DTEND;TZID=' . $this->timezone . ':' . $endDateTime->format('Ymd\THis');
         }
 
         $lines[] = 'END:VEVENT';
@@ -363,167 +342,23 @@ class rex_api_forcal_ical extends rex_api_function
     }
 
     /**
-     * Generiert eine RRULE für wiederkehrende Termine
-     * 
-     * @param array $event Der Termin mit den Wiederholungsregeln
-     * @return string Die RRULE oder leeren String
+     * Liest den Kalendertag aus einem Datumswert (DateTime oder String wie
+     * "2026-10-05" bzw. ISO 8601 "2026-10-05T00:00:00+0200")
+     *
+     * Es wird nur der Datumsteil verwendet, damit ein Zeitzonen-Offset im String
+     * den Tag nicht verschiebt.
      */
-    private function generateRRule(array $event): string
+    private function toDay(mixed $value): ?DateTime
     {
-        // Prüfen, ob es sich um einen Termin mit Wiederholungen handelt
-        $repeatType = '';
-        if (isset($event['repeat'])) {
-            $repeatType = $event['repeat'];
-        } elseif (isset($event['repeats'])) {
-            $repeatType = $event['repeats'];
+        if ($value instanceof DateTimeInterface) {
+            $value = $value->format('Y-m-d');
         }
 
-        if (empty($repeatType)) {
-            return '';
+        if (!is_string($value) || 1 !== preg_match('/^\d{4}-\d{2}-\d{2}/', $value)) {
+            return null;
         }
 
-        $rrule = 'RRULE:';
-        $parts = [];
-
-        switch ($repeatType) {
-            case 'weekly':
-                $parts[] = 'FREQ=WEEKLY';
-
-                // Intervall hinzufügen (in wiederholten Wochen)
-                $interval = null;
-                if (isset($event['repeat_interval'])) {
-                    $interval = (int)$event['repeat_interval'];
-                } elseif (isset($event['repeat_weeks'])) {
-                    $interval = (int)$event['repeat_weeks'];
-                }
-
-                if ($interval && $interval > 1) {
-                    $parts[] = 'INTERVAL=' . $interval;
-                }
-                break;
-
-            case 'monthly':
-                $parts[] = 'FREQ=MONTHLY';
-
-                // Intervall hinzufügen (in wiederholten Monaten)
-                $interval = null;
-                if (isset($event['repeat_interval'])) {
-                    $interval = (int)$event['repeat_interval'];
-                } elseif (isset($event['repeat_months'])) {
-                    $interval = (int)$event['repeat_months'];
-                }
-
-                if ($interval && $interval > 1) {
-                    $parts[] = 'INTERVAL=' . $interval;
-                }
-                break;
-
-            case 'monthly-week':
-                $parts[] = 'FREQ=MONTHLY';
-
-                // Für monatliche Wiederholungen an bestimmten Wochentagen
-                // (z.B. "erster Montag im Monat")
-                $day = '';
-                $week = '';
-
-                if (isset($event['repeat_day'])) {
-                    $day = $this->getDayAbbreviation($event['repeat_day']);
-                }
-
-                if (isset($event['repeat_month_week'])) {
-                    $week = $this->getWeekNumber($event['repeat_month_week']);
-                }
-
-                if ($day && $week) {
-                    $parts[] = 'BYDAY=' . $week . $day;
-                }
-
-                // Intervall hinzufügen (in wiederholten Monaten)
-                $interval = isset($event['repeat_months']) ? (int)$event['repeat_months'] : 1;
-                if ($interval > 1) {
-                    $parts[] = 'INTERVAL=' . $interval;
-                }
-                break;
-
-            case 'yearly':
-                $parts[] = 'FREQ=YEARLY';
-
-                // Intervall hinzufügen (in wiederholten Jahren)
-                $interval = null;
-                if (isset($event['repeat_interval'])) {
-                    $interval = (int)$event['repeat_interval'];
-                } elseif (isset($event['repeat_years'])) {
-                    $interval = (int)$event['repeat_years'];
-                }
-
-                if ($interval && $interval > 1) {
-                    $parts[] = 'INTERVAL=' . $interval;
-                }
-                break;
-
-            default:
-                return ''; // Unbekannter Wiederholungstyp
-        }
-
-        // Enddatum der Wiederholung
-        if (isset($event['end_repeat_date'])) {
-            $endRepeatDate = $event['end_repeat_date'];
-
-            if (is_string($endRepeatDate)) {
-                $endDate = new DateTime($endRepeatDate, new DateTimeZone($this->timezone));
-            } elseif ($endRepeatDate instanceof DateTime) {
-                $endDate = clone $endRepeatDate;
-                $endDate->setTimezone(new DateTimeZone($this->timezone));
-            } else {
-                $endDate = null;
-            }
-
-            if ($endDate) {
-                // Bei UNTIL muss die Zeit auf 23:59:59 gesetzt werden
-                $endDate->setTime(23, 59, 59);
-                $parts[] = 'UNTIL=' . $this->formatDateTime($endDate, true);
-            }
-        }
-
-        if (empty($parts)) {
-            return '';
-        }
-
-        return $rrule . implode(';', $parts);
-    }
-
-    /**
-     * Konvertiert den forCal-Wochentag in iCal-Abkürzung
-     */
-    private function getDayAbbreviation(string $day): string
-    {
-        $days = [
-            'mon' => 'MO',
-            'tue' => 'TU',
-            'wed' => 'WE',
-            'thu' => 'TH',
-            'fri' => 'FR',
-            'sat' => 'SA',
-            'sun' => 'SU'
-        ];
-
-        return isset($days[$day]) ? $days[$day] : '';
-    }
-
-    /**
-     * Konvertiert die forCal-Wochennummer in iCal-Format
-     */
-    private function getWeekNumber(string $week): string
-    {
-        $weeks = [
-            'first_week' => '1',
-            'second_week' => '2',
-            'third_week' => '3',
-            'fourth_week' => '4',
-            'last_week' => '-1'
-        ];
-
-        return isset($weeks[$week]) ? $weeks[$week] : '';
+        return new DateTime(substr($value, 0, 10), new DateTimeZone($this->timezone));
     }
 
     /**
