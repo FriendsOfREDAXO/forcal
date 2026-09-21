@@ -9,6 +9,11 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use forCal\Manager\forCalDatabaseManager;
 
+// Das YForm-Feld "forcal_picker" findet YForm über den Klassennamen; hier nur der Pfad zum Template.
+if (rex_addon::get('yform')->isAvailable()) {
+    rex_yform::addTemplatePath($this->getPath('ytemplates'));
+}
+
 if (rex::isBackend() && rex::getUser()) {
     $config = $this->getConfig();
 
@@ -22,6 +27,8 @@ if (rex::isBackend() && rex::getUser()) {
     rex_perm::register('forcal[settings]', null, rex_perm::OPTIONS);
     rex_perm::register('forcal[catspage]', null, rex_perm::OPTIONS);
     rex_perm::register('forcal[venuespage]', null, rex_perm::OPTIONS);
+    // Im forCal-Picker aus allen Kategorien wählen, ohne Termine pflegen zu dürfen
+    rex_perm::register('forcal[pick]', null, rex_perm::OPTIONS);
 
     // Multiuser Einstellungen aktivieren, wenn gesetzt
     if (isset($config['forcal_multiuser']) && $config['forcal_multiuser']) {
@@ -106,6 +113,24 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addCssFile($this->getAssetsUrl('fc-bootstrap3-compat.css')); 
     rex_view::addCssFile($this->getAssetsUrl('forcal.css'));
     rex_view::addCssFile($this->getAssetsUrl('forcal-dark.css'));
+
+    // forCal-Picker: Eingabefeld-Widget für das ganze Backend (Module, MForm, YForm) und Grundlage der Schnellanlage im Kalenderblatt
+    $forcalPickerBust = fn (string $file): string => $this->getAssetsUrl($file) . '?v=' . (int) @filemtime($this->getAssetsPath($file));
+    rex_view::addCssFile($forcalPickerBust('forcal_picker.css'));
+    rex_view::addJsFile($forcalPickerBust('forcal_picker.js'));
+    rex_view::setJsProperty('forcal_picker_api', rex_url::backendController(['rex-api-call' => 'forcal_picker'], false));
+    rex_view::setJsProperty('forcal_picker_token', rex_csrf_token::factory(rex_api_forcal_picker::CSRF)->getValue());
+    rex_view::setJsProperty('forcal_quick_create', (bool) $this->getConfig('forcal_quick_create', true));
+    $forcalPickerTexts = [];
+    foreach (['title_entry', 'title_entry_multiple', 'title_category', 'title_category_multiple', 'title_venue', 'title_venue_multiple', 'search_entry', 'search_category', 'search_venue',
+        'choose_entry', 'choose_entry_multiple', 'choose_category', 'choose_category_multiple', 'choose_venue', 'choose_venue_multiple', 'change_entry', 'change_entry_multiple', 'change_category',
+        'change_category_multiple', 'change_venue', 'change_venue_multiple', 'missing_entry', 'missing_category', 'missing_venue', 'close', 'cancel', 'apply', 'more', 'loading', 'found', 'no_results',
+        'empty', 'empty_upcoming', 'selected', 'max', 'max_reached', 'category', 'all_categories', 'include_past', 'public_only', 'offline', 'cancelled', 'clear', 'remove', 'remove_name', 'denied', 'failed',
+        'create_new', 'create_entry', 'create_category', 'create_venue', 'create_title', 'create_name_placeholder', 'create_date', 'create_end_date', 'create_all_day', 'create_from', 'create_to',
+        'create_and_choose', 'create_and_add', 'create_save', 'create_back', 'create_details', 'create_help', 'create_title_required'] as $forcalPickerKey) {
+        $forcalPickerTexts[$forcalPickerKey] = rex_i18n::rawMsg('forcal_picker_js_' . $forcalPickerKey);
+    }
+    rex_view::setJsProperty('forcal_picker_i18n', $forcalPickerTexts);
 
     // Tagging-Widget: eigene Assets nur laden wenn fields-Addon nicht aktiv ist
     // (fields lädt dieselben Widget-Klassen; Doppelladen wird so vermieden)

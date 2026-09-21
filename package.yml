@@ -1,5 +1,5 @@
 package: forcal
-version: '6.7.2'
+version: '6.8.0'
 author: 'Friends Of REDAXO'
 supportpage: https://github.com/FriendsOfREDAXO/forcal/issues
 page:
@@ -22,6 +22,11 @@ page:
             title: 'translate:forcal_venues'
             icon: rex-icon fa-map-marker
             perm: 'forcal[venuespage]'
+        picker:
+            title: 'translate:forcal_picker'
+            icon: rex-icon fa-hand-pointer-o
+            perm: admin[]
+            itemClass: pull-right
         custom_fields: 
             title: 'translate:forcal_custom_fields'
             icon: rex-icon fa-server
@@ -50,4 +55,5 @@ default_config:
     forcal_multiuser: 1
     forcal_shortcut_save: 1
     forcal_full_time_preselection: 1
+    forcal_quick_create: 1
     forcal_start_page: 'calendar'
