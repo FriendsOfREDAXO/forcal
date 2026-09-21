@@ -1,3 +1,20 @@
+## 6.8.0 - 2026-09-21
+
+### Added
+
+- **Schnellanlage im Kalenderblatt:** Ein Klick auf einen Tag, einen Zeitslot, das Plus-Symbol oder den „+“-Knopf öffnet einen kleinen Dialog: Titel, Datum (optional mit Enddatum), ganztägig oder Uhrzeit von/bis, Kategorie. *Anlegen* speichert sofort, der Termin erscheint ohne Neuladen im Kalender. *Weitere Angaben …* führt mit allen Eingaben in den vollständigen Editor. Im Zeitraster kommt die angeklickte Uhrzeit mit, verschiebt man den Beginn, wandert das Ende mit. Abschaltbar unter *Einstellungen › Schnellanlage im Kalenderblatt*; ohne Recht zum Anlegen geht es wie bisher direkt in den Editor.
+- **forCal-Picker:** Eingabefeld-Widget für das ganze Backend. Die Klasse `forcal-picker` macht aus einem Textfeld eine Auswahl von Terminen, Kategorien oder Orten (`data-fp-type`), einzeln oder mehrfach mit Sortierung per Drag & Drop oder Alt + Pfeiltaste. Optionen: `data-fp-multiple`, `data-fp-max`, `data-fp-category`, `data-fp-public`, `data-fp-past`, `data-fp-create`. Funktioniert in Modulen, MForm (auch im Repeater), MBlock, YForm, rex_form und eigenem HTML: feuert `input` und `change`, kommt ohne IDs aus und baut sich nach dem Klonen per `rex:ready` selbst neu auf.
+- **Neu anlegen im Picker:** Findet man den Termin nicht, legt man ihn direkt im Dialog an. Der Suchtext wird zum Titel, der neue Termin ist sofort gewählt.
+- YForm-Feld `forcal_picker` (Termine, Kategorien oder Orte; mehrere, Höchstzahl, Kategorie, nur online, vergangene).
+- PHP-Helfer `forCal\Utils\forCalPicker`: `render()`, `ids()`, `entries()`, `categories()`, `venues()`, `name()`. Für die Website liefern die Auflöser nur Datensätze mit Status online.
+- JavaScript-API `ForcalPicker.open()`, `ForcalPicker.create()` (Schnellanlage ohne Auswahlfeld) und `ForcalPicker.init()`.
+- Recht `forcal[pick]`: im Picker aus allen Kategorien wählen, ohne Termine pflegen zu dürfen. Anlegen setzt weiterhin `forcal[]` und die Kategorie-Berechtigung voraus.
+- Seite *Picker* (Admins) mit Live-Beispielen, Repeater-Probe, Attribut-Referenz und Kopiervorlagen für Modul, MForm, YForm, rex_form und PHP.
+
+### Changed
+
+- Der Termin-Editor übernimmt beim Anlegen jetzt auch `itemname`, `itemcategory`, `itemenddate`, `itemtime`, `itemendtime` und `itemfulltime` aus der Adresse. Die bisher schon übergebene Uhrzeit aus dem Zeitraster (`itemtime`) wurde vorher nicht ausgewertet.
+
 ## 6.7.1 - 2026-09-14
 
 ### Changed

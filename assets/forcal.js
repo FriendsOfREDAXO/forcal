@@ -818,9 +818,8 @@ function forcal_fullcalendar(forcal) {
             newEvent: {
                 text: '+',
                 click: function() {
-                    // Bei Klick zur Termin-hinzufügen-Seite mit aktuellem Datum navigieren
                     const currentDate = new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
-                    window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + currentDate;
+                    forcalAddEntry(currentDate);
                 }
             }
         },
@@ -831,8 +830,8 @@ function forcal_fullcalendar(forcal) {
         initialDate: forcal_date, // FullCalendar 6.x verwendet initialDate statt defaultDate
         dayMaxEvents: true, // FullCalendar 6.x verwendet dayMaxEvents statt eventLimit
         dateClick: function(info) {
-            // Beim Klick auf einen Tag/Zelle in eine neue Termin-Seite navigieren
-            window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + info.dateStr;
+            // Klick auf einen Tag oder Zeitslot: Schnellanlage im Kalenderblatt. Im Zeitraster kommt die Uhrzeit mit.
+            forcalAddEntry(info.dateStr.slice(0, 10), info.allDay ? null : info.dateStr.slice(11, 16));
         },
         eventClick: function (info) {
             window.location.replace('index.php?page=forcal/entries&func=edit&id=' + info.event.id);
@@ -843,7 +842,7 @@ function forcal_fullcalendar(forcal) {
             const date = calendar.getDate().toISOString().slice(0, 10);
             // Extrahiere die Uhrzeit aus dem geklickten Slot
             const time = info.date.toTimeString().slice(0, 8);
-            window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + date + '&itemtime=' + time;
+            forcalAddEntry(date, time);
         },
         eventDidMount: function (info) { // FullCalendar 6.x verwendet eventDidMount statt eventRender
             // Event wurde gerendert
@@ -1051,6 +1050,8 @@ function forcal_fullcalendar(forcal) {
 
     // Nach dem Rendern des Kalenders Event-Handler für Klicks hinzufügen
     calendar.render();
+    // Die Schnellanlage lädt danach die Termine neu.
+    window.forcalCalendarInstance = calendar;
     
     // Füge Klick-Handler für Zeitslots in der Wochenansicht hinzu
     setTimeout(function() {
@@ -1061,7 +1062,7 @@ function forcal_fullcalendar(forcal) {
             // Extrahiere die Uhrzeit aus dem Slot
             const slotTime = $(this).attr('data-time');
             
-            if (columnDate && slotTime) {
+            if (columnDate && slotTime && !(window.ForcalPicker && rex.forcal_quick_create)) {
                 window.location.href = 'index.php?page=forcal/entries&func=add&itemdate=' + columnDate + '&itemtime=' + slotTime;
             }
         });
@@ -1115,7 +1116,38 @@ function addEntryHandler(item) {
         // Neues Format in FullCalendar 6.x
         date = item.attr('data-date');
     }
-    window.location.replace('index.php?page=forcal/entries&func=add&itemdate=' + date);
+    forcalAddEntry(date);
+}
+
+/**
+ * Neuer Termin aus dem Kalenderblatt: Schnellanlage im Dialog (Titel, Datum, ganztägig oder Uhrzeit, Kategorie).
+ * "Weitere Angaben …" führt mit allen Eingaben in den vollständigen Editor. Ohne Picker-Skript, bei abgeschalteter
+ * Schnellanlage oder ohne Recht zum Anlegen geht es wie bisher direkt in den Editor.
+ */
+function forcalAddEntry(date, time) {
+    const editor = 'index.php?page=forcal/entries&func=add';
+    const fallback = function () {
+        window.location.href = editor + '&itemdate=' + date + (time ? '&itemtime=' + time : '');
+    };
+    if (!window.ForcalPicker || typeof ForcalPicker.create !== 'function' || !rex.forcal_quick_create) {
+        fallback();
+        return;
+    }
+    // Ein Klick kann mehrere Handler auslösen (dateClick, Plus-Symbol, Zeitslot): nur ein Dialog auf einmal.
+    if (forcalAddEntry.opening || document.querySelector('dialog.fp-dialog-create')) {
+        return;
+    }
+    forcalAddEntry.opening = true;
+    const release = function () { forcalAddEntry.opening = false; };
+    const start = time ? time.slice(0, 5) : null;
+    let end = null;
+    if (start) {
+        const minutes = Math.min(Number(start.slice(0, 2)) * 60 + Number(start.slice(3)) + 60, 1425);
+        end = String(Math.floor(minutes / 60)).padStart(2, '0') + ':' + String(minutes % 60).padStart(2, '0');
+    }
+    ForcalPicker.create({ date: date, allDay: !start, start: start, end: end, detailsUrl: editor }, function () {
+        if (window.forcalCalendarInstance) window.forcalCalendarInstance.refetchEvents();
+    }).then(function (opened) { release(); if (!opened) fallback(); }).catch(function () { release(); fallback(); });
 }
 
 function forcal_save_init(forcal_form) {

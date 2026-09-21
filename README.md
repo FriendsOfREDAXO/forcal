@@ -451,6 +451,57 @@ $termine = forCalEventsFactory::create()
 ```
 
 
+## Schnellanlage im Kalenderblatt
+
+Schnell mal einen Termin? Ein Klick auf einen Tag oder Zeitslot im Kalender öffnet einen kleinen Dialog: Titel, Datum, ganztägig oder Uhrzeit, Kategorie. *Anlegen* speichert sofort, der Termin steht ohne Neuladen im Kalender. *Weitere Angaben …* öffnet den vollständigen Editor für Wiederholung, Ort und Texte und nimmt alle Eingaben mit. Wer die Schnellanlage nicht möchte, schaltet sie unter *Einstellungen* ab; dann führt der Klick wie früher direkt in den Editor.
+
+## forCal-Picker: Termine, Kategorien und Orte in Modulen und anderen Addons wählen
+
+Der Picker macht aus einem gewöhnlichen Textfeld eine Auswahl. Er lädt auf allen Backend-Seiten und funktioniert deshalb überall, wo ein Eingabefeld steht: in Modulen, MForm (auch im Repeater), MBlock, YForm, rex_form und eigenem HTML. Schnittstelle ist allein die Klasse `forcal-picker`. Die Seite *FORCal › Picker* zeigt alle Varianten zum Ausprobieren und Kopiervorlagen.
+
+```html
+<input class="forcal-picker" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]">
+<input class="forcal-picker" name="REX_INPUT_VALUE[2]" value="REX_VALUE[2]" data-fp-type="category" data-fp-multiple="true">
+```
+
+| Attribut | Wirkung |
+|---|---|
+| `data-fp-type="entry"` | Termine (Standard). Wert: `12,7` |
+| `data-fp-type="category"` | Kategorien. Wert: `1,3` |
+| `data-fp-type="venue"` | Orte. Wert: `4` |
+| `data-fp-multiple="true"` | mehrere wählbar, per Drag & Drop oder Alt + Pfeiltaste sortierbar |
+| `data-fp-max="5"` | Höchstzahl, nur mit `multiple` |
+| `data-fp-category="3"` | nur Termine dieser Kategorie |
+| `data-fp-public="true"` | nur Termine mit Status online |
+| `data-fp-past="true"` | der Dialog startet mit vergangenen Terminen |
+| `data-fp-create="false"` | kein *Neu anlegen* im Dialog |
+
+Gespeichert wird eine kommagetrennte Liste von IDs in der gewählten Reihenfolge. Nach jeder Änderung feuert das Feld `input` und `change`. Findet man einen Termin nicht, legt man ihn mit *Neu anlegen* direkt im Dialog an; der Suchtext wird zum Titel.
+
+**Ausgabe im Modul:**
+
+```php
+use forCal\Utils\forCalPicker;
+
+// Handverlesene Termine in der gewählten Reihenfolge, nur Status online
+foreach (forCalPicker::entries('REX_VALUE[1]') as $entry) {
+    echo rex_escape(forCalPicker::name($entry)), ' ', rex_formatter::intlDate(strtotime($entry['start_date']));
+}
+
+// Kommende Termine aus den gewählten Kategorien
+$entries = \forCal\Factory\forCalEventsFactory::create()->from('today')->to('+6 months')->inCategories(forCalPicker::ids('REX_VALUE[2]'))->get();
+```
+
+| Umgebung | Verwendung |
+|---|---|
+| MForm | `$mform->addTextField('1', ['label' => 'Termine', 'class' => 'forcal-picker', 'data-fp-multiple' => 'true'])`, genauso im Repeater |
+| YForm | Feld **forcal_picker** im Table Manager, oder `forcal_picker\|termine\|Termine\|entry\|1\|6` (Name, Beschriftung, Art, mehrere, Höchstzahl, Kategorie-ID, nur online, vergangene) |
+| rex_form | `$field->setAttribute('class', 'forcal-picker form-control')` |
+| PHP | `forCalPicker::render('termine', $wert, ['multiple' => true, 'category' => 3])` |
+| JavaScript | `ForcalPicker.open(callback, {type, multiple, max, category, public, past, selected})`, `ForcalPicker.create(defaults, callback)`, `ForcalPicker.init(container)` |
+
+**Rechte:** Wer forCal benutzen darf, wählt aus seinen Kategorien und darf dort auch anlegen. Das Recht `forcal[pick]` erlaubt die Auswahl aus allen Kategorien, ohne Termine pflegen zu dürfen.
+
 ## Erweiterte Benutzerberechtigungen
 
 ### Uneingeschränkter Zugriff auf alle Kategorien

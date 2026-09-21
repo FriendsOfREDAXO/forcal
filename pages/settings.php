@@ -20,6 +20,7 @@ if (rex::getUser()->hasPerm('forcal[settings]') || rex::getUser()->isAdmin()) {
         $addon->setConfig('forcal_additional_for_title', rex_post('forcal_additional_for_title', 'string', ''));
         $addon->setConfig('forcal_shortcut_save', rex_post('forcal_shortcut_save', 'boolean', false));
         $addon->setConfig('forcal_full_time_preselection', rex_post('forcal_full_time_preselection', 'boolean', false));
+        $addon->setConfig('forcal_quick_create', rex_post('forcal_quick_create', 'boolean', false));
         $addon->setConfig('forcal_start_page', rex_post('forcal_start_page', 'string', 'calendar'));
         $addon->setConfig('forcal_multiuser', rex_post('forcal_multiuser', 'boolean', false));
         $addon->setConfig('forcal_venues_enabled', rex_post('forcal_venues_enabled', 'boolean', false));
@@ -89,6 +90,18 @@ if (rex::getUser()->hasPerm('forcal[settings]') || rex::getUser()->isAdmin()) {
     $n = [];
     $n['label'] = '<label for="forcal_full_time_preselection">' . rex_i18n::msg('forcal_full_time_preselection') . '</label>';
     $n['field'] = '<input type="checkbox" id="forcal_full_time_preselection" name="forcal_full_time_preselection" value="1" ' . ($addon->getConfig('forcal_full_time_preselection') ? 'checked="checked"' : '') . ' />';
+    $formElements[] = $n;
+
+    $fragment = new rex_fragment();
+    $fragment->setVar('elements', $formElements, false);
+    $content .= $fragment->parse('core/form/checkbox.php');
+
+    // Schnellanlage im Kalenderblatt
+    $formElements = [];
+    $n = [];
+    $n['label'] = '<label for="forcal_quick_create">' . rex_i18n::msg('forcal_quick_create') . '</label>';
+    $n['field'] = '<input type="checkbox" id="forcal_quick_create" name="forcal_quick_create" value="1" ' . ($addon->getConfig('forcal_quick_create', true) ? 'checked="checked"' : '') . ' />';
+    $n['note'] = rex_i18n::msg('forcal_quick_create_notice');
     $formElements[] = $n;
 
     $fragment = new rex_fragment();

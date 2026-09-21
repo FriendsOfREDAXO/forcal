@@ -1,0 +1,102 @@
+/*
+ * forCal-Picker: Widget und Auswahl-Dialog. Lädt auf allen Backend-Seiten, deshalb eigene Farbvariablen
+ * und das Präfix cp-/fpw-. Folgt dem hellen und dunklen REDAXO-Theme.
+ */
+:root {
+  --fp-accent: #3788d8;
+  --fp-surface: #fff;
+  --fp-surface-muted: #f5f7f9;
+  --fp-border: #d8dee4;
+  --fp-text: #283542;
+  --fp-text-muted: #5d6b78;
+}
+body.rex-theme-dark {
+  --fp-surface: #202b35; --fp-surface-muted: #1a232b; --fp-border: #364553; --fp-text: #dbe3ea; --fp-text-muted: #93a3b1;
+}
+@media (prefers-color-scheme: dark) {
+  body.rex-has-theme:not(.rex-theme-light) {
+    --fp-surface: #202b35; --fp-surface-muted: #1a232b; --fp-border: #364553; --fp-text: #dbe3ea; --fp-text-muted: #93a3b1;
+  }
+}
+
+input.forcal-picker.fp-source { display: none !important; }
+
+.fp-badge {
+  display: inline-grid; flex: none; place-items: center; width: 32px; height: 32px; border-radius: 8px; font-size: 14px;
+  /* Getönte Fläche mit Rand in der Kalenderfarbe: bleibt mit jeder Farbe lesbar, hell wie dunkel. */
+  border: 1px solid color-mix(in srgb, var(--fp-color, var(--fp-text-muted)) 55%, var(--fp-text));
+  background: color-mix(in srgb, var(--fp-color, var(--fp-text-muted)) 22%, var(--fp-surface)); color: var(--fp-text);
+}
+.fp-text { display: grid; flex: 1; min-width: 0; line-height: 1.25; }
+.fp-name, .fp-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fp-name, .fpw-item a.fp-name, .fp-row .fp-name { color: var(--fp-text); font-weight: 500; text-decoration: none; }
+.fpw-item a.fp-name:hover, .fpw-item a.fp-name:focus { color: var(--fp-accent); text-decoration: underline; }
+.fp-sub { color: var(--fp-text-muted); font-size: .85em; }
+.fp-flag { flex: none; padding: 0 7px; border: 1px solid var(--fp-border); border-radius: 999px; color: var(--fp-text-muted); font-size: .8em; }
+.fp-flag-warn { border-color: #c0392b; color: #c0392b; }
+
+/* ------------------------------------------------------------------ Widget */
+
+.fpw { display: grid; gap: 6px; max-width: 640px; }
+.fpw-items { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.fpw.is-empty .fpw-items { display: none; }
+.fpw-item {
+  display: flex; gap: 10px; align-items: center; padding: 5px 6px 5px 8px; border: 1px solid var(--fp-border); border-radius: 6px; background: var(--fp-surface); color: var(--fp-text);
+  &.is-dragging { opacity: .45; }
+  &.is-missing { border-style: dashed; & .fp-name { color: var(--fp-text-muted); font-style: italic; } }
+}
+.fpw-multiple .fpw-item { cursor: grab; }
+.fpw-grip { color: var(--fp-text-muted); opacity: .6; }
+.fpw-remove {
+  flex: none; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 4px; background: none; color: var(--fp-text-muted); cursor: pointer;
+  &:hover, &:focus-visible { background: color-mix(in srgb, #c0392b 15%, transparent); color: #c0392b; outline: none; }
+}
+.fpw-toolbar { display: flex; gap: 6px; }
+
+/* ------------------------------------------------------------------ Dialog */
+
+.fp-dialog {
+  width: min(640px, calc(100vw - 32px)); max-height: min(720px, calc(100vh - 48px)); padding: 0; border: 1px solid var(--fp-border); border-radius: 10px;
+  background: var(--fp-surface); color: var(--fp-text); box-shadow: 0 20px 60px rgb(0 0 0 / .35);
+  &[open] { display: flex; flex-direction: column; }
+  &::backdrop { background: rgb(0 0 0 / .45); }
+}
+.fp-head { display: flex; align-items: center; padding: 14px 16px 6px; }
+.fp-title { flex: 1; margin: 0; color: var(--fp-text); font-size: 1.2em; }
+.fp-close { width: 32px; height: 32px; border: 0; border-radius: 6px; background: none; color: var(--fp-text-muted); font-size: 1.1em; cursor: pointer; &:hover, &:focus-visible { background: var(--fp-surface-muted); color: var(--fp-text); outline: none; } }
+.fp-filters { display: flex; gap: 8px; padding: 8px 16px; & input { flex: 2; min-width: 0; } & select { flex: 1; min-width: 0; } }
+.fp-option { display: flex; gap: 8px; align-items: center; margin: 0; padding: 0 16px 8px; font-weight: 400; cursor: pointer; & input { margin: 0; } }
+.fp-note { margin: 0; padding: 0 16px 8px; color: var(--fp-text-muted); font-size: .9em; }
+.fp-note-public { color: #27ae60; }
+.fp-results { flex: 1; min-height: 180px; margin: 0; padding: 0; overflow: auto; border-top: 1px solid var(--fp-border); border-bottom: 1px solid var(--fp-border); list-style: none; }
+.fp-row {
+  display: flex; gap: 10px; align-items: center; padding: 7px 16px; border-bottom: 1px solid color-mix(in srgb, var(--fp-border) 60%, transparent); cursor: pointer;
+  &:hover { background: color-mix(in srgb, var(--fp-accent) 8%, transparent); }
+  &:focus-visible { outline: 2px solid var(--fp-accent); outline-offset: -2px; }
+  &.is-selected { background: color-mix(in srgb, var(--fp-accent) 18%, transparent); }
+}
+.fp-check { display: inline-grid; flex: none; place-items: center; width: 20px; height: 20px; border: 1px solid var(--fp-border); border-radius: 4px; color: transparent; font-size: 11px; }
+.fp-row.is-selected .fp-check { border-color: var(--fp-accent); background: var(--fp-accent); color: #fff; }
+.fp-meta { flex: none; max-width: 30%; overflow: hidden; color: var(--fp-text-muted); font-size: .85em; text-overflow: ellipsis; white-space: nowrap; }
+.fp-status { margin: 0; padding: 8px 16px 0; color: var(--fp-text-muted); font-size: .9em; min-height: 1.6em; }
+.fp-more { margin: 6px 16px 0; align-self: flex-start; &[hidden] { display: none; } }
+.fp-foot { display: flex; gap: 8px; align-items: center; padding: 12px 16px; }
+.fp-count { flex: 1; color: var(--fp-text-muted); font-size: .9em; }
+.fpw-item:focus-visible { outline: 2px solid var(--fp-accent); outline-offset: 1px; }
+
+/* Schnell anlegen im Dialog */
+.fp-create { flex: none; white-space: nowrap; &[hidden] { display: none; } }
+.fp-create-panel { display: grid; gap: 10px; padding: 12px 16px 4px; border-top: 1px solid var(--fp-border); overflow: auto; &[hidden] { display: none; } }
+.fp-create-title { margin: 0; color: var(--fp-text); font-size: 1.05em; }
+.fp-field { display: grid; flex: 1; gap: 3px; min-width: 0; margin: 0; font-weight: 400; & > span { color: var(--fp-text-muted); font-size: .85em; } }
+.fp-field-row { display: flex; gap: 10px; &[hidden] { display: none; } }
+.fp-option-inline { padding: 0; }
+.fp-create-error { margin: 0; min-height: 1.2em; color: #c0392b; }
+.fp-create-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.fp-results[hidden], .fp-status[hidden] { display: none; }
+
+/* Schnellanlage im Kalenderblatt: Dialog nur mit dem Formular */
+.fp-dialog-create { width: min(520px, calc(100vw - 32px)); }
+.fp-dialog-create .fp-create-panel { border-top: 0; padding-bottom: 16px; }
+.fp-create-form { display: grid; gap: 10px; }
+.fp-note-inline { padding: 0; }

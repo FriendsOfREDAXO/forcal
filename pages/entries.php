@@ -14,6 +14,16 @@ use forCal\Utils\forCalUserPermission;
 
 $func = rex_request::request('func', 'string');
 $itemDate = rex_request::request('itemdate', 'string', null);
+// Vorbelegung aus der Schnellanlage im Kalenderblatt ("Weitere Angaben …") und aus Klicks ins Zeitraster
+$validDate = static fn (?string $value): ?string => null !== $value && 1 === preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) ? $value : null;
+$validTime = static fn (string $value): ?string => 1 === preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $value) ? substr($value, 0, 5) . ':00' : null;
+$itemDate = null === $itemDate ? null : $validDate($itemDate);
+$itemEndDate = $validDate(rex_request::request('itemenddate', 'string', null));
+$itemTime = $validTime(rex_request::request('itemtime', 'string', ''));
+$itemEndTime = $validTime(rex_request::request('itemendtime', 'string', ''));
+$itemName = trim(rex_request::request('itemname', 'string', ''));
+$itemCategory = rex_request::request('itemcategory', 'int', 0);
+$itemFullTime = rex_request::request('itemfulltime', 'string', '');
 $id = rex_request::request('id', 'int');
 $start = rex_request::request('start', 'int', NULL);
 $categoryFilter = rex_request::request('category_filter', 'int', NULL);
@@ -389,6 +399,15 @@ if ($func == '' || $func == 'filter') {
     } else {
         $default_time = date("H:i:s");
     }
+    // Eine übergebene Uhrzeit hat Vorrang; ohne Endzeit dauert der Termin eine Stunde.
+    $default_end_time = $default_time;
+    if (null !== $itemTime) {
+        $default_time = $itemTime;
+        $default_end_time = $itemEndTime ?? date('H:i:s', min(strtotime($itemTime) + 3600, strtotime('23:45:00')));
+    }
+    if (null !== $itemDate && null !== $itemEndDate && $itemEndDate < $itemDate) {
+        $itemEndDate = null;
+    }
 
 
     $field = $form->addHiddenField('start_time');
@@ -405,16 +424,16 @@ if ($func == '' || $func == 'filter') {
     $field->setAttribute('required', 'required');
     $endDate = $field->getValue();
     if ($func == 'add' && !is_null($itemDate)) {
-        $field->setValue($itemDate);
-        $endDate = $itemDate;
+        $field->setValue($itemEndDate ?? $itemDate);
+        $endDate = $itemEndDate ?? $itemDate;
     }
 
     $field = $form->addHiddenField('end_time');
     $field->setAttribute('id', 'tpd2');
     $endTime = $field->getValue();
     if ($func == 'add' && !is_null($itemDate)) {
-        $field->setValue($default_time);
-        $endTime = $default_time;
+        $field->setValue($default_end_time);
+        $endTime = $default_end_time;
     }
 
     // Column: End
@@ -454,7 +473,9 @@ if ($func == '' || $func == 'filter') {
     $field = $form->addCheckboxField('full_time');
     $field->addOption(rex_i18n::msg('forcal_checkbox_full_time'), 1);
     $field->setAttribute('class', 'check-btn forcal_fulltime_master_check');
-    if (rex_addon::get('forcal')->getConfig('forcal_full_time_preselection') && $func == 'add') {
+    // Aus der Schnellanlage kommt die Wahl ausdrücklich mit; eine übergebene Uhrzeit heißt: nicht ganztägig.
+    $fullTimePreselected = '' !== $itemFullTime ? '1' === $itemFullTime : (null === $itemTime && rex_addon::get('forcal')->getConfig('forcal_full_time_preselection'));
+    if ($fullTimePreselected && $func == 'add') {
         $field->setAttribute('checked', 'checked');
     }
 
@@ -664,6 +685,9 @@ if ($func == '' || $func == 'filter') {
         $field = $form->addTextField('name_' . $clang->getId());
         $field->setLabel(rex_i18n::msg('forcal_entry_name'));
         $field->setAttribute('class', 'forcal_entry_name form-control');
+        if ($func == 'add' && '' !== $itemName && $clang->getId() === rex_clang::getStartId() && 'post' !== rex_request_method()) {
+            $field->setValue(mb_substr($itemName, 0, 255));
+        }
 
         if ($key == 1) {
             $field->getValidator()->add('notEmpty', rex_i18n::msg('forcal_entry_name_validation'));
@@ -725,6 +749,9 @@ if ($func == '' || $func == 'filter') {
     // setzen wir die Kategorie entsprechend vor
     if ($func == 'add' && !is_null($categoryFilter)) {
         $field->setValue($categoryFilter);
+    }
+    if ($func == 'add' && $itemCategory > 0 && forCalUserPermission::hasPermission($itemCategory, $user)) {
+        $field->setValue($itemCategory);
     }
     
     $field->setLabel(rex_i18n::msg('forcal_entry_category'));
